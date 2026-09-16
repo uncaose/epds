@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { access, copyFile, mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
+import { access, cp, copyFile, mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { homedir } from 'node:os';
@@ -14,6 +14,7 @@ const sourceSkill = join(packageRoot, 'SKILL.md');
 const sourceLicense = join(packageRoot, 'LICENSE');
 const sourceNotice = join(packageRoot, 'NOTICE');
 const sourceTemplates = join(packageRoot, 'templates');
+const sourceReferences = join(packageRoot, 'docs', 'references');
 
 const command = process.argv[2] ?? 'help';
 const args = new Set(process.argv.slice(3));
@@ -141,6 +142,9 @@ async function setup() {
   await copyFile(sourceLicense, join(target, 'LICENSE'));
   await copyFile(sourceNotice, join(target, 'NOTICE'));
   await copyOptionalTemplateReadme(target);
+  if (await isDirectory(sourceReferences)) {
+    await cp(sourceReferences, join(target, 'docs', 'references'), { recursive: true });
+  }
 
   const marker = {
     name: 'EPDS',

@@ -20,6 +20,8 @@ Use when you ask “What should I do next?”
 
 It reads product documents, state, metrics, code, tests, CI, issues, logs, analytics, feedback, and necessary public sources. It returns one bottleneck and one smallest next action.
 
+When the bottleneck is a specific perspective (evidence, cost, UX, ...), check `docs/references/INDEX.md` first — a lead already captured there points at a file instead of re-deriving one from scratch.
+
 ### `/epds-audit`
 
 Use when the project has too many instructions, duplicated guidance, stale commands, missing tests, or unclear ownership between `AGENTS.md` and `CLAUDE.md`.
@@ -33,6 +35,10 @@ Use after recurring needs emerge. It should not add tools, agents, evals, or CI 
 ### `/epds-reference <URL>`
 
 Use before adopting an external repository, tool, framework, command pack, or agent library. It analyzes before copying and recommends Adopt, Adapt, Observe, or Reject.
+
+When the analysis surfaces a reusable lead, it is saved as `docs/references/<slug>.md` (format:
+`docs/references/README.md`) and indexed in `docs/references/INDEX.md`, so a later `/epds-status`
+run stuck on the same perspective can point at it instead of re-deriving it from scratch.
 
 ## Delivery commands
 
