@@ -2,6 +2,26 @@
 
 # Installation Guide
 
+## Verified installs (2026-09-16)
+
+Both commands below were run and inspected end-to-end (repo checkout, file listing, `CLAUDE.md`/`AGENTS.md`/`settings.json` diffed before/after — unchanged in both cases).
+
+| Method | Command | Install location | Includes | Slash commands | Global config impact | Verify |
+|---|---|---|---|---|---|---|
+| `skills add` | `npx skills add uncaose/epds -a claude-code` | `./.claude/skills/epds/` | full repo (SKILL.md, adapters, bin, docs, templates) | 5 (`/epds-setup /epds-status /epds-audit /epds-upgrade /epds-reference`) | none | see below |
+| npx setup | `npx github:uncaose/epds setup --project` | `./.claude/skills/epds/` | SKILL.md, LICENSE, NOTICE, `templates/README.md`, `.installed-from.json` | 0 | none | see below |
+
+Recommendation: use `skills add` if you want the slash commands; the plain npx setup gives the minimal skill files only.
+
+Verify after either install:
+
+```bash
+node bin/epds.mjs check --project
+ls .claude/skills/epds
+# in Claude Code:
+/epds-status
+```
+
 ## Option A: GitHub source with npx
 
 EPDS is initially intended to run directly from GitHub, without npm registry publication.

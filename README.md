@@ -7,6 +7,14 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 [![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org/)
 
+## 설치
+
+```bash
+npx skills add uncaose/epds -a claude-code
+```
+
+자세한 옵션과 검증 절차는 [docs/INSTALL.md](docs/INSTALL.md) 참고.
+
 ## 무엇을 해결하나
 
 AI 코딩 도구는 몇 초 안에 많은 코드를 만들 수 있습니다. 하지만 실제 제품 개발에서 가장 비싼 실패는 보통 “코드를 늦게 썼다”가 아니라 다음과 같습니다.
