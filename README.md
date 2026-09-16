@@ -1,2 +1,22 @@
-# epds
-Evidence-First Product Delivery System for AI coding agents
+# EPDS
+
+> **Evidence-First Product Delivery System**
+>
+> AI 코딩 에이전트가 아이디어, 진행 중인 서비스, 프로그램, 게임, 콘텐츠 자동화 프로젝트를 **증거 기반으로 방향부터 회고까지** 진행하도록 돕는 범용 Skill입니다.
+
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
+[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org/)
+
+## 무엇을 해결하나
+
+AI 코딩 도구는 몇 초 안에 많은 코드를 만들 수 있습니다. 하지만 실제 제품 개발에서 가장 비싼 실패는 보통 “코드를 늦게 썼다”가 아니라 다음과 같습니다.
+
+- 실제 사용자가 원하지 않는 기능을 빠르게 만들었다.
+- 사용자·사업·운영 제약을 확인하기 전에 구현 범위를 넓혔다.
+- 테스트를 통과한 코드를 배포했지만, 실제 사용자는 핵심 행동을 완료하지 못했다.
+- 기능이 늘어날수록 개인정보, 비용, 성능, 지원 부담, 기술 부채가 함께 늘었다.
+- 기획, 구현, QA, 배포, 회고가 분리되어 이전 실패가 다음 작업에 반영되지 않았다.
+- AI에게 무엇을 물어야 할지, 어떤 역할/스킬을 언제 호출해야 할지 사용자가 매번 직접 판단해야 했다.
+
+EPDS는 “더 많은 에이전트”나 “더 긴 프롬프트”가 목적이 아닙니다. 먼저 현재 프로젝트가 어느 단계에 있는지 파악하고, **다음 의사결정에 필요한 증거가 무엇인지** 찾도록 AI의 행동 순서를 고정합니다.
+

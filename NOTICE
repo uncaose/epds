@@ -1,0 +1,20 @@
+EPDS — Evidence-First Product Delivery System
+Copyright 2026 C.H. (GitHub: uncaose)
+
+This product includes the EPDS framework, documentation, templates,
+Claude Code skill instructions, and installation tooling.
+
+Source repository:
+https://github.com/uncaose/epds
+
+This work is licensed under the Apache License, Version 2.0.
+
+When redistributing this work or derivative works, retain:
+- the Apache License 2.0 text in LICENSE;
+- this NOTICE file or the applicable attribution notices in it;
+- prominent notices in modified files stating that they were changed.
+
+The names “EPDS” and “Evidence-First Product Delivery System” identify
+this original project. The Apache License does not grant trademark rights.
+Use the names only in a reasonable and customary way to describe the
+origin of this work, unless separate permission is obtained.

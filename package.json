@@ -1,0 +1,45 @@
+{
+  "name": "@uncaose/epds",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Evidence-First Product Delivery System for AI coding agents",
+  "license": "Apache-2.0",
+  "author": "C.H. <uncaose@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uncaose/epds.git"
+  },
+  "bugs": {
+    "url": "https://github.com/uncaose/epds/issues"
+  },
+  "homepage": "https://github.com/uncaose/epds#readme",
+  "type": "module",
+  "bin": {
+    "epds": "./bin/epds.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "SKILL.md",
+    "LICENSE",
+    "NOTICE",
+    "bin",
+    "templates",
+    "docs",
+    "adapters"
+  ],
+  "scripts": {
+    "setup": "node ./bin/epds.mjs setup",
+    "uninstall": "node ./bin/epds.mjs uninstall",
+    "check": "node ./bin/epds.mjs check"
+  },
+  "keywords": [
+    "claude-code",
+    "agent-skill",
+    "product-delivery",
+    "product-management",
+    "ai-agents",
+    "epds"
+  ]
+}
