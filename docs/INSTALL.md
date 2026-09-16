@@ -9,7 +9,7 @@ Both commands below were run and inspected end-to-end (repo checkout, file listi
 | Method | Command | Install location | Includes | Slash commands | Global config impact | Verify |
 |---|---|---|---|---|---|---|
 | `skills add` | `npx skills add uncaose/epds -a claude-code` | `./.claude/skills/epds/` | full repo (SKILL.md, adapters, bin, docs, templates) | 5 (`/epds-setup /epds-status /epds-audit /epds-upgrade /epds-reference`) | none | see below |
-| npx setup | `npx github:uncaose/epds setup --project` | `./.claude/skills/epds/` | SKILL.md, LICENSE, NOTICE, `templates/README.md`, `.installed-from.json` | 0 | none | see below |
+| npx setup | `npx github:uncaose/epds setup --project` | `./.claude/skills/epds/` | SKILL.md, LICENSE, NOTICE, `templates/README.md`, `docs/*.md` (EPDS/ROLES/TESTS/LAYOUT/…), `docs/references/`, `.installed-from.json` | 0 | none | see below |
 
 Recommendation: use `skills add` if you want the slash commands; the plain npx setup gives the minimal skill files only.
 
