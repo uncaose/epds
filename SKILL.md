@@ -10,6 +10,11 @@ argument-hint: "[setup|status|audit|upgrade|reference <URL>|discover|decide|expe
 
 EPDS means **Evidence-First Product Delivery System**.
 
+Read `docs/EPDS.md` §1–§3 first — the perspectives compared and the patterns kept or dropped, not
+just the conclusion in §4. `docs/ROLES.md`, `docs/TESTS.md`, `docs/LAYOUT.md`, and
+`docs/references/RUBRIC.md` carry the same evidence trail for roles, test layers, repo layout, and
+external-source scoring.
+
 Use this skill to guide an idea or an in-progress project through an evidence-led delivery loop:
 
 ```text

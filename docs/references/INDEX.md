@@ -12,9 +12,21 @@ external store (e.g. `~/Projects/research/_archive/sources/R0123-slug.md`), not 
 |---|---|
 | evidence-before-assumption | example-evidence-first-delivery.md |
 | gated-state-model | example-evidence-first-delivery.md |
+| quality-beyond-code | tech-bridge-ai-code-quality.md |
+| role-based-sprint-commands | gstack.md |
+| skill-habit-framework, tdd-first | superpowers.md |
+| ambiguity-gate, evolve-loop | ouroboros.md |
+| persona-catalog | agency-agents.md |
+| scenario-runbook-deploy | agency-agents-app-v0-3-0.md |
+| repo-layout-contract-driven | ai-job-search.md |
+| custom-router-long-term | argo-internal.md |
 
 ## By perspective
 
 | Perspective | Files |
 |---|---|
-| self (worked example) | example-evidence-first-delivery.md |
+| self (worked example) | example-evidence-first-delivery.md, argo-internal.md |
+| evidence | tech-bridge-ai-code-quality.md |
+| product | tech-bridge-ai-code-quality.md, gstack.md, agency-agents.md |
+| delivery | gstack.md, superpowers.md, ouroboros.md, agency-agents-app-v0-3-0.md, ai-job-search.md |
+| agent-ops | gstack.md, superpowers.md, ouroboros.md, agency-agents.md, agency-agents-app-v0-3-0.md, ai-job-search.md, argo-internal.md |

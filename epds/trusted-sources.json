@@ -7,9 +7,16 @@
       "kind": "doc",
       "name": "Claude Code Skills",
       "purpose": "Official SKILL.md format, frontmatter fields, and discovery rules that EPDS's adapters/claude-code/commands follow",
-      "perspectives": ["agent-ops"],
-      "patterns": ["skill-frontmatter-format"],
-      "applies_to": ["build", "spec"],
+      "perspectives": [
+        "agent-ops"
+      ],
+      "patterns": [
+        "skill-frontmatter-format"
+      ],
+      "applies_to": [
+        "build",
+        "spec"
+      ],
       "evidence_grade": "official",
       "meta": {
         "install": null,
@@ -27,9 +34,15 @@
       "kind": "doc",
       "name": "Apache License 2.0",
       "purpose": "License text EPDS ships verbatim as LICENSE",
-      "perspectives": ["safety"],
-      "patterns": ["permissive-oss-license"],
-      "applies_to": ["release"],
+      "perspectives": [
+        "safety"
+      ],
+      "patterns": [
+        "permissive-oss-license"
+      ],
+      "applies_to": [
+        "release"
+      ],
       "evidence_grade": "official",
       "meta": {
         "install": null,
@@ -47,9 +60,16 @@
       "kind": "article",
       "name": "Documenting Architecture Decisions (Michael Nygard)",
       "purpose": "Original ADR format that templates/adr.md follows",
-      "perspectives": ["delivery"],
-      "patterns": ["adr-record"],
-      "applies_to": ["spec", "retro"],
+      "perspectives": [
+        "delivery"
+      ],
+      "patterns": [
+        "adr-record"
+      ],
+      "applies_to": [
+        "spec",
+        "retro"
+      ],
       "evidence_grade": "official",
       "meta": {
         "install": null,
@@ -67,9 +87,16 @@
       "kind": "tool",
       "name": "skills (Vercel Labs)",
       "purpose": "npx CLI EPDS's own docs/INSTALL.md recommends for installing the skill with slash commands",
-      "perspectives": ["agent-ops", "cost"],
-      "patterns": ["skill-installer-cli"],
-      "applies_to": ["build"],
+      "perspectives": [
+        "agent-ops",
+        "cost"
+      ],
+      "patterns": [
+        "skill-installer-cli"
+      ],
+      "applies_to": [
+        "build"
+      ],
       "evidence_grade": "official",
       "meta": {
         "install": "npx skills add <owner>/<repo> -a claude-code",
@@ -87,9 +114,16 @@
       "kind": "doc",
       "name": "Node.js Releases",
       "purpose": "Basis for package.json engines >=20 requirement",
-      "perspectives": ["delivery"],
-      "patterns": ["engine-version-floor"],
-      "applies_to": ["build", "release"],
+      "perspectives": [
+        "delivery"
+      ],
+      "patterns": [
+        "engine-version-floor"
+      ],
+      "applies_to": [
+        "build",
+        "release"
+      ],
       "evidence_grade": "official",
       "meta": {
         "install": null,
@@ -100,6 +134,237 @@
       },
       "added": "2026-09-16",
       "note": "basis for \"EPDS requires Node.js 20 or newer\" in docs/INSTALL.md"
+    },
+    {
+      "id": "tech-bridge-ai",
+      "url": "https://youtu.be/3JDqfWGKoiY",
+      "kind": "article",
+      "name": "Tech Bridge — AI 시대의 코드 품질",
+      "purpose": "human이 EPDS 설계 착수 동기로 제공한 유튜브 영상 — '완벽한 코드로도 제품이 부족한 이유'(코드 정확성과 제품 증거는 별개)",
+      "perspectives": [
+        "evidence",
+        "product"
+      ],
+      "patterns": [
+        "quality-beyond-code"
+      ],
+      "applies_to": [
+        "direction",
+        "problem"
+      ],
+      "evidence_grade": "community",
+      "meta": {
+        "install": null,
+        "invoke": null,
+        "license": null,
+        "last_release": null,
+        "activity": "YouTube video, channel Tech Bridge (@TechBridge-KR), oEmbed 실측 2026-09-16"
+      },
+      "added": "2026-09-16",
+      "note": "human 제공 EPDS 흐름 출처 1(유튜브)"
+    },
+    {
+      "id": "gstack",
+      "url": "https://github.com/garrytan/gstack",
+      "kind": "skill",
+      "name": "gstack",
+      "purpose": "역할 기반 제품 개발 스프린트(CEO·디자인·DX·엔지니어링·QA·보안·배포를 하나의 순서로 연결) — EPDS 표1 도구비교에서 적합도 '매우 높음'",
+      "perspectives": [
+        "product",
+        "delivery",
+        "agent-ops"
+      ],
+      "patterns": [
+        "role-based-sprint-commands"
+      ],
+      "applies_to": [
+        "direction",
+        "spec",
+        "build"
+      ],
+      "evidence_grade": "community",
+      "meta": {
+        "install": "Claude Code marketplace add 또는 .claude/commands 복사(README 기준)",
+        "invoke": "/office-hours, /plan-ceo-review, /autoplan 등 23개 커맨드",
+        "license": "MIT",
+        "last_release": "pushed_at 2026-09-16(태그릴리스 없음, 지속 push)",
+        "activity": "gh api 실측 2026-09-16: stars 133269, open_issues 890"
+      },
+      "added": "2026-09-16",
+      "note": "human 제공 EPDS 흐름 출처 2 — 표1 관점 비교 도구"
+    },
+    {
+      "id": "superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "kind": "skill",
+      "name": "Superpowers",
+      "purpose": "개발 방법론(TDD·디버깅·협업)을 습관화하는 스킬 프레임워크 — EPDS 표1 적합도 높음, 이 세션에 로드된 Claude Code 플러그인(캐시 확인)",
+      "perspectives": [
+        "delivery",
+        "agent-ops"
+      ],
+      "patterns": [
+        "skill-habit-framework",
+        "tdd-first"
+      ],
+      "applies_to": [
+        "build",
+        "verify"
+      ],
+      "evidence_grade": "community",
+      "meta": {
+        "install": "Claude Code 플러그인 마켓플레이스(claude-plugins-official) 설치",
+        "invoke": "스킬명 직접 호출 예: superpowers:test-driven-development",
+        "license": "MIT",
+        "last_release": "v6.3.0(로컬 캐시 실측), pushed_at 2026-09-14",
+        "activity": "gh api 실측 2026-09-16: stars 287306, author Jesse Vincent(obra)"
+      },
+      "added": "2026-09-16",
+      "note": "human 제공 EPDS 흐름 출처 3 — 이 세션에 로드된 Claude Code 플러그인"
+    },
+    {
+      "id": "ouroboros",
+      "url": "https://github.com/Q00/ouroboros",
+      "kind": "tool",
+      "name": "Ouroboros",
+      "purpose": "명세-실행-평가-기억 에이전트 OS — Ambiguity Gate(≤0.2 게이트)·Evolve 루프. EPDS 표1 적합도 \"조건부 높음\"(운영 복잡도 리스크). 선행조사=R0229",
+      "perspectives": [
+        "agent-ops",
+        "delivery"
+      ],
+      "patterns": [
+        "ambiguity-gate",
+        "evolve-loop"
+      ],
+      "applies_to": [
+        "direction",
+        "spec",
+        "retro"
+      ],
+      "evidence_grade": "community",
+      "meta": {
+        "install": "PyPI `ouroboros-ai`(R0229 기준)",
+        "invoke": "CLI `ooo`(Typer+Textual TUI, 13개 런타임 어댑터)",
+        "license": "MIT",
+        "last_release": "R0229 기준 v0.51.17(2026-08-28), 활발히 매일 릴리스",
+        "activity": "gh api 실측 2026-09-16: stars 5933, pushed_at 2026-09-15, archived=false — 상세=~/Projects/research/R0229-ouroboros-agent-os-survey"
+      },
+      "added": "2026-09-16",
+      "note": "human 제공 EPDS 흐름 출처 3 — 명세-실행-평가-기억 에이전트 OS, 선행조사 R0229"
+    },
+    {
+      "id": "agency-agents",
+      "url": "https://github.com/msitarzewski/agency-agents",
+      "kind": "repo",
+      "name": "agency-agents",
+      "purpose": "AI 에이전트 카탈로그(역할별 페르소나+산출물) — EPDS 표2(단계·산출물·우선순위)의 원본 저장소",
+      "perspectives": [
+        "product",
+        "agent-ops"
+      ],
+      "patterns": [
+        "persona-catalog"
+      ],
+      "applies_to": [
+        "direction",
+        "spec",
+        "build"
+      ],
+      "evidence_grade": "community",
+      "meta": {
+        "install": "카탈로그 클론 또는 agency-agents-app 앱 경유 설치(README 기준)",
+        "invoke": "역할별 마크다운 페르소나 파일을 도구별 위치에 설치",
+        "license": "MIT",
+        "last_release": "pushed_at 2026-09-12(태그릴리스 없음, 지속 push)",
+        "activity": "gh api 실측 2026-09-16: stars 152679"
+      },
+      "added": "2026-09-16",
+      "note": "human 제공 EPDS 흐름 출처 4"
+    },
+    {
+      "id": "agency-agents-app-v0-3-0",
+      "url": "https://github.com/msitarzewski/agency-agents-app/releases/tag/v0.3.0",
+      "kind": "repo",
+      "name": "agency-agents-app v0.3.0",
+      "purpose": "agency-agents 카탈로그 설치/추적 네이티브 앱 — v0.3.0 = Runbooks(시나리오 팀 원클릭 배포) 도입. EPDS 표2 산출물의 배포 자동화 참고",
+      "perspectives": [
+        "agent-ops",
+        "delivery"
+      ],
+      "patterns": [
+        "scenario-runbook-deploy"
+      ],
+      "applies_to": [
+        "build",
+        "release"
+      ],
+      "evidence_grade": "community",
+      "meta": {
+        "install": "macOS(.dmg 서명/노터라이즈), Linux(.deb/.rpm/.AppImage), Windows(.exe, 미서명)",
+        "invoke": "앱 내 Runbooks → Deploy team…",
+        "license": "MIT",
+        "last_release": "v0.3.0, published_at 2026-07-05T22:59:16Z",
+        "activity": "gh api 실측 2026-09-16: stars 546, repo pushed_at 2026-09-16"
+      },
+      "added": "2026-09-16",
+      "note": "human 제공 EPDS 흐름 출처 5"
+    },
+    {
+      "id": "ai-job-search",
+      "url": "https://github.com/MadsLorentzen/ai-job-search",
+      "kind": "repo",
+      "name": "ai-job-search",
+      "purpose": "templates/tests/tools+.claude 가 정리된 저장소 — EPDS 표3(구조 역할별 대응)의 원본, human 질의 '이게 일반적 AI 이용 패턴인가'의 대상",
+      "perspectives": [
+        "delivery",
+        "agent-ops"
+      ],
+      "patterns": [
+        "repo-layout-contract-driven"
+      ],
+      "applies_to": [
+        "spec",
+        "build",
+        "verify"
+      ],
+      "evidence_grade": "community",
+      "meta": {
+        "install": "git clone(fork it and own it), Claude Code 기반(README 기준)",
+        "invoke": "/setup /apply /rank /interview 등 커맨드(EPDS 표3)",
+        "license": "MIT",
+        "last_release": "pushed_at 2026-09-16(태그릴리스 없음, 지속 push)",
+        "activity": "gh api 실측 2026-09-16: stars 43033"
+      },
+      "added": "2026-09-16",
+      "note": "human 제공 EPDS 흐름 출처 6 — templates/tests/tools+.claude 구조 참조 저장소"
+    },
+    {
+      "id": "argo",
+      "url": "file:///Users/uncaose/Projects/wiki/harness/journal/reports/20260901-argo-company-org-plan.md",
+      "kind": "thread",
+      "name": "argo(내부 하네스 크루 운영 개념)",
+      "purpose": "하네스 자체의 크루(머리)×하네스(손)×human(게이트) 운영 개념 — 공개 리포 아님, 내부 wiki 문서로 대체 인용. EPDS 표1 '직접 만든 라우터'(장기 매우 높음) 항목의 실사례",
+      "perspectives": [
+        "self",
+        "agent-ops"
+      ],
+      "patterns": [
+        "custom-router-long-term"
+      ],
+      "applies_to": [
+        "direction",
+        "observe"
+      ],
+      "evidence_grade": "self",
+      "meta": {
+        "install": null,
+        "invoke": null,
+        "license": null,
+        "last_release": null,
+        "activity": "내부 harness 문서, 공개 저장소 아님 — URL 미확인(브리프 지시대로 kind:thread 표기)"
+      },
+      "added": "2026-09-16",
+      "note": "human 제공 EPDS 흐름 출처 3(argo) — 공개 리포 아님, URL 미확인, 내부 wiki 문서로 대체 표기"
     }
   ]
 }
