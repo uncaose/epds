@@ -95,6 +95,8 @@ Target project after setup
 + §1~§3에서 인용한 8개, id는 `epds sources list` 참고)이 "공개 소스를 언제, 무엇으로 쓸지"의 config
 정본이다. CLI: `epds sources list|add|remove|show` — 상세는 `README.md`.
 
+**End-reason distribution.** When a simulation, replay, or drop-log artifact exists, its end-reason (or termination-cause) distribution is a required Facts line. If one value accounts for 100% of the sample, mark every verdict built on it as a "censored sample", not a clean pass.
+
 ### Templates/tests/tools/evals/policies가 존재하는 이유
 
 - **Templates**: 중요 결정이 빠지는 것을 막고 세션/모델 간 인수인계를 만든다.

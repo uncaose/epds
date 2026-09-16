@@ -53,8 +53,12 @@ Before asking questions or recommending a direction, investigate in this order w
 1. Project artifacts: `README.md`, `PRODUCT.md`, `PROJECT-STATE.md`, `METRICS.md`, `AGENTS.md`, `CLAUDE.md`, build manifests, specs, decisions, docs, templates, tests, evals, tools, CI, issues, TODOs, recent commits, deployment notes, analytics, logs, feedback.
 2. Conversation context and user-provided artifacts.
 3. Current code, test results, CI, deployment state, metrics, support issues, user research, retrospectives.
+
+   Report a gate that returns UNMEASURED as `environment` (a dependency is missing — install it and rerun; only the rerun counts as evidence), `censored` (a log exists but the tested event never occurred — the sample is truncated, not a pass), or `corrupted` (the artifact exists but cannot be read). A bare "UNMEASURED" without one of these three is incomplete.
 4. Trusted public sources only when internal evidence lacks a material fact. Prefer official docs, official policies, original repositories, standards, release notes. Trusted public sources list = `epds/trusted-sources.json` (if present, search and cite it first; if absent, fall back to the general rule above).
 5. Separate facts, interpretation, assumptions, and owner decisions.
+
+   When a simulation, replay, or drop-log artifact exists, record its end-reason (or termination-cause) distribution as one Facts line. If a single value accounts for 100% of the sample, mark every verdict built on it as a "censored sample", not a clean pass.
 6. Ask only owner-only decisions: priority, budget, time limit, risk tolerance, private constraints, available users, tradeoffs.
 7. Ask no more than five questions. Each question must change the next action or decision.
 
@@ -90,5 +94,7 @@ At the end of any EPDS task, report:
 [Verification] Tests/tools run / Results / Unverified items
 [Risks and next step] Remaining risks / Recommended next action / PROJECT-STATE update needed
 ```
+
+Every executed command shown in a report must carry its exit code — no row may omit it, and a raw output pipe that discards it does not excuse the omission. The report header must record the executing model's alias and its reasoning effort so results can be reproduced.
 
 Per-command behavior (`setup`, `status`, `audit`, `upgrade`, `reference`, `discover`, `decide`, `experiment`, `spec`, `build`, `verify`, `release`, `observe`, `retro`) is defined in `docs/COMMANDS.md` and the `adapters/claude-code/commands/` slash-command files.

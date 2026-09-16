@@ -22,6 +22,8 @@ It reads product documents, state, metrics, code, tests, CI, issues, logs, analy
 
 When the bottleneck is a specific perspective (evidence, cost, UX, ...), check `docs/references/INDEX.md` first — a lead already captured there points at a file instead of re-deriving one from scratch. Also check `epds/trusted-sources.json` for up to 3 matching entries (managed with `epds sources list|add|remove|show`, see `docs/EPDS.md`).
 
+If a gate returns UNMEASURED, report it as `environment` (dependency missing — install and rerun before it counts as evidence), `censored` (log exists but the tested event never occurred), or `corrupted` (artifact unreadable). Do not report a bare "UNMEASURED" without one of these three.
+
 ### `/epds-audit`
 
 Use when the project has too many instructions, duplicated guidance, stale commands, missing tests, or unclear ownership between `AGENTS.md` and `CLAUDE.md`.
