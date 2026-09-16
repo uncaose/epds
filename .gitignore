@@ -8,3 +8,6 @@ pnpm-debug.log*
 .env.*
 !.env.example
 coverage/
+
+# harness-local artifacts (not part of EPDS)
+journal/
