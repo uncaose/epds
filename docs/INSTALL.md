@@ -90,6 +90,20 @@ npx github:uncaose/epds uninstall --project
 
 The uninstall command removes only the selected EPDS skill directory. It does not delete EPDS files that were previously installed into a target project by an agent.
 
+## Trusted public sources config
+
+`epds/trusted-sources.json` at the project root lists the public sources EPDS is allowed to search
+and cite first (see `docs/EPDS.md` § Trusted public sources config). Manage it with:
+
+```bash
+node bin/epds.mjs sources list
+node bin/epds.mjs sources add <url> --kind doc --name "Some Docs" --note "why it matters"
+node bin/epds.mjs sources show <id>
+node bin/epds.mjs sources remove <id|url>
+```
+
+`epds check` reports whether the file exists and is valid JSON.
+
 ## Troubleshooting
 
 ### `npx` cannot run the package

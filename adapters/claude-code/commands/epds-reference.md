@@ -24,4 +24,10 @@ After analysis, if the source has a real, reusable lead (not merely "reviewed, r
    `external.index`. Field mapping to a `research/INDEX.md`-style catalog: `docs/references/README.md`.
 2. Update `docs/references/INDEX.md`: add the file (or, for `external`, the pointer path) under
    each of its patterns and perspectives.
-3. Report the recommendation (Adopt/Adapt/Observe/Reject) and where it was saved.
+3. Update `epds/trusted-sources.json` at the project root (create from
+   `templates/epds-trusted-sources.json` if missing): add or update the entry for this URL — set
+   `purpose`, `perspectives`, `patterns`, `applies_to`, `evidence_grade`, and fill `meta`
+   (`install`, `invoke`, `license`, `last_release`, `activity`) with what the analysis found. Use
+   `node bin/epds.mjs sources add <url> --kind <kind> --name <name>` to create the skeleton entry
+   (rejects duplicates), then edit the file to fill in the rest — the CLI does not populate `meta`.
+4. Report the recommendation (Adopt/Adapt/Observe/Reject) and where it was saved.

@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": "claude-code-skills",
+      "url": "https://docs.claude.com/en/docs/claude-code/skills",
+      "kind": "doc",
+      "name": "Claude Code Skills",
+      "purpose": "Official SKILL.md format, frontmatter fields, and discovery rules that EPDS's adapters/claude-code/commands follow",
+      "perspectives": ["agent-ops"],
+      "patterns": ["skill-frontmatter-format"],
+      "applies_to": ["build", "spec"],
+      "evidence_grade": "official",
+      "meta": {
+        "install": null,
+        "invoke": "SKILL.md frontmatter (name/description/argument-hint) + description-based auto-trigger",
+        "license": null,
+        "last_release": null,
+        "activity": "official Anthropic docs, actively maintained"
+      },
+      "added": "2026-09-16",
+      "note": "basis for SKILL.md name/description/argument-hint frontmatter"
+    },
+    {
+      "id": "apache-license-2-0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0",
+      "kind": "doc",
+      "name": "Apache License 2.0",
+      "purpose": "License text EPDS ships verbatim as LICENSE",
+      "perspectives": ["safety"],
+      "patterns": ["permissive-oss-license"],
+      "applies_to": ["release"],
+      "evidence_grade": "official",
+      "meta": {
+        "install": null,
+        "invoke": null,
+        "license": "Apache-2.0",
+        "last_release": "2004-01",
+        "activity": "stable, canonical text"
+      },
+      "added": "2026-09-16",
+      "note": "verbatim basis for repo LICENSE and package.json license field"
+    },
+    {
+      "id": "nygard-adr",
+      "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+      "kind": "article",
+      "name": "Documenting Architecture Decisions (Michael Nygard)",
+      "purpose": "Original ADR format that templates/adr.md follows",
+      "perspectives": ["delivery"],
+      "patterns": ["adr-record"],
+      "applies_to": ["spec", "retro"],
+      "evidence_grade": "official",
+      "meta": {
+        "install": null,
+        "invoke": null,
+        "license": null,
+        "last_release": "2011-11-15",
+        "activity": "static, canonical reference"
+      },
+      "added": "2026-09-16",
+      "note": "source of Status/Context/Decision/Consequences sections in templates/adr.md"
+    },
+    {
+      "id": "skills-vercel-labs",
+      "url": "https://github.com/vercel-labs/skills",
+      "kind": "tool",
+      "name": "skills (Vercel Labs)",
+      "purpose": "npx CLI EPDS's own docs/INSTALL.md recommends for installing the skill with slash commands",
+      "perspectives": ["agent-ops", "cost"],
+      "patterns": ["skill-installer-cli"],
+      "applies_to": ["build"],
+      "evidence_grade": "official",
+      "meta": {
+        "install": "npx skills add <owner>/<repo> -a claude-code",
+        "invoke": "npx skills add uncaose/epds -a claude-code",
+        "license": "MIT",
+        "last_release": "2026-09-15 (npm 1.5.26)",
+        "activity": "actively published on npm"
+      },
+      "added": "2026-09-16",
+      "note": "recommended install path in docs/INSTALL.md verified-installs table"
+    },
+    {
+      "id": "node-js-releases",
+      "url": "https://nodejs.org/en/about/previous-releases",
+      "kind": "doc",
+      "name": "Node.js Releases",
+      "purpose": "Basis for package.json engines >=20 requirement",
+      "perspectives": ["delivery"],
+      "patterns": ["engine-version-floor"],
+      "applies_to": ["build", "release"],
+      "evidence_grade": "official",
+      "meta": {
+        "install": null,
+        "invoke": null,
+        "license": null,
+        "last_release": null,
+        "activity": "official release/LTS schedule"
+      },
+      "added": "2026-09-16",
+      "note": "basis for \"EPDS requires Node.js 20 or newer\" in docs/INSTALL.md"
+    }
+  ]
+}

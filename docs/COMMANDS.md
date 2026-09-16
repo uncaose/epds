@@ -20,7 +20,7 @@ Use when you ask “What should I do next?”
 
 It reads product documents, state, metrics, code, tests, CI, issues, logs, analytics, feedback, and necessary public sources. It returns one bottleneck and one smallest next action.
 
-When the bottleneck is a specific perspective (evidence, cost, UX, ...), check `docs/references/INDEX.md` first — a lead already captured there points at a file instead of re-deriving one from scratch.
+When the bottleneck is a specific perspective (evidence, cost, UX, ...), check `docs/references/INDEX.md` first — a lead already captured there points at a file instead of re-deriving one from scratch. Also check `epds/trusted-sources.json` for up to 3 matching entries (managed with `epds sources list|add|remove|show`, see `docs/EPDS.md`).
 
 ### `/epds-audit`
 
@@ -38,7 +38,10 @@ Use before adopting an external repository, tool, framework, command pack, or ag
 
 When the analysis surfaces a reusable lead, it is saved as `docs/references/<slug>.md` (format:
 `docs/references/README.md`) and indexed in `docs/references/INDEX.md`, so a later `/epds-status`
-run stuck on the same perspective can point at it instead of re-deriving it from scratch.
+run stuck on the same perspective can point at it instead of re-deriving it from scratch. It also
+adds or updates an entry in `epds/trusted-sources.json` (config-managed list of trusted public
+sources, editable with `epds sources list|add|remove|show`; see `docs/EPDS.md` and
+`templates/epds-trusted-sources.json`).
 
 ## Delivery commands
 

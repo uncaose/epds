@@ -35,11 +35,18 @@ Usage:
                              Check whether an EPDS skill is installed
   epds uninstall [--global|--project]
                              Remove only the installed EPDS skill directory
+  epds sources list         List trusted public sources (epds/trusted-sources.json)
+  epds sources add <url> [--kind K] [--name N] [--note T]
+                             Add a trusted source (kind: skill|tool|repo|doc|article|thread)
+  epds sources remove <id|url>
+                             Remove a trusted source by id or url
+  epds sources show <id>    Print one source's full record
 
 Examples:
   npx github:uncaose/epds setup
   npx github:uncaose/epds setup --project
   npx github:uncaose/epds check --global
+  npx github:uncaose/epds sources add https://example.com/docs --kind doc --name "Example Docs"
 
 The installer installs only the EPDS skill package. It does not modify
 AGENTS.md, CLAUDE.md, product code, CI, deployments, secrets, or any
@@ -190,6 +197,18 @@ async function check() {
       console.log(`MISSING  ${item.scope.padEnd(7)} ${item.target}`);
     }
   }
+
+  const sourcesPath = trustedSourcesPath();
+  if (await exists(sourcesPath)) {
+    try {
+      JSON.parse(await readFile(sourcesPath, 'utf8'));
+      console.log(`OK       sources  ${sourcesPath}`);
+    } catch (error) {
+      console.log(`INVALID  sources  ${sourcesPath} (${error.message})`);
+      process.exitCode = 1;
+    }
+  }
+
   if (!found) process.exitCode = 1;
 }
 
@@ -217,10 +236,145 @@ async function uninstall() {
   }
 }
 
+const KINDS = ['skill', 'tool', 'repo', 'doc', 'article', 'thread'];
+
+function trustedSourcesPath() {
+  return join(process.cwd(), 'epds', 'trusted-sources.json');
+}
+
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .replace(/^https?:\/\//, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60) || 'source';
+}
+
+function normalizeUrl(raw) {
+  try {
+    const u = new URL(raw);
+    u.hash = '';
+    return u.toString().replace(/\/$/, '');
+  } catch {
+    throw new Error(`Not a valid URL: ${raw}`);
+  }
+}
+
+async function loadSources() {
+  const path = trustedSourcesPath();
+  if (!(await exists(path))) return { version: 1, sources: [] };
+  const text = await readFile(path, 'utf8');
+  try {
+    const data = JSON.parse(text);
+    if (!Array.isArray(data.sources)) throw new Error('missing "sources" array');
+    return data;
+  } catch (error) {
+    throw new Error(`${path} is not valid JSON: ${error.message}`);
+  }
+}
+
+async function saveSources(data) {
+  const path = trustedSourcesPath();
+  await mkdir(dirname(path), { recursive: true });
+  await writeFile(path, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
+  return path;
+}
+
+function parseFlags(rest) {
+  const flags = {};
+  for (let i = 0; i < rest.length; i += 1) {
+    if (rest[i].startsWith('--')) {
+      flags[rest[i].slice(2)] = rest[i + 1];
+      i += 1;
+    }
+  }
+  return flags;
+}
+
+async function sourcesList() {
+  const data = await loadSources();
+  if (data.sources.length === 0) {
+    console.log(`No trusted sources yet. ${trustedSourcesPath()}`);
+    return;
+  }
+  for (const s of data.sources) {
+    console.log(`${s.id.padEnd(24)} ${(s.kind ?? '').padEnd(8)} ${s.name ?? ''}  ${s.url}`);
+  }
+}
+
+async function sourcesShow(id) {
+  const data = await loadSources();
+  const found = data.sources.find((s) => s.id === id);
+  if (!found) throw new Error(`No trusted source with id "${id}".`);
+  console.log(JSON.stringify(found, null, 2));
+}
+
+async function sourcesAdd(url, flags) {
+  if (!url) throw new Error('Usage: epds sources add <url> [--kind K] [--name N] [--note T]');
+  const normalized = normalizeUrl(url);
+  const kind = flags.kind ?? 'doc';
+  if (!KINDS.includes(kind)) throw new Error(`--kind must be one of: ${KINDS.join(', ')}`);
+
+  const data = await loadSources();
+  if (data.sources.some((s) => s.url === normalized)) {
+    throw new Error(`Already tracked: ${normalized}`);
+  }
+
+  let id = slugify(flags.name ?? new URL(normalized).hostname + new URL(normalized).pathname);
+  let unique = id;
+  let n = 2;
+  while (data.sources.some((s) => s.id === unique)) {
+    unique = `${id}-${n}`;
+    n += 1;
+  }
+
+  data.sources.push({
+    id: unique,
+    url: normalized,
+    kind,
+    name: flags.name ?? unique,
+    purpose: '',
+    perspectives: [],
+    patterns: [],
+    applies_to: [],
+    evidence_grade: 'community',
+    meta: { install: null, invoke: null, license: null, last_release: null, activity: null },
+    added: new Date().toISOString().slice(0, 10),
+    note: flags.note ?? ''
+  });
+
+  const path = await saveSources(data);
+  console.log(`Added ${unique} -> ${path}`);
+}
+
+async function sourcesRemove(idOrUrl) {
+  if (!idOrUrl) throw new Error('Usage: epds sources remove <id|url>');
+  const data = await loadSources();
+  const before = data.sources.length;
+  data.sources = data.sources.filter((s) => s.id !== idOrUrl && s.url !== idOrUrl);
+  if (data.sources.length === before) {
+    throw new Error(`No trusted source matching "${idOrUrl}".`);
+  }
+  const path = await saveSources(data);
+  console.log(`Removed ${idOrUrl} -> ${path}`);
+}
+
+async function sources() {
+  const [sub, arg, ...rest] = process.argv.slice(3);
+  const flags = parseFlags(rest);
+  if (sub === 'list') return sourcesList();
+  if (sub === 'add') return sourcesAdd(arg, flags);
+  if (sub === 'remove') return sourcesRemove(arg);
+  if (sub === 'show') return sourcesShow(arg);
+  throw new Error('Usage: epds sources list|add <url>|remove <id|url>|show <id>');
+}
+
 try {
   if (command === 'setup') await setup();
   else if (command === 'check') await check();
   else if (command === 'uninstall') await uninstall();
+  else if (command === 'sources') await sources();
   else if (command === 'help' || command === '--help' || command === '-h') printUsage();
   else {
     console.error(`Unknown command: ${command}`);

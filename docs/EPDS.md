@@ -56,6 +56,24 @@ The next action is the smallest action that advances the weakest relevant gate.
 
 The repository and real user/operating data outrank generic advice. Public research is used to fill missing factual context, not as a substitute for observing the target product's users.
 
+### Trusted public sources config
+
+`epds/trusted-sources.json` (project root; scaffold: `templates/epds-trusted-sources.json`) is the
+config-managed list of public sources EPDS already relies on — official docs, repos, articles,
+tools it installs or invokes. Each entry: `id`, `url`, `kind` (skill|tool|repo|doc|article|thread),
+`name`, `purpose`, `perspectives`, `patterns`, `applies_to`, `evidence_grade`
+(official|community|self), `meta` (`install`, `invoke`, `license`, `last_release`, `activity`),
+`added`, `note`.
+
+- Managed with the CLI: `node bin/epds.mjs sources list|add <url> [--kind --name --note]|remove <id|url>|show <id>`.
+  `add` creates a bare entry and rejects duplicate URLs; it does not fill `meta` — that happens via
+  `/epds-reference <url>` (`adapters/claude-code/commands/epds-reference.md` step 3).
+- `SKILL.md` step 4 of the evidence-first protocol checks this list before falling back to a
+  general public search.
+- `/epds-status` (`epds-status.md`) surfaces up to 3 matching entries as leads when the bottleneck
+  names a specific perspective.
+- `epds check` validates the file exists and parses as JSON when present.
+
 ## Why templates, tests, and tools exist
 
 - **Templates** stop important decisions from being omitted and create handoffs between sessions/models.

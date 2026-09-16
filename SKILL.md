@@ -48,7 +48,7 @@ Before asking questions or recommending a direction, investigate in this order w
 1. Project artifacts: `README.md`, `PRODUCT.md`, `PROJECT-STATE.md`, `METRICS.md`, `AGENTS.md`, `CLAUDE.md`, build manifests, specs, decisions, docs, templates, tests, evals, tools, CI, issues, TODOs, recent commits, deployment notes, analytics, logs, feedback.
 2. Conversation context and user-provided artifacts.
 3. Current code, test results, CI, deployment state, metrics, support issues, user research, retrospectives.
-4. Trusted public sources only when internal evidence lacks a material fact. Prefer official docs, official policies, original repositories, standards, release notes.
+4. Trusted public sources only when internal evidence lacks a material fact. Prefer official docs, official policies, original repositories, standards, release notes. Trusted public sources list = `epds/trusted-sources.json` (if present, search and cite it first; if absent, fall back to the general rule above).
 5. Separate facts, interpretation, assumptions, and owner decisions.
 6. Ask only owner-only decisions: priority, budget, time limit, risk tolerance, private constraints, available users, tradeoffs.
 7. Ask no more than five questions. Each question must change the next action or decision.

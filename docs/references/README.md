@@ -6,6 +6,11 @@ knowledge — see `SKILL.md` step 4 ("Trusted public sources only when internal 
 material fact"). Empty by default: nothing goes here until a real source is captured, usually via
 `/epds-reference <URL>`.
 
+See also `epds/trusted-sources.json` (config-managed list of trusted public sources, editable with
+`epds sources list|add|remove|show`; `docs/EPDS.md` § Trusted public sources config) — a shorter,
+structured companion to this file's per-source Markdown records, checked first by `SKILL.md` step 4
+and surfaced by `/epds-status` when a bottleneck names a specific perspective.
+
 ## Store: local or external
 
 A project may already have its own place for collected research (e.g. a `research/` archive with
