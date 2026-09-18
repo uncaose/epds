@@ -8,10 +8,10 @@
 ## §0. EPDS 가 무엇이고, 왜 이것인가
 
 > **EPDS 는 — 사람이 스킬을 일일이 찾아 고르지 않고**`[H1]` **— 기존 자료가 있으면 분석해 "상태, 위치, 다음
-> 방향"을 뽑고 없으면 "네가 원하는 게 뭐냐"를 묻고**`[H13]`**, 그 질문 하나하나로 "상태, 위치, 최종 결과물과
+> 방향"을 뽑고 없으면 "네가 원하는게 뭐냐"를 묻고**`[H13]`**, 그 질문 하나하나로 "상태, 위치, 최종 결과물과
 > 그 방향"을 점점 더 구체화하며**`[H16]` **전체를 다시 구성해 다음 스텝을 뽑아**`[H14]`**, 그것을 "내가 손수
-> 하는 게 아니라" 직접 실행해**`[H11]` **제품을 "완주를 해서 제품을 만들어 내는"**`[H6]` **도구다. 근거가
-> 동봉된 문서는 별도 규율이 아니라 "과정의 결과물로서" 생긴다**`[H20]`**.**
+> 하는게 아니다" 직접 실행해**`[H11]` **제품을 "완주를 해서 제품을 만들어 내는"**`[H6]` **도구다. 근거가
+> 동봉된 문서는 별도 규율이 아니라 "과정의 결과물로서" 생긴다**`[H41]`**.**
 >
 > *(English)* EPDS is a tool that — instead of a person hunting through skills one by one `[H1]` —
 > analyzes existing evidence to produce "state, position, next direction" when material exists, or
@@ -19,13 +19,14 @@
 > and direction" with every single answered question `[H16]`; reassembles the whole picture to pick
 > the next step `[H14]`; and then executes that itself rather than leaving it for the owner to do by
 > hand `[H11]` — carrying the product through to completion `[H6]`. Evidence-attached documents are
-> not a separate discipline — they fall out as a product of the process itself `[H20]`.
+> not a separate discipline — they fall out as a product of the process itself `[H41]`.
 
 `[H]` 로케이터: `[H1]`·`[H6]`·`[H11]` = `journal/reports/20260918-epds-origin-v2.report.md` §2(하네스 저장소
-`agent-game-harness`) / `[H13]`~`[H20]` = 같은 저장소 `journal/ctx.wal.jsonl:1956-1966`.
+`agent-game-harness`) / `[H13]`~`[H16]` = 같은 저장소 `journal/ctx.wal.jsonl:1956-1966` / `[H41]` = 같은 저장소
+`journal/ctx.wal.jsonl:1967`(origin-v2 raw-thread 는 `[H1]`~`[H40]` 까지만 사용 — 충돌 회피로 `[H41]` 신규 부여).
 
 1. **문제** `[H1]` — "위 관점에 따른 스킬을 일일이 내가 찾아서 상황에 맞게 사용한다는건 할 수는 있겠지만
-   실제 적절히 사용한다는건 어려운 일이다." 상황마다 사람이 스킬·하네스를 고르는 것이 병목이다.
+   실제 적절히 사용한다는건 어려운 일이다. ..." 상황마다 사람이 스킬·하네스를 고르는 것이 병목이다.
 2. **범위** `[H6]` — 게임·숏폼·영어학습 어디서 시작해도 같은 절차로 "완주를 해서 제품을 만들어 내는" 하나의
    방법. 그래서 EPDS 는 도메인 스킬 묶음이 아니다.
 3. **방법** `[P6]`(raw-thread-full.md:2027, 제안) → `[H8]`(raw-thread-full.md:2440, 채택) — `방향 → 문제 →
