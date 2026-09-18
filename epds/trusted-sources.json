@@ -26,7 +26,8 @@
         "activity": "official Anthropic docs, actively maintained"
       },
       "added": "2026-09-16",
-      "note": "basis for SKILL.md name/description/argument-hint frontmatter"
+      "note": "basis for SKILL.md name/description/argument-hint frontmatter",
+      "origin": "harness"
     },
     {
       "id": "apache-license-2-0",
@@ -52,7 +53,8 @@
         "activity": "stable, canonical text"
       },
       "added": "2026-09-16",
-      "note": "verbatim basis for repo LICENSE and package.json license field"
+      "note": "verbatim basis for repo LICENSE and package.json license field",
+      "origin": "harness"
     },
     {
       "id": "nygard-adr",
@@ -79,7 +81,8 @@
         "activity": "static, canonical reference"
       },
       "added": "2026-09-16",
-      "note": "source of Status/Context/Decision/Consequences sections in templates/adr.md"
+      "note": "source of Status/Context/Decision/Consequences sections in templates/adr.md",
+      "origin": "harness"
     },
     {
       "id": "skills-vercel-labs",
@@ -106,7 +109,8 @@
         "activity": "actively published on npm"
       },
       "added": "2026-09-16",
-      "note": "recommended install path in docs/INSTALL.md verified-installs table"
+      "note": "recommended install path in docs/INSTALL.md verified-installs table",
+      "origin": "harness"
     },
     {
       "id": "node-js-releases",
@@ -133,7 +137,8 @@
         "activity": "official release/LTS schedule"
       },
       "added": "2026-09-16",
-      "note": "basis for \"EPDS requires Node.js 20 or newer\" in docs/INSTALL.md"
+      "note": "basis for \"EPDS requires Node.js 20 or newer\" in docs/INSTALL.md",
+      "origin": "harness"
     },
     {
       "id": "tech-bridge-ai",
@@ -161,7 +166,8 @@
         "activity": "YouTube video, channel Tech Bridge (@TechBridge-KR), oEmbed 실측 2026-09-16"
       },
       "added": "2026-09-16",
-      "note": "human 제공 EPDS 흐름 출처 1(유튜브)"
+      "note": "human 제공 EPDS 흐름 출처 1(유튜브)",
+      "origin": "human-chat"
     },
     {
       "id": "gstack",
@@ -191,7 +197,8 @@
         "activity": "gh api 실측 2026-09-16: stars 133269, open_issues 890"
       },
       "added": "2026-09-16",
-      "note": "human 제공 EPDS 흐름 출처 2 — 표1 관점 비교 도구"
+      "note": "human 제공 EPDS 흐름 출처 2 — 표1 관점 비교 도구",
+      "origin": "human-chat"
     },
     {
       "id": "superpowers",
@@ -220,7 +227,8 @@
         "activity": "gh api 실측 2026-09-16: stars 287306, author Jesse Vincent(obra)"
       },
       "added": "2026-09-16",
-      "note": "human 제공 EPDS 흐름 출처 3 — 이 세션에 로드된 Claude Code 플러그인"
+      "note": "human 제공 EPDS 흐름 출처 3 — 이 세션에 로드된 Claude Code 플러그인",
+      "origin": "human-chat"
     },
     {
       "id": "ouroboros",
@@ -250,7 +258,8 @@
         "activity": "gh api 실측 2026-09-16: stars 5933, pushed_at 2026-09-15, archived=false — 상세=~/Projects/research/R0229-ouroboros-agent-os-survey"
       },
       "added": "2026-09-16",
-      "note": "human 제공 EPDS 흐름 출처 3 — 명세-실행-평가-기억 에이전트 OS, 선행조사 R0229"
+      "note": "human 제공 EPDS 흐름 출처 3 — 명세-실행-평가-기억 에이전트 OS, 선행조사 R0229",
+      "origin": "human-chat"
     },
     {
       "id": "agency-agents",
@@ -279,7 +288,8 @@
         "activity": "gh api 실측 2026-09-16: stars 152679"
       },
       "added": "2026-09-16",
-      "note": "human 제공 EPDS 흐름 출처 4"
+      "note": "human 제공 EPDS 흐름 출처 4",
+      "origin": "human-chat"
     },
     {
       "id": "agency-agents-app-v0-3-0",
@@ -307,7 +317,8 @@
         "activity": "gh api 실측 2026-09-16: stars 546, repo pushed_at 2026-09-16"
       },
       "added": "2026-09-16",
-      "note": "human 제공 EPDS 흐름 출처 5"
+      "note": "human 제공 EPDS 흐름 출처 5",
+      "origin": "human-chat"
     },
     {
       "id": "ai-job-search",
@@ -336,11 +347,12 @@
         "activity": "gh api 실측 2026-09-16: stars 43033"
       },
       "added": "2026-09-16",
-      "note": "human 제공 EPDS 흐름 출처 6 — templates/tests/tools+.claude 구조 참조 저장소"
+      "note": "human 제공 EPDS 흐름 출처 6 — templates/tests/tools+.claude 구조 참조 저장소",
+      "origin": "human-chat"
     },
     {
       "id": "argo",
-      "url": "file:///Users/uncaose/Projects/wiki/harness/journal/reports/20260901-argo-company-org-plan.md",
+      "url": null,
       "kind": "thread",
       "name": "argo(내부 하네스 크루 운영 개념)",
       "purpose": "하네스 자체의 크루(머리)×하네스(손)×human(게이트) 운영 개념 — 공개 리포 아님, 내부 wiki 문서로 대체 인용. EPDS 표1 '직접 만든 라우터'(장기 매우 높음) 항목의 실사례",
@@ -364,7 +376,8 @@
         "activity": "내부 harness 문서, 공개 저장소 아님 — URL 미확인(브리프 지시대로 kind:thread 표기)"
       },
       "added": "2026-09-16",
-      "note": "human 제공 EPDS 흐름 출처 3(argo) — 공개 리포 아님, URL 미확인, 내부 wiki 문서로 대체 표기"
+      "note": "internal document, private — human 제공 EPDS 흐름 출처 3(argo) — 공개 리포 아님, URL 미확인, 내부 wiki 문서로 대체 표기",
+      "origin": "human-chat"
     },
     {
       "id": "open-code-review",
@@ -394,7 +407,8 @@
         "activity": "active, gh api verified 2026-09-18: 34944 stars, pushed 2026-09-17"
       },
       "added": "2026-09-18",
-      "note": "Code review stage: deterministic pre-pass (file selection, glob rules, negative-rule suppression, line correction) + LLM judgment; token-budget fallback bundle_all to per_file; fan-out isolated sub-agents."
+      "note": "Code review stage: deterministic pre-pass (file selection, glob rules, negative-rule suppression, line correction) + LLM judgment; token-budget fallback bundle_all to per_file; fan-out isolated sub-agents.",
+      "origin": "h111"
     },
     {
       "id": "awesome-harness-engineering",
@@ -425,7 +439,8 @@
         "activity": "gh api 실측 2026-09-18: stars 4101, forks 356, open_issues 19, watchers 4101"
       },
       "added": "2026-09-18",
-      "note": "human 2026-09-18 지시로 조사 — 겹침 0/151, 신규 141건. 가설별 후보 5건은 이 파일(R0297) §3. EPDS trusted-sources.json 실제 등록은 human 확인 후(GATE-HUMAN)."
+      "note": "human 2026-09-18 지시로 조사 — 겹침 0/151, 신규 141건. 가설별 후보 5건은 이 파일(R0297) §3. EPDS trusted-sources.json 실제 등록은 human 확인 후(GATE-HUMAN).",
+      "origin": "human-url"
     },
     {
       "id": "mattpocock-skills-grilling",
@@ -454,7 +469,8 @@
         "activity": "gh api repos/mattpocock/skills 실측 2026-09-18: stars 264753, forks 22325, open_issues 502, watchers 264753"
       },
       "added": "2026-09-18",
-      "note": "human 2026-09-18 H117 y — R0298 timini/drill-me detour surfaced this. Registered as owner-question source for EPDS status/direction (not as drill-me replacement)."
+      "note": "human 2026-09-18 H117 y — R0298 timini/drill-me detour surfaced this. Registered as owner-question source for EPDS status/direction (not as drill-me replacement).",
+      "origin": "h117"
     }
   ]
 }

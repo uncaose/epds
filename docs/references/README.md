@@ -16,8 +16,12 @@ and surfaced by `/epds-status` when a bottleneck names a specific perspective.
 A project may already have its own place for collected research (e.g. a `research/` archive with
 an `INDEX.md`, a `wiki/`, or a `knowledge/` tree). Don't duplicate it — point at it.
 
-Config file: `epds/references.json` at the project root (not inside `.claude/skills/epds/`, which
-is the installed skill copy and gets replaced on upgrade).
+Config file: `epds/references.json` at the project root — **not implemented, planned.** No code
+reads or writes this path today; the only file that exists is `templates/epds-references.json`
+(a template with `external` all `null`), copied into a project's `epds/` on setup but never
+consulted afterward. Until `/epds-reference` (or equivalent) is built, `store` always behaves as
+`"local"` regardless of what a project's `epds/references.json` says
+(`journal/reports/20260918-epds-rebuild-plan.report.md` D-8).
 
 ```json
 {
