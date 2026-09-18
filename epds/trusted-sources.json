@@ -395,6 +395,26 @@
       },
       "added": "2026-09-18",
       "note": "Code review stage: deterministic pre-pass (file selection, glob rules, negative-rule suppression, line correction) + LLM judgment; token-budget fallback bundle_all to per_file; fan-out isolated sub-agents."
+    },
+    {
+      "id": "awesome-harness-engineering",
+      "url": "https://github.com/walkinglabs/awesome-harness-engineering",
+      "kind": "list",
+      "name": "Awesome Harness Engineering",
+      "purpose": "harness engineering(컨텍스트·가드레일·평가·런타임·멀티에이전트) 전반을 원칙 있게 큐레이션한 2차 인덱스 — EPDS 실측 도구·근거 발굴 시 1차 탐색 진입점. 이 R#### catalog.md §3에서 이미 5건(H0/G1/G4/G5/G6) 추출 완료",
+      "perspectives": ["agent-ops", "delivery"],
+      "patterns": ["curated-list", "harness-taxonomy"],
+      "applies_to": ["direction", "spec", "build", "verify"],
+      "evidence_grade": "community",
+      "meta": {
+        "install": "n/a — 목록 저장소, 설치 대상 아님",
+        "invoke": "n/a — 항목별 개별 도구 설치/실행은 각 항목 URL에서 별도 수행",
+        "license": "CC0-1.0",
+        "last_release": "pushed_at 2026-08-19 (태그릴리스 없음, 지속 push)",
+        "activity": "gh api 실측 2026-09-18: stars 4101, forks 356, open_issues 19, watchers 4101"
+      },
+      "added": "2026-09-18",
+      "note": "human 2026-09-18 지시로 조사 — 겹침 0/151, 신규 141건. 가설별 후보 5건은 이 파일(R0297) §3. EPDS trusted-sources.json 실제 등록은 human 확인 후(GATE-HUMAN)."
     }
   ]
 }
