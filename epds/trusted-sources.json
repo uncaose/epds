@@ -365,6 +365,36 @@
       },
       "added": "2026-09-16",
       "note": "human 제공 EPDS 흐름 출처 3(argo) — 공개 리포 아님, URL 미확인, 내부 wiki 문서로 대체 표기"
+    },
+    {
+      "id": "open-code-review",
+      "url": "https://github.com/alibaba/open-code-review",
+      "kind": "tool",
+      "name": "open-code-review",
+      "purpose": "Deterministic pre-pass (file selection, glob rules, negative-rule suppression, line correction) + LLM judgment code-review pipeline; token-budget fallback bundle_all to per_file; fan-out isolated sub-agents",
+      "perspectives": [
+        "agent-ops",
+        "delivery"
+      ],
+      "patterns": [
+        "negative-rule-suppression",
+        "token-budget-fallback-bundling",
+        "isolated-subagent-fanout"
+      ],
+      "applies_to": [
+        "build",
+        "verify"
+      ],
+      "evidence_grade": "community",
+      "meta": {
+        "install": "npm i -g open-code-review (CLI: ocr)",
+        "invoke": "ocr scan (glob rules + negative-rule prompt injection)",
+        "license": "Apache-2.0",
+        "last_release": "v1.12.5",
+        "activity": "active, gh api verified 2026-09-18: 34944 stars, pushed 2026-09-17"
+      },
+      "added": "2026-09-18",
+      "note": "Code review stage: deterministic pre-pass (file selection, glob rules, negative-rule suppression, line correction) + LLM judgment; token-budget fallback bundle_all to per_file; fan-out isolated sub-agents."
     }
   ]
 }

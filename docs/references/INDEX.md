@@ -20,6 +20,7 @@ external store (e.g. `~/Projects/research/_archive/sources/R0123-slug.md`), not 
 | scenario-runbook-deploy | agency-agents-app-v0-3-0.md |
 | repo-layout-contract-driven | ai-job-search.md |
 | custom-router-long-term | argo-internal.md |
+| negative-rule-suppression, token-budget-fallback-bundling, isolated-subagent-fanout | open-code-review.md |
 
 ## By perspective
 
@@ -28,5 +29,5 @@ external store (e.g. `~/Projects/research/_archive/sources/R0123-slug.md`), not 
 | self (worked example) | example-evidence-first-delivery.md, argo-internal.md |
 | evidence | tech-bridge-ai-code-quality.md |
 | product | tech-bridge-ai-code-quality.md, gstack.md, agency-agents.md |
-| delivery | gstack.md, superpowers.md, ouroboros.md, agency-agents-app-v0-3-0.md, ai-job-search.md |
-| agent-ops | gstack.md, superpowers.md, ouroboros.md, agency-agents.md, agency-agents-app-v0-3-0.md, ai-job-search.md, argo-internal.md |
+| delivery | gstack.md, superpowers.md, ouroboros.md, agency-agents-app-v0-3-0.md, ai-job-search.md, open-code-review.md |
+| agent-ops | gstack.md, superpowers.md, ouroboros.md, agency-agents.md, agency-agents-app-v0-3-0.md, ai-job-search.md, argo-internal.md, open-code-review.md |
