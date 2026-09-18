@@ -1,106 +1,11 @@
 #!/usr/bin/env node
 // bin/status.mjs — deterministic evidence layer for `epds status --json` (no LLM calls; interpretation stays null).
-import { execSync, spawnSync } from 'node:child_process';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-function collectGit(target) {
-  const fact = { id: 'git.head', value: { head: 'unknown', shortHead: 'unknown', dirty: 0 },
-    locator: '.git/HEAD', cmd: 'git rev-parse HEAD', exit: 0 };
-  try {
-    const head = spawnSync('git', ['-C', target, 'rev-parse', 'HEAD'], { encoding: 'utf8', timeout: 5000 });
-    const short = spawnSync('git', ['-C', target, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8', timeout: 5000 });
-    const st = spawnSync('git', ['-C', target, 'status', '--porcelain'], { encoding: 'utf8', timeout: 5000 });
-    if (head.status !== 0 || short.status !== 0 || st.status !== 0) fact.exit = 1;
-    else fact.value = { head: head.stdout.trim(), shortHead: short.stdout.trim(),
-      dirty: st.stdout.split(/\r?\n/).filter(Boolean).length };
-  } catch { fact.exit = 1; }
-  return fact;
-}
-function collectTest(target) {
-  const pkgPath = path.join(target, 'package.json');
-  try {
-    const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-    if (!pkg.scripts || typeof pkg.scripts.test !== 'string') return null;
-  } catch { return null; }
-  let exit = 0;
-  try { execSync('npm test --silent', { cwd: target, timeout: 20000, stdio: 'pipe' }); }
-  catch (e) { exit = typeof e.status === 'number' ? e.status : 1; }
-  return { id: 'test.exit', value: { exit }, locator: 'package.json', cmd: 'npm test --silent', exit };
-}
-function collectLifecycle(target) {
-  const rel = 'docs/lifecycle-status.md';
-  const file = path.join(target, rel);
-  if (!fs.existsSync(file)) {
-    return { id: 'doc.lifecycle.missing', value: {}, locator: rel, cmd: 'test -f docs/lifecycle-status.md', exit: 1 };
-  }
-  let total = 0, done = 0, inProgress = 0, notStarted = 0, firstOpenStage = null;
-  try {
-    const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/)
-      .filter((l) => l.trim().startsWith('|') && l.trim().endsWith('|'));
-    for (const line of lines) {
-      const cells = line.split('|').map((c) => c.trim()).filter(Boolean);
-      const icon = cells.find((c) => ['✅', '🔄', '❌'].includes(c));
-      if (!icon) continue;
-      total += 1;
-      if (icon === '✅') done += 1;
-      else {
-        if (icon === '🔄') inProgress += 1; else notStarted += 1;
-        if (firstOpenStage === null) firstOpenStage = cells[1] ?? null; // "# | 단계 | 상태 | ..." -> cells[1]=단계
-      }
-    }
-  } catch { /* leave counters at zero */ }
-  return { id: 'doc.lifecycle.status', value: { total, done, inProgress, notStarted, firstOpenStage },
-    locator: rel, cmd: 'read docs/lifecycle-status.md', exit: 0 };
-}
-function collectMeasurement(target) {
-  const relDir = 'journal/measurements/';
-  const dir = path.join(target, 'journal', 'measurements');
-  let files = [];
-  try { files = fs.readdirSync(dir).filter((f) => f.endsWith('.latest.json')).map((f) => path.join(dir, f)); }
-  catch { files = []; }
-  if (files.length === 0) {
-    return { id: 'mqc.missing', value: {}, locator: relDir, cmd: 'glob journal/measurements/*.latest.json', exit: 1 };
-  }
-  const mtime = (f) => fs.statSync(f).mtimeMs;
-  const newest = files.reduce((a, b) => (mtime(b) > mtime(a) ? b : a));
-  let exitField = null;
-  try {
-    const data = JSON.parse(fs.readFileSync(newest, 'utf8'));
-    if (Object.prototype.hasOwnProperty.call(data, 'exit')) exitField = data.exit;
-  } catch { /* leave null */ }
-  const exit = typeof exitField === 'number' ? exitField : 0; // reflects the tool's own exit, not a fixed 0
-  return { id: 'mqc.latest', value: { file: path.basename(newest), exit: exitField },
-    locator: `${relDir}${path.basename(newest)}`, cmd: 'read journal/measurements/*.latest.json', exit };
-}
-function collectMetrics(target) {
-  const product = fs.existsSync(path.join(target, 'PRODUCT.md'));
-  const metrics = fs.existsSync(path.join(target, 'METRICS.md'));
-  return { id: 'fs.metrics.missing', value: { 'PRODUCT.md': product, 'METRICS.md': metrics },
-    locator: '.', cmd: 'test -f PRODUCT.md METRICS.md', exit: product && metrics ? 0 : 1 };
-}
-function collectSimDumps(target) {
-  const relDir = 'docs/sim-dumps/';
-  const dir = path.join(target, 'docs', 'sim-dumps');
-  let files = [];
-  try { files = fs.readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => path.join(dir, f)); }
-  catch { files = []; }
-  if (files.length === 0) return null;
-  const reasons = [];
-  for (const f of files) {
-    try {
-      const data = JSON.parse(fs.readFileSync(f, 'utf8'));
-      if (typeof data.endReason === 'string') reasons.push(data.endReason);
-    } catch { /* skip broken/missing-field files */ }
-  }
-  if (reasons.length === 0) return null;
-  const values = [...new Set(reasons)].sort();
-  return { id: 'sim.endReason.distribution',
-    value: { distinctCount: values.length, values, censored: values.length === 1 },
-    locator: relDir, cmd: 'glob docs/sim-dumps/*.json', exit: 0 };
-}
+import { collectGit, collectTest, collectLifecycle, collectMeasurement, collectMetrics, collectSimDumps } from './status-collect.mjs';
 export function validateFacts(facts) {
   for (const f of facts) {
     if (typeof f.locator !== 'string' || f.locator.length === 0) {
@@ -126,23 +31,32 @@ export function validateQuestions(questions) {
   }
   return { ok: true };
 }
-const RANK = { FAIL: 0, 'UNMEASURED-censored': 1, 'UNMEASURED-environment': 2, PASS: 3 };
+// 미달 순서(심각→PASS): FAIL 만 실제 결함. UNMEASURED 3분화는 결함이 아니라 계측 공백(bands §3) —
+// corrupted(산출물 손상, 뭘 놓쳤는지도 모름) > censored(관측은 됐으나 사건 미발생) > environment(도구 미배선/UNWIRED, criteria:31).
+const RANK = { FAIL: 0, 'UNMEASURED-corrupted': 1, 'UNMEASURED-censored': 2, 'UNMEASURED-environment': 3, PASS: 4 };
 const DIRECTION_TABLE = {
-  'test.exit': (f) => `테스트 실패 원인 조사 - ${f.locator} (exit ${f.value.exit})`,
+  'test.exit': (f) => f.value.env
+    ? `테스트 실행 환경 확인 - ${f.locator} (exit ${f.value.exit}, 명령/의존성 미설치 가능 - 실패 아님)`
+    : `테스트 실패 원인 조사 - ${f.locator} (exit ${f.value.exit})`,
   'mqc.missing': () => '품질판정기 실행 - node scripts/merge-quality-check.mjs 등으로 journal/measurements/*.latest.json 생성',
-  'mqc.latest': (f) => `품질판정기 재실행 - ${f.locator} exit=${f.value.exit} 원인 조사`,
+  'mqc.latest': (f) => f.value.corrupted
+    ? `품질판정기 산출물 손상 - ${f.locator} (exit 필드 없음/JSON 파손, 재실행 필요)`
+    : `품질판정기 재실행 - ${f.locator} exit=${f.value.exit} 원인 조사`,
   'sim.endReason.distribution': () => 'sim-dump seed 다양화 - endReason 분포 확보(censored 해소)',
   'doc.lifecycle.missing': () => 'docs/lifecycle-status.md 작성 - 단계 상태 정본 없음',
   'fs.metrics.missing': () => 'PRODUCT.md/METRICS.md 작성 - 최종 결과물·측정 정의'
 };
 function buildState(facts) {
   const technicalFacts = facts.filter((f) => ['test.exit', 'mqc.missing', 'mqc.latest', 'sim.endReason.distribution'].includes(f.id));
-  // Only a fact that actually ran and failed is FAIL; a missing producer (mqc.missing) is UNMEASURED.
-  const failFacts = technicalFacts.filter((f) => (f.id === 'test.exit' || f.id === 'mqc.latest') && f.exit !== 0);
+  // Only a fact that actually ran and failed is FAIL; an environment gap or a corrupted producer output is UNMEASURED, not FAIL.
+  const failFacts = technicalFacts.filter((f) => (f.id === 'test.exit' || f.id === 'mqc.latest') && f.exit !== 0
+    && !(f.value && (f.value.env === true || f.value.corrupted === true)));
+  const corruptedFacts = technicalFacts.filter((f) => f.value && f.value.corrupted === true);
   const censoredFacts = technicalFacts.filter((f) => f.value && f.value.censored === true);
-  const envFacts = technicalFacts.filter((f) => f.id === 'mqc.missing');
+  const envFacts = technicalFacts.filter((f) => f.id === 'mqc.missing' || (f.value && f.value.env === true));
   let technicalVerdict = 'PASS', technicalEvidence = [];
   if (failFacts.length > 0) { technicalVerdict = 'FAIL'; technicalEvidence = failFacts.map((f) => f.id); }
+  else if (corruptedFacts.length > 0) { technicalVerdict = 'UNMEASURED-corrupted'; technicalEvidence = corruptedFacts.map((f) => f.id); }
   else if (censoredFacts.length > 0) { technicalVerdict = 'UNMEASURED-censored'; technicalEvidence = censoredFacts.map((f) => f.id); }
   else if (envFacts.length > 0) { technicalVerdict = 'UNMEASURED-environment'; technicalEvidence = envFacts.map((f) => f.id); }
   const metricsFact = facts.find((f) => f.id === 'fs.metrics.missing');
@@ -152,7 +66,7 @@ function buildState(facts) {
   if (lifecycleMissing) { productVerdict = 'UNMEASURED-environment'; productEvidence.push(lifecycleMissing.id); }
   return {
     state: { product: { verdict: productVerdict, evidence: productEvidence }, technical: { verdict: technicalVerdict, evidence: technicalEvidence } },
-    technicalFailFact: failFacts[0] ?? censoredFacts[0] ?? envFacts[0] ?? null,
+    technicalFailFact: failFacts[0] ?? corruptedFacts[0] ?? censoredFacts[0] ?? envFacts[0] ?? null,
     productFailFact: metricsFact && metricsFact.exit !== 0 ? metricsFact : (lifecycleMissing ?? null)
   };
 }
@@ -166,7 +80,7 @@ function buildPosition(facts, state) {
   const item = weakerIsProduct ? state.productFailFact : state.technicalFailFact;
   return {
     stage,
-    weakest: { track, item: item ? item.id : null, rule: 'FAIL > UNMEASURED-censored > UNMEASURED-environment > PASS' }
+    weakest: { track, item: item ? item.id : null, rule: 'FAIL > UNMEASURED-corrupted > UNMEASURED-censored > UNMEASURED-environment > PASS' }
   };
 }
 function buildOutcome(target) {
@@ -211,7 +125,8 @@ function buildQuestions(outcome, position) {
   });
   return candidates.slice(0, 5);
 }
-function isoCompact(iso) { return iso.replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z'); }
+// keep milliseconds (WAL "status = 스냅샷+이력" needs per-run granularity, not per-second).
+function isoCompact(iso) { return iso.replace(/[-:]/g, '').replace(/\.(\d+)Z$/, '$1Z'); }
 // repoId/snapshotDir — snapshots live OUTSIDE target under EPDS_HOME (default ~/.epds), keyed by
 // the target's resolved-path hash (same shape as the harness's lib-lock-home.sh lock_repo_id), so
 // `status --json` never dirties the target's own git status (M6 self-pollution fix).
@@ -225,9 +140,9 @@ function snapshotDir(target, opts) {
   const home = process.env.EPDS_HOME || path.join(os.homedir(), '.epds');
   return path.join(home, 'status', repoId(target));
 }
-function writeSnapshot(dir, output) {
-  const file = `${isoCompact(output.measuredAt)}.status.json`;
-  let prevPath = null, changed = [];
+export function writeSnapshot(dir, output) {
+  const base = isoCompact(output.measuredAt);
+  let file = `${base}.status.json`, prevPath = null, changed = [];
   try {
     fs.mkdirSync(dir, { recursive: true });
     const existing = fs.readdirSync(dir).filter((f) => f.endsWith('.status.json')).sort();
@@ -236,6 +151,9 @@ function writeSnapshot(dir, output) {
       const prev = JSON.parse(fs.readFileSync(prevPath, 'utf8'));
       changed = ['state', 'position', 'outcome', 'direction'].filter((k) => JSON.stringify(prev[k]) !== JSON.stringify(output[k]));
     }
+    // same-ms collision (two runs within 1ms, or a frozen clock in a test) -> suffix instead of overwrite,
+    // or the second run silently clobbers the first and its own "prev" points at itself (critic #2).
+    for (let seq = 2; existing.includes(file); seq += 1) file = `${base}-${seq}.status.json`;
     fs.writeFileSync(path.join(dir, file), `${JSON.stringify(output, null, 2)}\n`, 'utf8');
   } catch { /* snapshot dir unwritable — leave prev/changed at defaults, not fatal */ }
   return { path: path.join(dir, file), prev: prevPath, changed };
@@ -274,10 +192,12 @@ export function runStatus(argv) {
   // outcome.gap+locator = PRODUCT.md exists but had no parseable goal, distinct from fs.metrics.missing.
   const unmeasured = {
     // fs.metrics.missing's id is a fixed name; only count it when exit!=0 (an actual miss).
-    environment: facts.filter((f) => f.id.endsWith('.missing') && f.exit !== 0).length
+    environment: facts.filter((f) => (f.id.endsWith('.missing') && f.exit !== 0) || (f.value && f.value.env === true)).length
       + (outcome.gap && outcome.locator ? 1 : 0),
     censored: facts.filter((f) => f.value && f.value.censored === true).length,
-    corrupted: 0
+    // real count, not a hardcoded 0: a corrupted producer output (mqc.latest) + per-file corrupted sim-dumps.
+    corrupted: facts.filter((f) => f.value && f.value.corrupted === true).length
+      + facts.reduce((sum, f) => sum + (f.value && typeof f.value.corruptedCount === 'number' ? f.value.corruptedCount : 0), 0)
   };
   const gitFact = facts.find((f) => f.id === 'git.head');
   const output = {

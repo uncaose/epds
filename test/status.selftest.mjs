@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { runStatus, validateFacts, validateQuestions } from '../bin/status.mjs';
+import { runStatus, validateFacts, validateQuestions, writeSnapshot } from '../bin/status.mjs';
 
 const B3 = path.join(os.homedir(), 'Projects', 'go-work', 'epds-verify-b3');
 const REPRO3 = path.join(os.homedir(), 'Projects', 'go-work', 'epds-verify-repro3');
@@ -39,8 +39,17 @@ function contentOnly(output) {
 // ---- case 2: B3 worktree -> exit 1, censored detected ----
 if (fs.existsSync(B3)) {
   const { output, exit } = runStatus(['--target', B3, '--json']);
-  ok('case2 B3: exit 1', exit === 1);
-  ok('case2 B3: technical verdict is FAIL', output.state.technical.verdict === 'FAIL');
+  const testFact = output.facts.find((f) => f.id === 'test.exit');
+  // B3 is a live external go-work worktree; its node_modules/test state can drift outside this repo's
+  // control (critic 20260918 §1: an `npm install` mid-measurement flipped this exact fact 127->0) — when
+  // its test currently passes on this machine, skip the FAIL-specific asserts instead of hardcoding a
+  // stale expectation; the fixture-independent censored asserts below still run either way.
+  if (testFact && testFact.value.exit === 0) {
+    console.log('  note  case2 B3: test currently passes on this machine (node_modules present) - skipping FAIL-specific asserts');
+  } else {
+    ok('case2 B3: exit 1', exit === 1);
+    ok('case2 B3: technical verdict is FAIL', output.state.technical.verdict === 'FAIL');
+  }
   ok('case2 B3: sim.endReason censored fact present', output.facts.some((f) => f.id === 'sim.endReason.distribution' && f.value.censored === true));
   ok('case2 B3: unmeasured.censored >= 1', output.unmeasured.censored >= 1);
 } else {
@@ -132,6 +141,54 @@ if (fs.existsSync(REPRO3)) {
   const headingOnly = runStatus(['--target', dirHeadingOnly, '--snapshot-dir', freshTmp(), '--json']).output;
   ok('case9 heading-only file -> goal null (first-heading mis-extraction fixed)', headingOnly.outcome.goal === null);
   ok('case9 heading-only file -> gap set + counted in unmeasured.environment', headingOnly.outcome.gap !== null && headingOnly.unmeasured.environment >= 1);
+}
+
+// ---- case 10 (critic req #1): environment gap (exit 127, tool not installed) is UNMEASURED, never FAIL ----
+{
+  const dir = freshTmp();
+  execFileSync('git', ['init', '-q'], { cwd: dir });
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ scripts: { test: 'no-such-binary-xyz' } }));
+  execFileSync('git', ['add', '.'], { cwd: dir });
+  execFileSync('git', ['-c', 'user.email=a@b.c', '-c', 'user.name=t', 'commit', '-q', '-m', 'i'], { cwd: dir });
+  const { output } = runStatus(['--target', dir, '--snapshot-dir', freshTmp(), '--json']);
+  const testFact = output.facts.find((f) => f.id === 'test.exit');
+  ok('case10 exit127: classified as env, not a raw failure', testFact && testFact.value.env === true);
+  ok('case10 exit127: technical verdict is UNMEASURED (not FAIL)', output.state.technical.verdict === 'UNMEASURED-environment');
+  ok('case10 exit127: unmeasured.environment >= 1', output.unmeasured.environment >= 1);
+}
+
+// ---- case 11 (critic req #2): same measuredAt written twice -> 2 distinct files, no self-referencing prev ----
+{
+  const dir = freshTmp();
+  const frozen = { schemaVersion: 1, measuredAt: '2026-09-18T10:50:24.000Z', state: {}, position: {}, outcome: {}, direction: {} };
+  const s1 = writeSnapshot(dir, frozen);
+  const s2 = writeSnapshot(dir, { ...frozen, position: { changed: true } });
+  ok('case11 same-ms collision: 2 distinct snapshot files written', s1.path !== s2.path && fs.readdirSync(dir).length === 2);
+  ok('case11 same-ms collision: second file has a seq suffix', s2.path.endsWith('-2.status.json'));
+  ok('case11 same-ms collision: second run\'s prev points at the FIRST file, not itself', s2.prev === s1.path);
+}
+
+// ---- case 12 (critic req #3): corrupted producer output (bad JSON) counted in unmeasured.corrupted, not 0 ----
+{
+  const dir = freshTmp();
+  fs.mkdirSync(path.join(dir, 'journal', 'measurements'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'journal', 'measurements', 'x.latest.json'), '{not valid json');
+  const { output } = runStatus(['--target', dir, '--snapshot-dir', freshTmp(), '--json']);
+  const mqc = output.facts.find((f) => f.id === 'mqc.latest');
+  ok('case12 corrupted mqc output: fact flags corrupted', mqc && mqc.value.corrupted === true);
+  ok('case12 corrupted mqc output: unmeasured.corrupted >= 1 (not hardcoded 0)', output.unmeasured.corrupted >= 1);
+  ok('case12 corrupted mqc output: technical verdict is UNMEASURED-corrupted', output.state.technical.verdict === 'UNMEASURED-corrupted');
+}
+
+// ---- case 13 (critic req #4): collectMeasurement() with no `exit` field -> UNMEASURED-corrupted, never a silent PASS(0) ----
+{
+  const dir = freshTmp();
+  fs.mkdirSync(path.join(dir, 'journal', 'measurements'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'journal', 'measurements', 'x.latest.json'), JSON.stringify({ noExitField: true }));
+  const { output } = runStatus(['--target', dir, '--snapshot-dir', freshTmp(), '--json']);
+  const mqc = output.facts.find((f) => f.id === 'mqc.latest');
+  ok('case13 missing exit field: flagged corrupted, exitField stays null (no fail-open to 0)', mqc && mqc.value.corrupted === true && mqc.value.exit === null);
+  ok('case13 missing exit field: technical verdict is UNMEASURED-corrupted, not PASS', output.state.technical.verdict === 'UNMEASURED-corrupted');
 }
 
 if (fail > 0) { console.log(`\nstatus.selftest FAIL (${fail} failing check(s))`); process.exit(1); }
