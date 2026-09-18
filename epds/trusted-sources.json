@@ -194,7 +194,8 @@
         "invoke": "/office-hours, /plan-ceo-review, /autoplan 등 23개 커맨드",
         "license": "MIT",
         "last_release": "pushed_at 2026-09-16(태그릴리스 없음, 지속 push)",
-        "activity": "gh api 실측 2026-09-16: stars 133269, open_issues 890"
+        "activity": "gh api 실측 2026-09-16: stars 133269, open_issues 890; 재측정 2026-09-18: stars 133523, open_issues 905, pushed_at 2026-09-18",
+        "verified": "2026-09-18: git clone --depth 1 exit 0, LICENSE=MIT 실물 확인, 54개 SKILL.md 디렉터리(등록 시 23개 대비 성장) — docs/references/gstack.md"
       },
       "added": "2026-09-16",
       "note": "human 제공 EPDS 흐름 출처 2 — 표1 관점 비교 도구",
@@ -224,7 +225,8 @@
         "invoke": "스킬명 직접 호출 예: superpowers:test-driven-development",
         "license": "MIT",
         "last_release": "v6.3.0(로컬 캐시 실측), pushed_at 2026-09-14",
-        "activity": "gh api 실측 2026-09-16: stars 287306, author Jesse Vincent(obra)"
+        "activity": "gh api 실측 2026-09-16: stars 287306, author Jesse Vincent(obra); 재측정 2026-09-18: stars 288320, pushed_at 2026-09-18",
+        "verified": "2026-09-18: verification-before-completion/SKILL.md 구조 확인(Iron Law/Gate Function/Common Failures 표) — docs/references/superpowers.md"
       },
       "added": "2026-09-16",
       "note": "human 제공 EPDS 흐름 출처 3 — 이 세션에 로드된 Claude Code 플러그인",
@@ -255,7 +257,8 @@
         "invoke": "CLI `ooo`(Typer+Textual TUI, 13개 런타임 어댑터)",
         "license": "MIT",
         "last_release": "R0229 기준 v0.51.17(2026-08-28), 활발히 매일 릴리스",
-        "activity": "gh api 실측 2026-09-16: stars 5933, pushed_at 2026-09-15, archived=false — 상세=~/Projects/research/R0229-ouroboros-agent-os-survey"
+        "activity": "gh api 실측 2026-09-16: stars 5933, pushed_at 2026-09-15, archived=false — 상세=~/Projects/research/R0229-ouroboros-agent-os-survey; 재측정 2026-09-18: stars 6020, pushed_at 2026-09-15",
+        "verified": "2026-09-18: ooo --version=0.51.17(기존 설치). `ooo qa` 실행 exit 1 양쪽 백엔드(codex=쿼터 소진 Sep 21 리셋, gemini=로컬 설정에 존재하지 않는 모델 claude-opus-5 상속) — 실사용 QA 판정 미획득, 백엔드는 codex로 원복. docs/references/ouroboros.md"
       },
       "added": "2026-09-16",
       "note": "human 제공 EPDS 흐름 출처 3 — 명세-실행-평가-기억 에이전트 OS, 선행조사 R0229",
@@ -285,7 +288,8 @@
         "invoke": "역할별 마크다운 페르소나 파일을 도구별 위치에 설치",
         "license": "MIT",
         "last_release": "pushed_at 2026-09-12(태그릴리스 없음, 지속 push)",
-        "activity": "gh api 실측 2026-09-16: stars 152679"
+        "activity": "gh api 실측 2026-09-16: stars 152679; 재측정 2026-09-18: stars 153256, open_issues 149, pushed_at 2026-09-12",
+        "verified": "2026-09-18: n/a — document source, url reachable HTTP 200 (docs/references/agency-agents.md)"
       },
       "added": "2026-09-16",
       "note": "human 제공 EPDS 흐름 출처 4",
@@ -314,7 +318,8 @@
         "invoke": "앱 내 Runbooks → Deploy team…",
         "license": "MIT",
         "last_release": "v0.3.0, published_at 2026-07-05T22:59:16Z",
-        "activity": "gh api 실측 2026-09-16: stars 546, repo pushed_at 2026-09-16"
+        "activity": "gh api 실측 2026-09-16: stars 546, repo pushed_at 2026-09-16; 재측정 2026-09-18: stars 559, open_issues 16, pushed_at 2026-09-16",
+        "verified": "2026-09-18: n/a — document source (native app, GUI 실행 대상 아님), url reachable HTTP 200 (docs/references/agency-agents-app-v0-3-0.md)"
       },
       "added": "2026-09-16",
       "note": "human 제공 EPDS 흐름 출처 5",
@@ -344,7 +349,8 @@
         "invoke": "/setup /apply /rank /interview 등 커맨드(EPDS 표3)",
         "license": "MIT",
         "last_release": "pushed_at 2026-09-16(태그릴리스 없음, 지속 push)",
-        "activity": "gh api 실측 2026-09-16: stars 43033"
+        "activity": "gh api 실측 2026-09-16: stars 43033; 재측정 2026-09-18: stars 43214, open_issues 5, pushed_at 2026-09-16",
+        "verified": "2026-09-18: n/a — document source, url reachable HTTP 200 (docs/references/ai-job-search.md)"
       },
       "added": "2026-09-16",
       "note": "human 제공 EPDS 흐름 출처 6 — templates/tests/tools+.claude 구조 참조 저장소",
@@ -400,11 +406,12 @@
       ],
       "evidence_grade": "community",
       "meta": {
-        "install": "npm i -g open-code-review (CLI: ocr)",
-        "invoke": "ocr scan (glob rules + negative-rule prompt injection)",
+        "install": "npm i -g @alibaba-group/open-code-review (CLI: ocr) — corrected 2026-09-18, bare `open-code-review` 404s on npm",
+        "invoke": "ocr review [-c <commit>|--from/--to] (glob rules + negative-rule prompt injection)",
         "license": "Apache-2.0",
         "last_release": "v1.12.5",
-        "activity": "active, gh api verified 2026-09-18: 34944 stars, pushed 2026-09-17"
+        "activity": "active, gh api verified 2026-09-18: 36071 stars (re-measured from 34944), pushed 2026-09-18",
+        "verified": "2026-09-18: install exit 0, ocr review -c <commit> against a real 896-line/4-file diff exit 0 (2m24s, 0 findings) via a local LM Studio openai-compatible endpoint (no cloud API key) — see docs/references/open-code-review.md"
       },
       "added": "2026-09-18",
       "note": "Code review stage: deterministic pre-pass (file selection, glob rules, negative-rule suppression, line correction) + LLM judgment; token-budget fallback bundle_all to per_file; fan-out isolated sub-agents.",
@@ -436,7 +443,8 @@
         "invoke": "n/a — 항목별 개별 도구 설치/실행은 각 항목 URL에서 별도 수행",
         "license": "CC0-1.0",
         "last_release": "pushed_at 2026-08-19 (태그릴리스 없음, 지속 push)",
-        "activity": "gh api 실측 2026-09-18: stars 4101, forks 356, open_issues 19, watchers 4101"
+        "activity": "gh api 실측 2026-09-18: stars 4101, forks 356, open_issues 19, watchers 4101; 재측정 2026-09-18(2차): stars 4101, open_issues 19 — 변동 없음(같은 날 측정)",
+        "verified": "2026-09-18: n/a — 큐레이션 목록, 설치/실행 대상 아님 (docs/references/awesome-harness-engineering.md)"
       },
       "added": "2026-09-18",
       "note": "human 2026-09-18 지시로 조사 — 겹침 0/151, 신규 141건. 가설별 후보 5건은 이 파일(R0297) §3. EPDS trusted-sources.json 실제 등록은 human 확인 후(GATE-HUMAN).",
@@ -466,7 +474,8 @@
         "invoke": "/grill-me",
         "license": "MIT",
         "last_release": "pushed_at 2026-09-17 (no tagged GitHub release found)",
-        "activity": "gh api repos/mattpocock/skills 실측 2026-09-18: stars 264753, forks 22325, open_issues 502, watchers 264753"
+        "activity": "gh api repos/mattpocock/skills 실측 2026-09-18: stars 264753, forks 22325, open_issues 502, watchers 264753; 재측정 2026-09-18(2차): stars 264922, open_issues 502, pushed_at 2026-09-18",
+        "verified": "2026-09-18: gh api contents 실물 fetch exit 0, skills/productivity/grilling/SKILL.md 원문 확보 — 슬래시 커맨드 스킬이라 --help/CLI 실행 대상 아님 (docs/references/mattpocock-skills-grilling.md)"
       },
       "added": "2026-09-18",
       "note": "human 2026-09-18 H117 y — R0298 timini/drill-me detour surfaced this. Registered as owner-question source for EPDS status/direction (not as drill-me replacement).",

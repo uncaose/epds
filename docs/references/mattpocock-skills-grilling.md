@@ -24,7 +24,16 @@ receipt; grilling stays ephemeral until confirmed.
 
 ## Measured
 
-not executed — planned in rebuild step 2: grilling vs drill-catalog, metric = owner questions ≤5.
+`gh api repos/mattpocock/skills/contents/skills/productivity/grilling/SKILL.md` → exit 0, fetched
+full original file (base64-decoded, 2026-09-18). Confirmed structure: frontmatter(name/description)
+→ design-tree interview protocol → "frontier" round format (numbered `❓ **Qn**` + `➡️` recommended
+answer per question, one round = whole frontier) → recompute-frontier-after-answers rule →
+sub-agent-for-facts rule ("Finding facts is your job, never the user's ... dispatch a sub-agent")
+→ termination condition (frontier empty). No `--help`/CLI invocation possible — it is a Claude
+Code slash-command skill (`/grill-me`), not a standalone binary; install via `claude plugins
+install mattpocock-skills` was not re-run here (plugin already resolvable via gh api content read).
+vs `scripts/drill.sh`+`templates/drill-catalog.md`: metric = owner questions ≤5, not yet run
+head-to-head (deferred — needs a real ambiguous artifact, not this measurement pass).
 
 ## How EPDS uses it
 
@@ -38,3 +47,5 @@ sharpening**, not a single decision — each answer makes state/position/directi
 > "상태, 위치, 최종 결과물로 가는 방향이 계속 변할 수 있다." — human, 2026-09-18
 > "한번의 질문으로 완성되는 게 아니라 상태, 위치, 최종 결과물과 그 방향이 점점 더 구체화 되기 때문이다." — human, 2026-09-18
 timini/drill-me: not registered — FSRS tutor, opposite direction (R0298).
+
+Stars re-measured 2026-09-18: 264922 (card registration 2026-09-18 same-day: 264753).
