@@ -22,6 +22,7 @@ external store (e.g. `~/Projects/research/_archive/sources/R0123-slug.md`), not 
 | custom-router-long-term | argo-internal.md |
 | negative-rule-suppression, token-budget-fallback-bundling, isolated-subagent-fanout | open-code-review.md |
 | curated-list, harness-taxonomy | awesome-harness-engineering.md |
+| design-tree-interview, frontier-round-questioning | mattpocock-skills-grilling.md |
 
 ## By perspective
 
