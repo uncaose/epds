@@ -480,6 +480,99 @@
       "added": "2026-09-18",
       "note": "human 2026-09-18 H117 y — R0298 timini/drill-me detour surfaced this. Registered as owner-question source for EPDS status/direction (not as drill-me replacement).",
       "origin": "h117"
+    },
+    {
+      "id": "public-apis",
+      "url": "https://github.com/public-apis/public-apis",
+      "kind": "list",
+      "name": "public-apis",
+      "purpose": "Curated directory of free public APIs across 52 categories (weather, maps, trivia, anime, finance, ...). Lookup table, not a tool — first search stop when a game/feature needs a free-tier external live-data API, before building a custom scraper or paying for a data provider.",
+      "perspectives": [
+        "product",
+        "delivery"
+      ],
+      "patterns": [
+        "curated-list",
+        "api-directory"
+      ],
+      "applies_to": [
+        "direction",
+        "build"
+      ],
+      "evidence_grade": "community",
+      "meta": {
+        "install": "n/a — 목록 저장소, 설치 대상 아님",
+        "invoke": "n/a — 항목별 개별 API 사용은 각 항목에서 별도 확인",
+        "license": "MIT",
+        "last_release": "pushed_at 2026-09-17 (태그릴리스 없음, 지속 push)",
+        "activity": "gh api repos/public-apis/public-apis 실측 2026-09-18: stars 481311, license MIT, pushed_at 2026-09-17",
+        "verified": "2026-09-18: n/a — 큐레이션 목록, 설치/실행 대상 아님 (docs/references/public-apis.md)"
+      },
+      "added": "2026-09-18",
+      "note": "human 2026-09-18 H121 y — 파킹(JIT). 게임/하네스 기능이 실제 외부 실시간 데이터 API 필요할 때만 재진입. Source: R0301 (~/Projects/research/R0301-public-apis/catalog.md).",
+      "origin": "human-url"
+    },
+    {
+      "id": "scrapling",
+      "url": "https://github.com/D4Vinci/Scrapling",
+      "kind": "tool",
+      "name": "Scrapling",
+      "purpose": "Python web-scraping library (BeautifulSoup-like selector API + stealth/undetectable fetchers: static, dynamic/Playwright-driven, StealthyFetcher). Already the concrete implementation of collection pipe ② (\"Scrapling built-in\") in knowledge/notes/scrapling-agent-browser-research.md — formalizes an already-live dependency as a trusted source.",
+      "perspectives": [
+        "agent-ops",
+        "delivery"
+      ],
+      "patterns": [
+        "stealth-fetcher",
+        "markdown-extraction"
+      ],
+      "applies_to": [
+        "build",
+        "verify"
+      ],
+      "evidence_grade": "community",
+      "meta": {
+        "install": "pip install scrapling==0.4.15",
+        "invoke": "from scrapling.fetchers import DynamicFetcher; DynamicFetcher.fetch(url, headless=True)",
+        "license": "BSD-3-Clause",
+        "last_release": "pushed_at 2026-09-18 (same day, very active)",
+        "activity": "gh api repos/D4Vinci/Scrapling 실측 2026-09-18: stars 81981, license BSD-3-Clause, pushed_at 2026-09-18",
+        "verified": "2026-09-19: R0304 DynamicFetcher.fetch exit 0, page.status 200, page.markdown() len 196 (.venv-scrapling, installed 0.4.15) + H122 스모크 2건 PASS (docs/references/scrapling.md)"
+      },
+      "added": "2026-09-18",
+      "note": "human 2026-09-18 H121 y — 하네스 수집 배관 ② 실배선(이미 사용중, 정식 등록). Source: R0302 (~/Projects/research/R0302-scrapling-update/catalog.md).",
+      "origin": "human-url"
+    },
+    {
+      "id": "free-for-dev",
+      "url": "https://github.com/ripienaar/free-for-dev",
+      "kind": "list",
+      "name": "free-for-dev",
+      "purpose": "Curated directory of free-tier developer infrastructure (hosting, CDN, email, monitoring, CI, ... 57 categories). Same shape as public-apis — a lookup table. Relevant only when the harness needs infra beyond its current single distribution channel (itch.io).",
+      "perspectives": [
+        "delivery",
+        "cost"
+      ],
+      "patterns": [
+        "curated-list",
+        "free-tier-directory"
+      ],
+      "applies_to": [
+        "direction",
+        "release"
+      ],
+      "evidence_grade": "community",
+      "meta": {
+        "install": "n/a — 목록 저장소, 설치 대상 아님",
+        "invoke": "n/a — 항목별 개별 서비스 가입은 각 항목에서 별도 수행",
+        "license": null,
+        "last_release": "pushed_at 2026-09-17 (태그릴리스 없음, 지속 push)",
+        "activity": "gh api repos/ripienaar/free-for-dev 실측 2026-09-18: stars 137722, license null, pushed_at 2026-09-17",
+        "verified": "2026-09-18: n/a — 큐레이션 목록, 설치/실행 대상 아님. LICENSE 파일 없음(licenses API 404) — 링크/카테고리명만 참조, 콘텐츠 원문 재사용 금지 (docs/references/free-for-dev.md)"
+      },
+      "added": "2026-09-18",
+      "note": "human 2026-09-18 H121 y — 파킹(JIT). LICENSE 파일 없음 — 재사용 제약: 링크/카테고리명만, 원문 콘텐츠 그대로 복사 금지. Source: R0300 (~/Projects/research/R0300-free-for-dev/catalog.md).",
+      "origin": "human-url"
     }
   ]
 }
