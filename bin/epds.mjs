@@ -42,6 +42,10 @@ Usage:
   epds sources remove <id|url>
                              Remove a trusted source by id or url
   epds sources show <id>    Print one source's full record
+  epds status --json --target <path>
+                             Deterministic evidence snapshot (no LLM calls)
+  epds reference <url> [--write]
+                             Score a repo against RUBRIC.md, optionally write a metacard skeleton
 
 Examples:
   npx github:uncaose/epds setup
@@ -379,11 +383,27 @@ async function sources() {
   throw new Error('Usage: epds sources list|add <url>|remove <id|url>|show <id>');
 }
 
+async function statusCmd() {
+  const { runStatus } = await import('./status.mjs');
+  const { output, exit } = runStatus(process.argv.slice(3));
+  console.log(JSON.stringify(output, null, 2));
+  process.exitCode = exit;
+}
+
+async function referenceCmd() {
+  const { runReference } = await import('./reference.mjs');
+  const { output, exit } = runReference(process.argv.slice(3), packageRoot);
+  console.log(JSON.stringify(output, null, 2));
+  process.exitCode = exit;
+}
+
 try {
   if (command === 'setup') await setup();
   else if (command === 'check') await check();
   else if (command === 'uninstall') await uninstall();
   else if (command === 'sources') await sources();
+  else if (command === 'status') await statusCmd();
+  else if (command === 'reference') await referenceCmd();
   else if (command === 'help' || command === '--help' || command === '-h') printUsage();
   else {
     console.error(`Unknown command: ${command}`);
