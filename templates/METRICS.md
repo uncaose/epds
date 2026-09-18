@@ -1,30 +1,12 @@
 # Metrics
 
-## North-star outcome
+Measured: 
 
-## Activation
+| Metric | Current | Target | Direction |
+|---|---|---|---|
+|  |  |  |  |
 
-## Retention / repeat use
-
-## Current primary metric
-
-## Guardrails
-
-- Performance:
-- Error rate:
-- Cost:
-- Privacy/security:
-- User complaint/churn:
-
-## Measurement rules
-
-- Event names and definitions:
-- Segments:
-- Time window:
-- Exclusions:
-
-## Decision thresholds
-
-- Expand:
-- Iterate:
-- Stop:
+<!-- Direction: higher-better (current should be >= target) or lower-better (current should be <= target).
+     Fill Measured (YYYY-MM-DD) and at least one real metric row before this counts as measured (H114).
+     `epds status` parses this table for the product track: missing file = UNMEASURED-environment,
+     unparseable (no Measured date or no valid row) = UNMEASURED-corrupted, target not met = FAIL. -->

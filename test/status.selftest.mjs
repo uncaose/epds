@@ -168,9 +168,19 @@ if (fs.existsSync(REPRO3)) {
   ok('case11 same-ms collision: second run\'s prev points at the FIRST file, not itself', s2.prev === s1.path);
 }
 
+// judges.json fixture enabling the mqc judge — H124 made judges opt-in via <target>/epds/judges.json,
+// so case12/13's corrupted-output path now needs an explicit config to exercise collectJudges() at all.
+function withMqcJudge(dir) {
+  fs.mkdirSync(path.join(dir, 'epds'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'epds', 'judges.json'), JSON.stringify([
+    { id: 'mqc', cmd: 'node scripts/merge-quality-check.mjs', outputGlob: 'journal/measurements/*.latest.json', exitField: 'exit', applies: 'auto' }
+  ]));
+}
+
 // ---- case 12 (critic req #3): corrupted producer output (bad JSON) counted in unmeasured.corrupted, not 0 ----
 {
   const dir = freshTmp();
+  withMqcJudge(dir);
   fs.mkdirSync(path.join(dir, 'journal', 'measurements'), { recursive: true });
   fs.writeFileSync(path.join(dir, 'journal', 'measurements', 'x.latest.json'), '{not valid json');
   const { output } = runStatus(['--target', dir, '--snapshot-dir', freshTmp(), '--json']);
@@ -180,15 +190,66 @@ if (fs.existsSync(REPRO3)) {
   ok('case12 corrupted mqc output: technical verdict is UNMEASURED-corrupted', output.state.technical.verdict === 'UNMEASURED-corrupted');
 }
 
-// ---- case 13 (critic req #4): collectMeasurement() with no `exit` field -> UNMEASURED-corrupted, never a silent PASS(0) ----
+// ---- case 13 (critic req #4): judge output with no `exit` field -> UNMEASURED-corrupted, never a silent PASS(0) ----
 {
   const dir = freshTmp();
+  withMqcJudge(dir);
   fs.mkdirSync(path.join(dir, 'journal', 'measurements'), { recursive: true });
   fs.writeFileSync(path.join(dir, 'journal', 'measurements', 'x.latest.json'), JSON.stringify({ noExitField: true }));
   const { output } = runStatus(['--target', dir, '--snapshot-dir', freshTmp(), '--json']);
   const mqc = output.facts.find((f) => f.id === 'mqc.latest');
   ok('case13 missing exit field: flagged corrupted, exitField stays null (no fail-open to 0)', mqc && mqc.value.corrupted === true && mqc.value.exit === null);
   ok('case13 missing exit field: technical verdict is UNMEASURED-corrupted, not PASS', output.state.technical.verdict === 'UNMEASURED-corrupted');
+}
+
+// ---- case 14 (H124 #1): self-apply nextAction never points at a harness-specific command ----
+{
+  const EPDS_SELF = path.join(os.homedir(), 'Projects', 'epds');
+  const { output } = runStatus(['--target', EPDS_SELF, '--snapshot-dir', freshTmp(), '--json']);
+  const harnessCmdPattern = /merge-quality-check|scripts\/[\w.-]+\.(mjs|ts|js)/i;
+  ok('case14 self-apply: no mqc-style fact present (epds/judges.json = [])', !output.facts.some((f) => f.id.startsWith('mqc.')));
+  ok('case14 self-apply: nextAction has zero harness-command references', !harnessCmdPattern.test(output.direction.nextAction));
+}
+
+// ---- case 15 (H124 #1): no judges.json at all -> bundled default is inert -> 0 judge facts, no phantom env count ----
+{
+  const dir = freshTmp();
+  execFileSync('git', ['init', '-q'], { cwd: dir });
+  fs.mkdirSync(path.join(dir, 'journal', 'measurements'), { recursive: true }); // looks like an mqc target, but unconfigured
+  const { output } = runStatus(['--target', dir, '--snapshot-dir', freshTmp(), '--json']);
+  ok('case15 no judges.json: no mqc fact generated for an unconfigured target', !output.facts.some((f) => f.id === 'mqc.missing' || f.id === 'mqc.latest'));
+  ok('case15 no judges.json: 0 judge facts total (bundled default ships inert)', !output.facts.some((f) => f.locator.includes('journal/measurements')));
+}
+
+// ---- case 16 (H124 #2): repro3 doc.lifecycle.stale detects the doc-vs-HEAD drift ----
+if (fs.existsSync(REPRO3)) {
+  const { output } = runStatus(['--target', REPRO3, '--snapshot-dir', freshTmp(), '--json']);
+  const stale = output.facts.find((f) => f.id === 'doc.lifecycle.stale');
+  ok('case16 repro3: doc.lifecycle.stale fact present', !!stale);
+  ok('case16 repro3: stale detected (commits since last doc touch > threshold, open rows remain)', stale && stale.value.stale === true);
+} else {
+  console.log('  skip case16 repro3 (worktree not present on this machine)');
+}
+
+// ---- case 17 (H124 #3): METRICS.md with a target-missed row -> product track can FAIL ----
+{
+  const dir = freshTmp();
+  fs.writeFileSync(path.join(dir, 'METRICS.md'),
+    '# Metrics\n\nMeasured: 2026-09-19\n\n| Metric | Current | Target | Direction |\n|---|---|---|---|\n| activation_rate | 0.10 | 0.20 | higher-better |\n');
+  const { output } = runStatus(['--target', dir, '--snapshot-dir', freshTmp(), '--json']);
+  const metrics = output.facts.find((f) => f.id === 'metrics.status');
+  ok('case17 METRICS.md FAIL fixture: metrics.status exit 1, not corrupted', metrics && metrics.exit === 1 && metrics.value.corrupted === false);
+  ok('case17 METRICS.md FAIL fixture: product track verdict is FAIL', output.state.product.verdict === 'FAIL');
+}
+
+// ---- case 18 (H124 #3): METRICS.md with no parseable Measured/row -> UNMEASURED-corrupted, not PASS ----
+{
+  const dir = freshTmp();
+  fs.writeFileSync(path.join(dir, 'METRICS.md'), '# Metrics\n\nno structured data here\n');
+  const { output } = runStatus(['--target', dir, '--snapshot-dir', freshTmp(), '--json']);
+  const metrics = output.facts.find((f) => f.id === 'metrics.status');
+  ok('case18 METRICS.md corrupted fixture: flagged corrupted', metrics && metrics.value.corrupted === true);
+  ok('case18 METRICS.md corrupted fixture: product track verdict is UNMEASURED-corrupted', output.state.product.verdict === 'UNMEASURED-corrupted');
 }
 
 if (fail > 0) { console.log(`\nstatus.selftest FAIL (${fail} failing check(s))`); process.exit(1); }

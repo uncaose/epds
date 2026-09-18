@@ -5,7 +5,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { collectGit, collectTest, collectLifecycle, collectMeasurement, collectMetrics, collectSimDumps } from './status-collect.mjs';
+import { collectGit, collectTest, collectJudges, collectSimDumps } from './status-collect.mjs';
+import { collectLifecycle, collectLifecycleStale, collectMetricsStatus } from './status-collect-docs.mjs';
 export function validateFacts(facts) {
   for (const f of facts) {
     if (typeof f.locator !== 'string' || f.locator.length === 0) {
@@ -34,40 +35,48 @@ export function validateQuestions(questions) {
 // 미달 순서(심각→PASS): FAIL 만 실제 결함. UNMEASURED 3분화는 결함이 아니라 계측 공백(bands §3) —
 // corrupted(산출물 손상, 뭘 놓쳤는지도 모름) > censored(관측은 됐으나 사건 미발생) > environment(도구 미배선/UNWIRED, criteria:31).
 const RANK = { FAIL: 0, 'UNMEASURED-corrupted': 1, 'UNMEASURED-censored': 2, 'UNMEASURED-environment': 3, PASS: 4 };
+// Judge-plugin facts (mqc.*, or whatever a target's epds/judges.json configures) carry their own
+// value.directionHint built from that config's cmd/outputGlob — no per-judge text is hardcoded here
+// (H124 portability). This table only covers the built-in, non-configurable facts.
 const DIRECTION_TABLE = {
   'test.exit': (f) => f.value.env
     ? `테스트 실행 환경 확인 - ${f.locator} (exit ${f.value.exit}, 명령/의존성 미설치 가능 - 실패 아님)`
     : `테스트 실패 원인 조사 - ${f.locator} (exit ${f.value.exit})`,
-  'mqc.missing': () => '품질판정기 실행 - node scripts/merge-quality-check.mjs 등으로 journal/measurements/*.latest.json 생성',
-  'mqc.latest': (f) => f.value.corrupted
-    ? `품질판정기 산출물 손상 - ${f.locator} (exit 필드 없음/JSON 파손, 재실행 필요)`
-    : `품질판정기 재실행 - ${f.locator} exit=${f.value.exit} 원인 조사`,
+  'test.counter.sanity': (f) => `테스트 러너 출력 확인 - ${f.locator} (파싱된 fail=${f.value.failCount}, exit=${f.value.testExit} 불일치)`,
   'sim.endReason.distribution': () => 'sim-dump seed 다양화 - endReason 분포 확보(censored 해소)',
   'doc.lifecycle.missing': () => 'docs/lifecycle-status.md 작성 - 단계 상태 정본 없음',
-  'fs.metrics.missing': () => 'PRODUCT.md/METRICS.md 작성 - 최종 결과물·측정 정의'
+  'doc.lifecycle.stale': (f) => `${f.locator} 갱신 - HEAD 대비 ${f.value.commitsSince}커밋 미갱신 상태로 미완료 단계 존재`,
+  'metrics.missing': () => 'METRICS.md 작성 - 지표·측정일·목표 정의 없음',
+  'metrics.status': (f) => (f.value.corrupted
+    ? `METRICS.md 형식 확인 - ${f.locator} (측정일/표 파싱 실패)`
+    : `목표 미달 지표 개선 - ${f.value.failing.join(', ')}`)
 };
+// Shared FAIL>corrupted>censored>environment>PASS classification for one track's facts. A track with
+// zero facts (nothing configured/applicable) is UNMEASURED-environment, never a silent PASS — absence
+// of evidence is not evidence of PASS (criteria:31 UNWIRED philosophy, generalized to both tracks).
+function classifyTrack(trackFacts) {
+  if (trackFacts.length === 0) return { verdict: 'UNMEASURED-environment', evidence: [] };
+  // env/corrupted/censored are computed first and "claimed" out of the FAIL pool — a fact whose id
+  // ends ".missing" (or is flagged env/corrupted) is never a raw FAIL, no matter its exit code.
+  const corruptedFacts = trackFacts.filter((f) => f.value && f.value.corrupted === true);
+  const censoredFacts = trackFacts.filter((f) => f.value && f.value.censored === true);
+  const envFacts = trackFacts.filter((f) => f.id.endsWith('.missing') || (f.value && f.value.env === true));
+  const claimed = new Set([...corruptedFacts, ...censoredFacts, ...envFacts]);
+  const failFacts = trackFacts.filter((f) => f.exit !== 0 && !claimed.has(f));
+  if (failFacts.length > 0) return { verdict: 'FAIL', evidence: failFacts };
+  if (corruptedFacts.length > 0) return { verdict: 'UNMEASURED-corrupted', evidence: corruptedFacts };
+  if (censoredFacts.length > 0) return { verdict: 'UNMEASURED-censored', evidence: censoredFacts };
+  if (envFacts.length > 0) return { verdict: 'UNMEASURED-environment', evidence: envFacts };
+  return { verdict: 'PASS', evidence: [] };
+}
 function buildState(facts) {
-  const technicalFacts = facts.filter((f) => ['test.exit', 'mqc.missing', 'mqc.latest', 'sim.endReason.distribution'].includes(f.id));
-  // Only a fact that actually ran and failed is FAIL; an environment gap or a corrupted producer output is UNMEASURED, not FAIL.
-  const failFacts = technicalFacts.filter((f) => (f.id === 'test.exit' || f.id === 'mqc.latest') && f.exit !== 0
-    && !(f.value && (f.value.env === true || f.value.corrupted === true)));
-  const corruptedFacts = technicalFacts.filter((f) => f.value && f.value.corrupted === true);
-  const censoredFacts = technicalFacts.filter((f) => f.value && f.value.censored === true);
-  const envFacts = technicalFacts.filter((f) => f.id === 'mqc.missing' || (f.value && f.value.env === true));
-  let technicalVerdict = 'PASS', technicalEvidence = [];
-  if (failFacts.length > 0) { technicalVerdict = 'FAIL'; technicalEvidence = failFacts.map((f) => f.id); }
-  else if (corruptedFacts.length > 0) { technicalVerdict = 'UNMEASURED-corrupted'; technicalEvidence = corruptedFacts.map((f) => f.id); }
-  else if (censoredFacts.length > 0) { technicalVerdict = 'UNMEASURED-censored'; technicalEvidence = censoredFacts.map((f) => f.id); }
-  else if (envFacts.length > 0) { technicalVerdict = 'UNMEASURED-environment'; technicalEvidence = envFacts.map((f) => f.id); }
-  const metricsFact = facts.find((f) => f.id === 'fs.metrics.missing');
-  const lifecycleMissing = facts.find((f) => f.id === 'doc.lifecycle.missing');
-  let productVerdict = 'PASS', productEvidence = [];
-  if (metricsFact && metricsFact.exit !== 0) { productVerdict = 'UNMEASURED-environment'; productEvidence.push(metricsFact.id); }
-  if (lifecycleMissing) { productVerdict = 'UNMEASURED-environment'; productEvidence.push(lifecycleMissing.id); }
+  const technical = classifyTrack(facts.filter((f) => f.track === 'technical'));
+  const product = classifyTrack(facts.filter((f) => f.track === 'product'));
   return {
-    state: { product: { verdict: productVerdict, evidence: productEvidence }, technical: { verdict: technicalVerdict, evidence: technicalEvidence } },
-    technicalFailFact: failFacts[0] ?? corruptedFacts[0] ?? censoredFacts[0] ?? envFacts[0] ?? null,
-    productFailFact: metricsFact && metricsFact.exit !== 0 ? metricsFact : (lifecycleMissing ?? null)
+    state: { product: { verdict: product.verdict, evidence: product.evidence.map((f) => f.id) },
+      technical: { verdict: technical.verdict, evidence: technical.evidence.map((f) => f.id) } },
+    technicalFailFact: technical.evidence[0] ?? null,
+    productFailFact: product.evidence[0] ?? null
   };
 }
 function buildPosition(facts, state) {
@@ -75,7 +84,10 @@ function buildPosition(facts, state) {
   const stage = lifecycle && lifecycle.value.firstOpenStage ? lifecycle.value.firstOpenStage : 'unknown';
   const techRank = RANK[state.state.technical.verdict];
   const prodRank = RANK[state.state.product.verdict];
-  const weakerIsProduct = prodRank < techRank;
+  let weakerIsProduct = prodRank < techRank;
+  // tie-break: when ranks tie, prefer whichever track actually has an evidence fact — a real
+  // nextAction beats "판정 불가" when e.g. technical has nothing configured at all (self-apply).
+  if (prodRank === techRank && !state.technicalFailFact && state.productFailFact) weakerIsProduct = true;
   const track = weakerIsProduct ? 'product' : 'technical';
   const item = weakerIsProduct ? state.productFailFact : state.technicalFailFact;
   return {
@@ -99,8 +111,11 @@ function buildOutcome(target) {
 }
 function buildDirection(weakestFact) {
   if (!weakestFact) return { nextAction: '판정 불가 - 트랙 사실 없음', evidence: [], smallest: false };
+  // a judge-plugin fact carries its own directionHint (built from that target's epds/judges.json
+  // cmd/outputGlob) — that always wins over the built-in table, since the table has no entry for it.
+  const hint = weakestFact.value && weakestFact.value.directionHint;
   const build = DIRECTION_TABLE[weakestFact.id];
-  const nextAction = build ? build(weakestFact) : `${weakestFact.id} 결함 해소`;
+  const nextAction = hint || (build ? build(weakestFact) : `${weakestFact.id} 결함 해소`);
   return { nextAction, evidence: [weakestFact.id], smallest: true };
 }
 function buildQuestions(outcome, position) {
@@ -174,10 +189,15 @@ export function runStatus(argv) {
   if (!opts.target) return { output: { error: 'missing --target', exit: 2 }, exit: 2 };
   const target = path.resolve(opts.target);
   const facts = [collectGit(target)];
-  const testFact = collectTest(target); if (testFact) facts.push(testFact);
-  facts.push(collectLifecycle(target));
-  facts.push(collectMeasurement(target));
-  facts.push(collectMetrics(target));
+  const testFacts = collectTest(target); if (testFacts) facts.push(...testFacts);
+  const lifecycleFact = collectLifecycle(target);
+  facts.push(lifecycleFact);
+  if (lifecycleFact.id === 'doc.lifecycle.status') {
+    const staleFact = collectLifecycleStale(target, lifecycleFact.value);
+    if (staleFact) facts.push(staleFact);
+  }
+  facts.push(collectMetricsStatus(target));
+  facts.push(...collectJudges(target));
   const simFact = collectSimDumps(target); if (simFact) facts.push(simFact);
   const factCheck = validateFacts(facts);
   if (!factCheck.ok) return { output: { error: factCheck.reason, exit: 2 }, exit: 2 };
@@ -195,7 +215,7 @@ export function runStatus(argv) {
     environment: facts.filter((f) => (f.id.endsWith('.missing') && f.exit !== 0) || (f.value && f.value.env === true)).length
       + (outcome.gap && outcome.locator ? 1 : 0),
     censored: facts.filter((f) => f.value && f.value.censored === true).length,
-    // real count, not a hardcoded 0: a corrupted producer output (mqc.latest) + per-file corrupted sim-dumps.
+    // real count, not a hardcoded 0: a corrupted judge/metrics output + per-file corrupted sim-dumps.
     corrupted: facts.filter((f) => f.value && f.value.corrupted === true).length
       + facts.reduce((sum, f) => sum + (f.value && typeof f.value.corruptedCount === 'number' ? f.value.corruptedCount : 0), 0)
   };

@@ -1,0 +1,9 @@
+[
+  {
+    "id": "mqc",
+    "cmd": "node scripts/merge-quality-check.mjs",
+    "outputGlob": "journal/measurements/*.latest.json",
+    "exitField": "exit",
+    "applies": "never"
+  }
+]
