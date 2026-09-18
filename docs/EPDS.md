@@ -80,6 +80,19 @@ Target project after setup
   ├── epds/  templates/  specs/  decisions/  docs/  tests/  evals/  tools/
 ```
 
+### Deterministic vs LLM boundary
+
+| Stage | EPDS element | Character | Why not left to LLM judgment alone |
+|---|---|---|---|
+| Input | Evidence-first 5-step order (`SKILL.md` §Evidence-first protocol) | deterministic-by-doc | Fixed order so no evidence source is skipped by habit |
+| Triage | WORK-ROUTER 7-way classification (`SKILL.md` §Work router) | LLM | No enforcement code; natural-language classification |
+| Rule | Classification→role mapping (`docs/ROLES.md`) | deterministic-by-doc | Fixed table so the same request always routes to the same role |
+| Judgment | Facts/Interpretation/Assumptions/Owner-decision split (`SKILL.md` §Evidence-first protocol) | LLM | Separating known from inferred requires reading judgment |
+| Output | Final report 5 blocks + exit code + model/effort header (`SKILL.md` §Final report) | deterministic-by-doc | Fixed contract keeps results reproducible and comparable |
+| Feedback | Retro keep/expand/iterate/stop (`docs/COMMANDS.md`) | LLM | Choosing the next cycle's direction is a judgment call |
+
+`deterministic-by-doc` means the order/contract is fixed in protocol text, not enforced by executable code — unlike open-code-review's code-enforced layers (R0295 turn[8]).
+
 ### 두 트랙 진단
 
 | Track | Core question | Examples of evidence |

@@ -97,4 +97,6 @@ At the end of any EPDS task, report:
 
 Every executed command shown in a report must carry its exit code — no row may omit it, and a raw output pipe that discards it does not excuse the omission. The report header must record the executing model's alias and its reasoning effort so results can be reproduced.
 
+Every Fact listed under `[Evidence used]` must cite a file:line (or turn/log id for external sources) — a claim without a locator is not verified evidence.
+
 Per-command behavior (`setup`, `status`, `audit`, `upgrade`, `reference`, `discover`, `decide`, `experiment`, `spec`, `build`, `verify`, `release`, `observe`, `retro`) is defined in `docs/COMMANDS.md` and the `adapters/claude-code/commands/` slash-command files.

@@ -13,6 +13,8 @@ GO / CONDITIONAL GO / NO-GO
 
 ## Known risks
 
+## Suppressed (rule id + reason)
+
 ## Rollback
 
 ## Follow-up

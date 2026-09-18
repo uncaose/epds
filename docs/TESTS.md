@@ -13,6 +13,17 @@
 | 경험 | 사용자가 핵심 흐름을 완주하는가 | 온보딩→핵심 기능→완료까지 E2E | `tests/e2e/`(브라우저/디바이스 자동화), `templates/experiment-brief.md`가 흐름 정의를 고정 |
 | 결과 | 제품 약속이 지켜지는가 | 오프라인 동작, 개인정보 미저장, 성능 예산, 의존성 미설치 시 폴백 | `tests/promise/` 또는 `evals/`(수동 체크리스트 → 가능하면 자동화), `gate-report.md`가 통과 근거를 남김 |
 
+### Do not report when (negative-rule suppression)
+
+| Layer | Do not report when |
+|---|---|
+| Code | The deviation is in generated, vendored, or unreachable fixture code |
+| Contract | The schema change is inside a documented, in-progress dual-read/dual-write migration window |
+| Experience | The flow sits behind an inactive feature flag or an explicitly out-of-scope entry point |
+| Outcome | The promise was explicitly descoped for this release in `PROJECT-STATE.md` |
+
+Adopt a suppression rule only after verifying on real samples that it does not hide a real defect (open-code-review principle 4, R0295 turn[6]). Never suppress data-loss, permission, or payment-path findings regardless of confidence (principle 5). Record every suppression on `templates/gate-report.md`'s "Suppressed" line.
+
 ## 계층을 건너뛰면 생기는 일
 
 코드 계층만 있으면: 컴파일/단위 테스트는 초록인데 설정 파일이 깨져 배포가 실패한다(계약 계층 부재).
@@ -25,6 +36,8 @@
 `verify` 커맨드(SKILL.md 라우팅표)는 4계층 전부에서 "독립 품질 증거"를 모은다 — 구현한 사람과 같은
 세션이 아닌 관점에서(생산자≠검증자). `templates/gate-report.md`가 4계층 각각의 통과/미통과와 근거 파일
 경로를 기록하는 계약이다.
+
+When verify fans out across multiple reviewers, each reviewer's intermediate reasoning/scratchpad stays local — only concluded findings are shared (context isolation, R0295 turn[12]).
 
 ## 최소 시작
 
