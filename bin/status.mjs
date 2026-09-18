@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-// bin/status.mjs — deterministic evidence layer for `epds status --json` (no LLM calls;
-// interpretation stays null). Collectors drafted by go-coder, fixed by hand; synthesis is hand-written.
+// bin/status.mjs — deterministic evidence layer for `epds status --json` (no LLM calls; interpretation stays null).
 import { execSync, spawnSync } from 'node:child_process';
+import crypto from 'node:crypto';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 function collectGit(target) {
@@ -12,11 +13,9 @@ function collectGit(target) {
     const head = spawnSync('git', ['-C', target, 'rev-parse', 'HEAD'], { encoding: 'utf8', timeout: 5000 });
     const short = spawnSync('git', ['-C', target, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8', timeout: 5000 });
     const st = spawnSync('git', ['-C', target, 'status', '--porcelain'], { encoding: 'utf8', timeout: 5000 });
-    if (head.status !== 0 || short.status !== 0 || st.status !== 0) { fact.exit = 1; }
-    else {
-      fact.value = { head: head.stdout.trim(), shortHead: short.stdout.trim(),
-        dirty: st.stdout.split(/\r?\n/).filter(Boolean).length };
-    }
+    if (head.status !== 0 || short.status !== 0 || st.status !== 0) fact.exit = 1;
+    else fact.value = { head: head.stdout.trim(), shortHead: short.stdout.trim(),
+      dirty: st.stdout.split(/\r?\n/).filter(Boolean).length };
   } catch { fact.exit = 1; }
   return fact;
 }
@@ -65,11 +64,8 @@ function collectMeasurement(target) {
   if (files.length === 0) {
     return { id: 'mqc.missing', value: {}, locator: relDir, cmd: 'glob journal/measurements/*.latest.json', exit: 1 };
   }
-  let newest = files[0], newestMtime = fs.statSync(newest).mtimeMs;
-  for (const f of files.slice(1)) {
-    const mtime = fs.statSync(f).mtimeMs;
-    if (mtime > newestMtime) { newest = f; newestMtime = mtime; }
-  }
+  const mtime = (f) => fs.statSync(f).mtimeMs;
+  const newest = files.reduce((a, b) => (mtime(b) > mtime(a) ? b : a));
   let exitField = null;
   try {
     const data = JSON.parse(fs.readFileSync(newest, 'utf8'));
@@ -174,16 +170,20 @@ function buildPosition(facts, state) {
   };
 }
 function buildOutcome(target) {
-  const productMd = path.join(target, 'PRODUCT.md');
-  if (fs.existsSync(productMd)) {
-    try {
-      const firstLine = fs.readFileSync(productMd, 'utf8').split(/\r?\n/).find((l) => l.trim().length > 0);
-      if (firstLine) return { goal: firstLine.trim(), locator: 'PRODUCT.md', gap: null };
-    } catch { /* fall through */ }
-  }
-  return { goal: null, locator: null, gap: 'PRODUCT.md 없음 - 최종 결과물 미정의' };
+  const rel = 'PRODUCT.md';
+  const productMd = path.join(target, rel);
+  if (!fs.existsSync(productMd)) return { goal: null, locator: null, gap: 'PRODUCT.md 없음 - 최종 결과물 미정의' };
+  try {
+    const lines = fs.readFileSync(productMd, 'utf8').split(/\r?\n/);
+    const goalLine = lines.map((l) => l.trim().match(/^Goal:\s*(.+)$/)).find(Boolean);
+    if (goalLine) return { goal: goalLine[1].trim(), locator: rel, gap: null };
+    const headingAt = lines.findIndex((l) => l.trim() === '## Goal');
+    const next = headingAt !== -1 ? lines.slice(headingAt + 1).find((l) => l.trim().length > 0) : null;
+    if (next) return { goal: next.trim(), locator: rel, gap: null };
+  } catch { /* fall through */ }
+  return { goal: null, locator: rel, gap: 'PRODUCT.md 에 "Goal: ..." 줄/"## Goal" 헤딩 없음 - 목표 미정의' };
 }
-function buildDirection(state, weakestFact) {
+function buildDirection(weakestFact) {
   if (!weakestFact) return { nextAction: '판정 불가 - 트랙 사실 없음', evidence: [], smallest: false };
   const build = DIRECTION_TABLE[weakestFact.id];
   const nextAction = build ? build(weakestFact) : `${weakestFact.id} 결함 해소`;
@@ -212,29 +212,39 @@ function buildQuestions(outcome, position) {
   return candidates.slice(0, 5);
 }
 function isoCompact(iso) { return iso.replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z'); }
-function writeSnapshot(target, output) {
-  const dir = path.join(target, 'journal', 'epds');
-  const rel = `journal/epds/${isoCompact(output.measuredAt)}.status.json`;
-  let prevRel = null, changed = [];
+// repoId/snapshotDir — snapshots live OUTSIDE target under EPDS_HOME (default ~/.epds), keyed by
+// the target's resolved-path hash (same shape as the harness's lib-lock-home.sh lock_repo_id), so
+// `status --json` never dirties the target's own git status (M6 self-pollution fix).
+function repoId(target) {
+  let resolved = target;
+  try { resolved = fs.realpathSync(target); } catch { /* leave as-is */ }
+  return crypto.createHash('sha256').update(resolved).digest('hex').slice(0, 8);
+}
+function snapshotDir(target, opts) {
+  if (opts.snapshotDir) return opts.snapshotDir;
+  const home = process.env.EPDS_HOME || path.join(os.homedir(), '.epds');
+  return path.join(home, 'status', repoId(target));
+}
+function writeSnapshot(dir, output) {
+  const file = `${isoCompact(output.measuredAt)}.status.json`;
+  let prevPath = null, changed = [];
   try {
     fs.mkdirSync(dir, { recursive: true });
     const existing = fs.readdirSync(dir).filter((f) => f.endsWith('.status.json')).sort();
     if (existing.length > 0) {
-      const prevPath = path.join(dir, existing[existing.length - 1]);
-      prevRel = `journal/epds/${existing[existing.length - 1]}`;
+      prevPath = path.join(dir, existing[existing.length - 1]);
       const prev = JSON.parse(fs.readFileSync(prevPath, 'utf8'));
-      for (const key of ['state', 'position', 'outcome', 'direction']) {
-        if (JSON.stringify(prev[key]) !== JSON.stringify(output[key])) changed.push(key);
-      }
+      changed = ['state', 'position', 'outcome', 'direction'].filter((k) => JSON.stringify(prev[k]) !== JSON.stringify(output[k]));
     }
-    fs.writeFileSync(path.join(dir, path.basename(rel)), `${JSON.stringify(output, null, 2)}\n`, 'utf8');
+    fs.writeFileSync(path.join(dir, file), `${JSON.stringify(output, null, 2)}\n`, 'utf8');
   } catch { /* snapshot dir unwritable — leave prev/changed at defaults, not fatal */ }
-  return { path: rel, prev: prevRel, changed };
+  return { path: path.join(dir, file), prev: prevPath, changed };
 }
 function parseArgs(argv) {
-  const out = { target: null, runner: { model: 'unknown', effort: 'unknown', dataTier: 'B' } };
+  const out = { target: null, snapshotDir: null, runner: { model: 'unknown', effort: 'unknown', dataTier: 'B' } };
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--target') out.target = argv[++i] ?? null;
+    else if (argv[i] === '--snapshot-dir') out.snapshotDir = argv[++i] ?? null;
     else if (argv[i] === '--model') out.runner.model = argv[++i] ?? 'unknown';
     else if (argv[i] === '--effort') out.runner.effort = argv[++i] ?? 'unknown';
     else if (argv[i] === '--data-tier') out.runner.dataTier = argv[++i] ?? 'B';
@@ -243,9 +253,7 @@ function parseArgs(argv) {
 }
 export function runStatus(argv) {
   const opts = parseArgs(argv);
-  if (!opts.target) {
-    return { output: { error: 'missing --target', exit: 2 }, exit: 2 };
-  }
+  if (!opts.target) return { output: { error: 'missing --target', exit: 2 }, exit: 2 };
   const target = path.resolve(opts.target);
   const facts = [collectGit(target)];
   const testFact = collectTest(target); if (testFact) facts.push(testFact);
@@ -259,37 +267,29 @@ export function runStatus(argv) {
   const position = buildPosition(facts, { state, technicalFailFact, productFailFact });
   const outcome = buildOutcome(target);
   const weakestFact = position.weakest.track === 'product' ? productFailFact : technicalFailFact;
-  const direction = buildDirection(state, weakestFact);
+  const direction = buildDirection(weakestFact);
   const questions = buildQuestions(outcome, position);
   const questionCheck = validateQuestions(questions);
   if (!questionCheck.ok) return { output: { error: questionCheck.reason, exit: 2 }, exit: 2 };
+  // outcome.gap+locator = PRODUCT.md exists but had no parseable goal, distinct from fs.metrics.missing.
   const unmeasured = {
     // fs.metrics.missing's id is a fixed name; only count it when exit!=0 (an actual miss).
-    environment: facts.filter((f) => f.id.endsWith('.missing') && f.exit !== 0).length,
+    environment: facts.filter((f) => f.id.endsWith('.missing') && f.exit !== 0).length
+      + (outcome.gap && outcome.locator ? 1 : 0),
     censored: facts.filter((f) => f.value && f.value.censored === true).length,
     corrupted: 0
   };
   const gitFact = facts.find((f) => f.id === 'git.head');
   const output = {
-    schemaVersion: 1,
-    measuredAt: new Date().toISOString(),
-    runner: opts.runner,
+    schemaVersion: 1, measuredAt: new Date().toISOString(), runner: opts.runner,
     target: { path: target, head: gitFact ? gitFact.value.shortHead : 'unknown', dirty: gitFact ? gitFact.value.dirty : 0 },
-    facts,
-    state,
-    position,
-    outcome,
-    direction,
-    questions,
-    unmeasured,
-    snapshot: null,
-    interpretation: null,
-    exit: 0
+    facts, state, position, outcome, direction, questions, unmeasured,
+    snapshot: null, interpretation: null, exit: 0
   };
   const bothPass = state.product.verdict === 'PASS' && state.technical.verdict === 'PASS';
   const anyFail = state.product.verdict === 'FAIL' || state.technical.verdict === 'FAIL';
   output.exit = bothPass ? 0 : anyFail ? 1 : 3;
-  output.snapshot = writeSnapshot(target, output);
+  output.snapshot = writeSnapshot(snapshotDir(target, opts), output);
   return { output, exit: output.exit };
 }
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);

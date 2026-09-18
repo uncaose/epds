@@ -3,10 +3,9 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 import { runStatus, validateFacts, validateQuestions } from '../bin/status.mjs';
 
-const here = path.dirname(fileURLToPath(import.meta.url));
 const B3 = path.join(os.homedir(), 'Projects', 'go-work', 'epds-verify-b3');
 const REPRO3 = path.join(os.homedir(), 'Projects', 'go-work', 'epds-verify-repro3');
 
@@ -93,6 +92,46 @@ if (fs.existsSync(REPRO3)) {
   const good = validateQuestions([{ id: 'Q1', ask: 'x', ownerOnly: true, source: 's',
     sharpens: { state: 's', position: null, outcome: null, direction: null } }]);
   ok('case6 sharpens 1-of-4 filled: validateQuestions accepts', good.ok === true);
+}
+
+// ---- case 7: status write must not dirty the target git repo (M6 self-pollution fix) ----
+{
+  const dir = freshTmp();
+  execFileSync('git', ['init', '-q'], { cwd: dir });
+  execFileSync('git', ['config', 'user.email', 'a@b.c'], { cwd: dir });
+  execFileSync('git', ['config', 'user.name', 'selftest'], { cwd: dir });
+  fs.writeFileSync(path.join(dir, 'PRODUCT.md'), 'Goal: x\n');
+  execFileSync('git', ['add', '.'], { cwd: dir });
+  execFileSync('git', ['commit', '-q', '-m', 'init'], { cwd: dir });
+  const snapDir = freshTmp();
+  runStatus(['--target', dir, '--snapshot-dir', snapDir, '--json']);
+  const porcelain = execFileSync('git', ['status', '--porcelain'], { cwd: dir, encoding: 'utf8' });
+  ok('case7 status write: target git status --porcelain unchanged', porcelain === '');
+  ok('case7 status write: snapshot written outside target', fs.readdirSync(snapDir).some((f) => f.endsWith('.status.json')));
+}
+
+// ---- case 8: 2 runs on the same target -> content identical (measuredAt/snapshot excluded) ----
+{
+  const dir = freshTmp();
+  fs.writeFileSync(path.join(dir, 'PRODUCT.md'), 'Goal: ship the thing\n');
+  const snapDir = freshTmp();
+  const r1 = runStatus(['--target', dir, '--snapshot-dir', snapDir, '--json']).output;
+  const r2 = runStatus(['--target', dir, '--snapshot-dir', snapDir, '--json']).output;
+  ok('case8 same-target reproducibility: content identical across 2 runs', contentOnly(r1) === contentOnly(r2));
+}
+
+// ---- case 9: outcome.goal parser — "Goal:" line parsed, heading-only file -> null ----
+{
+  const dirGoal = freshTmp();
+  fs.writeFileSync(path.join(dirGoal, 'PRODUCT.md'), '# Product\n\nGoal: ship the thing\n\nmore text\n');
+  const withGoal = runStatus(['--target', dirGoal, '--snapshot-dir', freshTmp(), '--json']).output;
+  ok('case9 "Goal:" line parsed correctly', withGoal.outcome.goal === 'ship the thing');
+
+  const dirHeadingOnly = freshTmp();
+  fs.writeFileSync(path.join(dirHeadingOnly, 'PRODUCT.md'), '# Product\n\nno Goal line or ## Goal heading here\n');
+  const headingOnly = runStatus(['--target', dirHeadingOnly, '--snapshot-dir', freshTmp(), '--json']).output;
+  ok('case9 heading-only file -> goal null (first-heading mis-extraction fixed)', headingOnly.outcome.goal === null);
+  ok('case9 heading-only file -> gap set + counted in unmeasured.environment', headingOnly.outcome.gap !== null && headingOnly.unmeasured.environment >= 1);
 }
 
 if (fail > 0) { console.log(`\nstatus.selftest FAIL (${fail} failing check(s))`); process.exit(1); }
