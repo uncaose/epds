@@ -72,5 +72,46 @@ function withMqcJudge(dir) {
       && pkg.scripts.test.includes('status.selftest.mjs') && pkg.scripts.test.includes('status.selftest-h125.mjs'));
 }
 
+{ // case24 (v4 finding): shared outputGlob dir holding only another target's output -> judge.unmatched, never adopted
+  const sharedDir = freshTmp();
+  const otherDir = freshTmp();
+  fs.writeFileSync(path.join(sharedDir, 'x.latest.json'), JSON.stringify({ exit: 0, game: otherDir }));
+  const dir = freshTmp();
+  fs.mkdirSync(path.join(dir, 'epds'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'epds', 'judges.json'), JSON.stringify(
+    [{ id: 'ext', cmd: 'x', outputGlob: path.join(sharedDir, '*.latest.json'), exitField: 'exit', applies: 'auto' }]));
+  const { output } = runStatus(['--target', dir, '--snapshot-dir', freshTmp(), '--json']);
+  const unmatched = output.facts.find((f) => f.id === 'ext.unmatched');
+  ok('case24 (v4 finding) other-target-only output -> ext.unmatched(UNMEASURED-environment), no ext.latest adopted',
+    !!(unmatched && unmatched.value.env === true && unmatched.exit === 1) && !output.facts.some((f) => f.id === 'ext.latest'));
+}
+{ // case25 (v4 finding): shared dir with another target's file + this target's file -> the matching one is adopted
+  const sharedDir = freshTmp();
+  const otherDir = freshTmp();
+  const dir = freshTmp();
+  fs.writeFileSync(path.join(sharedDir, 'a-other.latest.json'), JSON.stringify({ exit: 1, game: otherDir }));
+  fs.writeFileSync(path.join(sharedDir, 'b-mine.latest.json'), JSON.stringify({ exit: 0, game: dir }));
+  fs.mkdirSync(path.join(dir, 'epds'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'epds', 'judges.json'), JSON.stringify(
+    [{ id: 'ext', cmd: 'x', outputGlob: path.join(sharedDir, '*.latest.json'), exitField: 'exit', applies: 'auto' }]));
+  const { output } = runStatus(['--target', dir, '--snapshot-dir', freshTmp(), '--json']);
+  const ext = output.facts.find((f) => f.id === 'ext.latest');
+  ok('case25 (v4 finding) own-target file among a shared dir is adopted, locator records matched game= value',
+    !!(ext && ext.value.exit === 0 && ext.locator.includes('b-mine.latest.json') && ext.locator.includes(`game=${dir}`)));
+}
+{ // case26 (v4 finding): targetField:null is an explicit opt-out -> old unguarded newest-wins behavior
+  const sharedDir = freshTmp();
+  const otherDir = freshTmp();
+  const dir = freshTmp();
+  fs.writeFileSync(path.join(sharedDir, 'x.latest.json'), JSON.stringify({ exit: 0, game: otherDir }));
+  fs.mkdirSync(path.join(dir, 'epds'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'epds', 'judges.json'), JSON.stringify(
+    [{ id: 'ext', cmd: 'x', outputGlob: path.join(sharedDir, '*.latest.json'), exitField: 'exit', targetField: null, applies: 'auto' }]));
+  const { output } = runStatus(['--target', dir, '--snapshot-dir', freshTmp(), '--json']);
+  const ext = output.facts.find((f) => f.id === 'ext.latest');
+  ok('case26 (v4 finding) targetField:null opts out -> other-target file still adopted (no gate)',
+    !!(ext && ext.value.exit === 0) && !output.facts.some((f) => f.id === 'ext.unmatched'));
+}
+
 if (fail > 0) { console.log(`\nstatus.selftest-h125 FAIL (${fail} failing check(s))`); process.exit(1); }
 console.log('\nstatus.selftest-h125 PASS');

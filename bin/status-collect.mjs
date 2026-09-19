@@ -90,6 +90,21 @@ function expandOutputGlob(pattern) {
   }
   return pattern;
 }
+// v4 finding (metrics-v4.md §0-b/§0-c): outputGlob pointing at a directory shared across targets
+// (wildcard + shared dir) can match another target's judge output by mtime alone. judge.targetField
+// (default "game") names the field the judge's own JSON carries; when present as a string it must
+// resolve to this target (basename or realpath) to be adopted. Field absent -> no info -> unguarded
+// (keeps every pre-existing judge fixture, none of which carry this field, working unchanged).
+// targetField:null is an explicit opt-out (guard skipped entirely).
+function judgeTargetValue(data, targetField) {
+  const val = data && data[targetField];
+  return typeof val === 'string' && val.length > 0 ? val : null;
+}
+function judgeTargetMatches(val, target) {
+  if (path.basename(val) === path.basename(target)) return true;
+  try { return fs.realpathSync(path.resolve(val)) === fs.realpathSync(target); }
+  catch { return path.resolve(val) === path.resolve(target); }
+}
 // H125 item1: UNMEASURED-verdict judge rows get a 3-way class from their `detail` text, same split as
 // bands doc §3 (environment=tool not wired, censored=observed but event never happened, corrupted=
 // everything else/output damage). A target's epds/judges.json can override this per judge via a
@@ -133,8 +148,38 @@ export function collectJudges(target) {
       continue;
     }
     const mtime = (f) => fs.statSync(f).mtimeMs;
-    const newest = files.reduce((a, b) => (mtime(b) > mtime(a) ? b : a));
-    const newestName = path.basename(newest);
+    let newest = files.reduce((a, b) => (mtime(b) > mtime(a) ? b : a));
+    let matchNote = '';
+    const targetField = Object.prototype.hasOwnProperty.call(judge, 'targetField') ? judge.targetField : 'game';
+    if (targetField !== null) {
+      let newestParsed;
+      try { newestParsed = JSON.parse(fs.readFileSync(newest, 'utf8')); } catch { newestParsed = undefined; } // corrupted -> unguarded, existing corrupted-fact path below handles it
+      const newestVal = newestParsed === undefined ? null : judgeTargetValue(newestParsed, targetField);
+      if (newestVal !== null && !judgeTargetMatches(newestVal, target)) {
+        // newest is valid JSON for a DIFFERENT target (shared outputGlob dir) — look for a
+        // same-target candidate among the rest, newest-first; adopt only a confirmed match.
+        const rest = files.filter((f) => f !== newest).sort((a, b) => mtime(b) - mtime(a));
+        let matched = null, matchedVal = null;
+        for (const f of rest) {
+          let d;
+          try { d = JSON.parse(fs.readFileSync(f, 'utf8')); } catch { continue; }
+          const v = judgeTargetValue(d, targetField);
+          if (v !== null && judgeTargetMatches(v, target)) { matched = f; matchedVal = v; break; }
+        }
+        if (!matched) {
+          facts.push({ id: `${judge.id}.unmatched`,
+            value: { class: 'environment', env: true, directionHint: `output for other target: ${newestVal}` },
+            locator: `${relDir}${path.basename(newest)}`, cmd: judge.cmd || `read ${judge.outputGlob}`,
+            exit: 1, track: 'technical' });
+          continue;
+        }
+        newest = matched;
+        matchNote = ` (${targetField}=${matchedVal})`;
+      } else if (newestVal !== null) {
+        matchNote = ` (${targetField}=${newestVal})`;
+      }
+    }
+    const newestName = `${path.basename(newest)}${matchNote}`;
     let data = null, corrupted = false;
     try { data = JSON.parse(fs.readFileSync(newest, 'utf8')); } catch { corrupted = true; }
     if (!corrupted && data && Array.isArray(data.results)) {
