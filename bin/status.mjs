@@ -173,13 +173,16 @@ export function writeSnapshot(dir, output) {
   } catch { /* snapshot dir unwritable — leave prev/changed at defaults, not fatal */ }
   return { path: path.join(dir, file), prev: prevPath, changed };
 }
+// H125 item2: this binary is a deterministic collector — no LLM ever runs it, so `runner` says so
+// truthfully instead of echoing back a caller-supplied --model/--effort flag no LLM actually used
+// (critic 20260919 C6: that passthrough recorded models that never executed this code). Whatever
+// interpretation layer a SKILL bolts on afterward attaches its OWN `interpretation.runner` (default
+// 'unknown' there too) — this collector never fabricates that field.
 function parseArgs(argv) {
-  const out = { target: null, snapshotDir: null, runner: { model: 'unknown', effort: 'unknown', dataTier: 'B' } };
+  const out = { target: null, snapshotDir: null, runner: { model: 'none', effort: null, dataTier: 'B' } };
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--target') out.target = argv[++i] ?? null;
     else if (argv[i] === '--snapshot-dir') out.snapshotDir = argv[++i] ?? null;
-    else if (argv[i] === '--model') out.runner.model = argv[++i] ?? 'unknown';
-    else if (argv[i] === '--effort') out.runner.effort = argv[++i] ?? 'unknown';
     else if (argv[i] === '--data-tier') out.runner.dataTier = argv[++i] ?? 'B';
   }
   return out;

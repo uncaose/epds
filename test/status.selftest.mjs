@@ -252,5 +252,8 @@ if (fs.existsSync(REPRO3)) {
   ok('case18 METRICS.md corrupted fixture: product track verdict is UNMEASURED-corrupted', output.state.product.verdict === 'UNMEASURED-corrupted');
 }
 
+// H125 cases 19-23 live in status.selftest-h125.mjs (A17 <=300 lines/file split; package.json "test"
+// runs both files).
+
 if (fail > 0) { console.log(`\nstatus.selftest FAIL (${fail} failing check(s))`); process.exit(1); }
 console.log('\nstatus.selftest PASS');

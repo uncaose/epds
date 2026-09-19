@@ -3,6 +3,7 @@
 // Doc/product collectors (lifecycle, metrics) live in status-collect-docs.mjs (A17 <=300 lines/file).
 import { execSync, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -46,8 +47,13 @@ export function collectTest(target) {
     const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
     if (!pkg.scripts || typeof pkg.scripts.test !== 'string') return null;
   } catch { return null; }
+  // guard: a target whose own test script re-invokes `epds status` on itself (epds's own package.json
+  // does, H125 item5) would spawn npm test -> this selftest -> collectTest(target) -> npm test forever
+  // without this — the env flag set on the spawned child below stops that SAME target from nesting twice.
+  if (process.env.EPDS_STATUS_TEST_GUARD === target) return null;
   let exit = 0, env = false, output = '';
-  try { output = execSync('npm test --silent', { cwd: target, timeout: 20000, stdio: 'pipe', encoding: 'utf8' }); }
+  try { output = execSync('npm test --silent', { cwd: target, timeout: 20000, stdio: 'pipe', encoding: 'utf8',
+    env: { ...process.env, EPDS_STATUS_TEST_GUARD: target } }); }
   catch (e) {
     // signal set (killed/timeout) or no numeric status (spawn failure) -> can't tell FAIL from env gap.
     if (e.signal || typeof e.status !== 'number') { exit = -1; env = true; }
@@ -74,19 +80,52 @@ function loadJudgesConfig(target) {
     return Array.isArray(data) ? data : [];
   } catch { return []; } // malformed config -> 0 judges, never a crash or a silent fail-open
 }
-// A judge with no applicable config (applies:"never", or absent entirely) generates NO fact —
-// "해당 없음", not UNMEASURED-environment. This is what makes self-apply on a non-mqc repo clean.
+// H125 item4: outputGlob may point outside the target (absolute path, ~, or $EPDS_HOME) so a judge's
+// measurement output never has to be dropped inside the target worktree just to be discoverable.
+// A plain relative pattern keeps the original target-relative resolution unchanged.
+function expandOutputGlob(pattern) {
+  if (pattern.startsWith('~')) return path.join(os.homedir(), pattern.slice(1));
+  if (pattern.includes('$EPDS_HOME')) {
+    return pattern.replace('$EPDS_HOME', process.env.EPDS_HOME || path.join(os.homedir(), '.epds'));
+  }
+  return pattern;
+}
+// H125 item1: UNMEASURED-verdict judge rows get a 3-way class from their `detail` text, same split as
+// bands doc §3 (environment=tool not wired, censored=observed but event never happened, corrupted=
+// everything else/output damage). A target's epds/judges.json can override this per judge via a
+// `classify` array of {class, matches:[substr,...]} tried in order — no keyword is hardcoded per-judge.
+const DEFAULT_CLASSIFY = [
+  { class: 'environment', matches: ['--skip-trace', '계약 없음', '미설치', 'env'] },
+  { class: 'censored', matches: ['절단', 'censored'] },
+  { class: 'corrupted', matches: ['파싱'] }
+];
+function classifyUnmeasured(detail, table) {
+  const rules = Array.isArray(table) && table.length > 0 ? table : DEFAULT_CLASSIFY;
+  const text = typeof detail === 'string' ? detail : '';
+  for (const rule of rules) {
+    if (Array.isArray(rule.matches) && rule.matches.some((m) => text.includes(m))) return rule.class;
+  }
+  return 'corrupted'; // no keyword hit -> "그 외 = corrupted" (bands §3), never a silent PASS
+}
+// A judge with no applicable config (applies:"never", or absent entirely) generates NO per-row fact —
+// "해당 없음", not UNMEASURED-environment. If NONE of the configured judges are applicable at all, a
+// single judges.unconfigured fact makes the resulting "technical track had 0 evidence" explicit
+// (H125 item5) instead of a silent empty array.
 export function collectJudges(target) {
   const facts = [];
+  let anyApplicable = false;
   for (const judge of loadJudgesConfig(target)) {
     if (!judge || judge.applies === 'never' || !judge.id || !judge.outputGlob) continue;
-    const dir = path.dirname(path.join(target, judge.outputGlob));
-    const pattern = path.basename(judge.outputGlob);
+    anyApplicable = true;
+    const expanded = expandOutputGlob(judge.outputGlob);
+    const absolute = path.isAbsolute(expanded);
+    const dir = path.dirname(absolute ? expanded : path.join(target, expanded));
+    const pattern = path.basename(expanded);
     const re = globToRegExp(pattern);
     let files = [];
     try { files = fs.readdirSync(dir).filter((f) => re.test(f)).map((f) => path.join(dir, f)); }
     catch { files = []; }
-    const relDir = `${path.relative(target, dir)}${path.sep}`;
+    const relDir = absolute ? `${dir}${path.sep}` : `${path.relative(target, dir)}${path.sep}`;
     if (files.length === 0) {
       const directionHint = `${judge.cmd || `${judge.id} 실행`} 등으로 ${judge.outputGlob} 생성`;
       facts.push({ id: `${judge.id}.missing`, value: { directionHint }, locator: relDir,
@@ -95,20 +134,48 @@ export function collectJudges(target) {
     }
     const mtime = (f) => fs.statSync(f).mtimeMs;
     const newest = files.reduce((a, b) => (mtime(b) > mtime(a) ? b : a));
+    const newestName = path.basename(newest);
+    let data = null, corrupted = false;
+    try { data = JSON.parse(fs.readFileSync(newest, 'utf8')); } catch { corrupted = true; }
+    if (!corrupted && data && Array.isArray(data.results)) {
+      // H125 item1: one fact per judged row — no more collapsing a 27-row verdict table into 2 fields.
+      data.results.forEach((row, i) => {
+        if (!row || !row.id) return;
+        const cls = row.verdict === 'unmeasured' ? classifyUnmeasured(row.detail, judge.classify) : null;
+        const value = { verdict: row.verdict, judge: row.judge || null, detail: row.detail || null, class: cls };
+        if (cls === 'environment') value.env = true;
+        if (cls === 'censored') value.censored = true;
+        if (cls === 'corrupted') value.corrupted = true;
+        // item3: a row corrupted-classified is UNMEASURED-corrupted, never a fake numeric PASS(0).
+        const rowExit = row.verdict === 'deficient' ? 1 : (cls === 'corrupted' ? null : 0);
+        facts.push({ id: `judge.${row.id}`, value, locator: `${relDir}${newestName}:${i + 1}`,
+          cmd: judge.cmd || `read ${judge.outputGlob}`, exit: rowExit, track: 'technical' });
+      });
+      if (data.counts) {
+        facts.push({ id: `${judge.id}.counts`, value: data.counts, locator: `${relDir}${newestName}`,
+          cmd: judge.cmd || `read ${judge.outputGlob}`, exit: 0, track: 'technical' });
+      }
+      continue;
+    }
+    // generic {exit:N}-shaped judge output (no results[] table) — same summary fact as before,
+    // except a corrupted output now reports exit:null instead of a fail-open 0 (item3).
     const exitField = judge.exitField || 'exit';
-    let exitVal = null, corrupted = false;
-    try {
-      const data = JSON.parse(fs.readFileSync(newest, 'utf8'));
+    let exitVal = null;
+    if (!corrupted && data) {
       if (Object.prototype.hasOwnProperty.call(data, exitField)) exitVal = data[exitField];
       else corrupted = true;
-    } catch { corrupted = true; }
-    // no fail-open: an unreadable/field-less judge output is UNMEASURED-corrupted, never a silent PASS(0).
-    const finalExit = typeof exitVal === 'number' ? exitVal : 0;
+    }
+    const finalExit = corrupted ? null : (typeof exitVal === 'number' ? exitVal : 0);
     const directionHint = corrupted
-      ? `${judge.id} 산출물 손상 - ${relDir}${path.basename(newest)} (${exitField} 필드 없음/JSON 파손, 재실행 필요)`
+      ? `${judge.id} 산출물 손상 - ${relDir}${newestName} (${exitField} 필드 없음/JSON 파손, 재실행 필요)`
       : `${judge.cmd || `${judge.id} 재실행`} - exit=${exitVal} 원인 조사`;
-    facts.push({ id: `${judge.id}.latest`, value: { file: path.basename(newest), exit: exitVal, corrupted, directionHint },
-      locator: `${relDir}${path.basename(newest)}`, cmd: judge.cmd || `read ${judge.outputGlob}`, exit: finalExit, track: 'technical' });
+    facts.push({ id: `${judge.id}.latest`, value: { file: newestName, exit: exitVal, corrupted, directionHint },
+      locator: `${relDir}${newestName}`, cmd: judge.cmd || `read ${judge.outputGlob}`, exit: finalExit, track: 'technical' });
+  }
+  if (!anyApplicable) {
+    facts.push({ id: 'judges.unconfigured',
+      value: { env: true, directionHint: 'epds/judges.json 작성 - technical 트랙 judge 증거 0(judges 미구성)' },
+      locator: 'epds/judges.json', cmd: 'read epds/judges.json', exit: 1, track: 'technical' });
   }
   return facts;
 }
