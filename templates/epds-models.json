@@ -2,5 +2,6 @@
   "version": 1,
   "detectedAt": null,
   "detected": [],
-  "roles": {}
+  "roles": {},
+  "effort": {}
 }

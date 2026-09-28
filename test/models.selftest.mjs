@@ -290,5 +290,201 @@ function freshTmp() {
   ok('case15 `models list` shows effort.critic = high', listOut.effort.critic === 'high');
 }
 
+// ---- case 16: ensureModelsGitignore (via saveModels) APPENDS to an existing epds/.gitignore
+// instead of overwriting it, and stays idempotent (N1) ----
+{
+  const dir = freshTmp();
+  fs.mkdirSync(path.join(dir, 'epds'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'epds', '.gitignore'), 'some-other-local-file\n', 'utf8');
+  await saveModels(dir, { version: 1, detectedAt: new Date().toISOString(), detected: [], roles: {}, effort: {} });
+  const gitignorePath = path.join(dir, 'epds', '.gitignore');
+  const contents = fs.readFileSync(gitignorePath, 'utf8');
+  ok('case16 pre-existing line is preserved', contents.includes('some-other-local-file'));
+  ok('case16 models.json line is appended', contents.includes('models.json'));
+  ok('case16 appended exactly once', contents.split('\n').filter((l) => l.trim() === 'models.json').length === 1);
+  await saveModels(dir, { version: 1, detectedAt: new Date().toISOString(), detected: [], roles: {}, effort: {} });
+  const again = fs.readFileSync(gitignorePath, 'utf8');
+  ok('case16 saving again does not duplicate the appended line', again.split('\n').filter((l) => l.trim() === 'models.json').length === 1);
+  ok('case16 saving again does not touch the pre-existing line either', again.split('\n').filter((l) => l.trim() === 'some-other-local-file').length === 1);
+}
+
+// ---- case 17: runDetect write=true never warns about a role that is ALREADY null — running
+// detect --write twice in a row produces zero warnings (N2) ----
+{
+  const dir = freshTmp();
+  fs.writeFileSync(path.join(dir, 'claude'), '#!/bin/sh\n', { mode: 0o755 });
+  await saveModels(dir, {
+    version: 1,
+    detectedAt: null,
+    detected: [{ id: 'cli:claude', kind: 'cli', signal: 'stale-path' }],
+    roles: { critic: null },
+    effort: {}
+  });
+  const first = await runDetect(dir, { write: true, env: { PATH: dir } });
+  ok('case17 first detect --write on an already-null role warns 0 times', first.warnings.length === 0);
+  const second = await runDetect(dir, { write: true, env: { PATH: dir } });
+  ok('case17 second detect --write (2 in a row) also warns 0 times', second.warnings.length === 0);
+  ok('case17 role stays null', JSON.parse(fs.readFileSync(modelsPath(dir), 'utf8')).roles.critic === null);
+}
+
+// ---- case 18: runDetect write=true, an array role with SOME ids still detected only drops the
+// missing ones, keeping the rest — and effort[role] survives a partial narrow but is deleted when
+// the role fully clears to null (N3) ----
+{
+  const dir = freshTmp();
+  fs.writeFileSync(path.join(dir, 'claude'), '#!/bin/sh\n', { mode: 0o755 });
+  await saveModels(dir, {
+    version: 1,
+    detectedAt: null,
+    detected: [
+      { id: 'cli:claude', kind: 'cli', signal: 'stale-path' },
+      { id: 'cli:codex', kind: 'cli', signal: 'stale-path' }
+    ],
+    roles: { reviewers: ['cli:claude', 'cli:codex'], critic: 'cli:codex' },
+    effort: { reviewers: 'high', critic: 'medium' }
+  });
+  // This session only detects cli:claude (codex uninstalled since).
+  const { warnings } = await runDetect(dir, { write: true, env: { PATH: dir } });
+  const after = JSON.parse(fs.readFileSync(modelsPath(dir), 'utf8'));
+  ok('case18 array role keeps the still-detected id, drops only the missing one', after.roles.reviewers === 'cli:claude');
+  ok('case18 partial narrow warns', warnings.some((w) => w.includes('reviewers')));
+  ok('case18 partial narrow does NOT delete effort[role] (identity partially survives)', after.effort.reviewers === 'high');
+  ok('case18 single-id role fully missing clears to null', after.roles.critic === null);
+  ok('case18 full clear DOES delete the stale effort[role]', !('critic' in after.effort));
+}
+
+// ---- case 19: setRole() deletes the previous effort[role] self-report when a role is reassigned
+// to a different id (N3) ----
+{
+  const data = {
+    version: 1,
+    detectedAt: new Date().toISOString(),
+    detected: [
+      { id: 'cli:claude', kind: 'cli', signal: '/usr/local/bin/claude' },
+      { id: 'cli:codex', kind: 'cli', signal: '/usr/local/bin/codex' }
+    ],
+    roles: {},
+    effort: {}
+  };
+  setRole(data, 'critic', 'cli:claude');
+  setEffort(data, 'critic', 'high');
+  ok('case19 effort recorded before reassignment', data.effort.critic === 'high');
+  setRole(data, 'critic', 'cli:codex');
+  ok('case19 reassigning the role clears the stale effort self-report', !('critic' in data.effort));
+}
+
+// ---- case 20: setRole() rejects a duplicate id in the same comma list (L1) ----
+{
+  const data = {
+    version: 1,
+    detectedAt: new Date().toISOString(),
+    detected: [{ id: 'cli:claude', kind: 'cli', signal: '/usr/local/bin/claude' }],
+    roles: {},
+    effort: {}
+  };
+  let threw = false;
+  try { setRole(data, 'reviewers', 'cli:claude,cli:claude'); } catch { threw = true; }
+  ok('case20 setRole rejects a duplicate id in the same list', threw);
+  ok('case20 rejected assignment left roles.reviewers unset', !('reviewers' in data.roles));
+}
+
+// ---- case 21: setRole() requires cli:ollama / cli:lms to carry a model id (cli:<name>:<model>);
+// bare cli:ollama / cli:lms is rejected even if the base CLI is detected (N5) ----
+{
+  const data = {
+    version: 1,
+    detectedAt: new Date().toISOString(),
+    detected: [
+      { id: 'cli:ollama', kind: 'cli', signal: '/usr/local/bin/ollama' },
+      { id: 'cli:claude', kind: 'cli', signal: '/usr/local/bin/claude' }
+    ],
+    roles: {},
+    effort: {}
+  };
+  let threwBare = false;
+  try { setRole(data, 'worker', 'cli:ollama'); } catch { threwBare = true; }
+  ok('case21 bare cli:ollama (no model) is rejected', threwBare);
+  ok('case21 rejected bare assignment left roles.worker unset', !('worker' in data.roles));
+
+  setRole(data, 'worker', 'cli:ollama:llama3');
+  ok('case21 cli:ollama:<model> is accepted when cli:ollama is detected', data.roles.worker === 'cli:ollama:llama3');
+
+  let threwUndetected = false;
+  try { setRole(data, 'other', 'cli:lms:some-model'); } catch { threwUndetected = true; }
+  ok('case21 cli:lms:<model> is rejected when cli:lms itself is not detected', threwUndetected);
+
+  ok('case21 clis outside MODEL_REQUIRED_CLIS are unaffected (plain cli:claude still works)', (() => {
+    setRole(data, 'critic', 'cli:claude');
+    return data.roles.critic === 'cli:claude';
+  })());
+
+  // Ollama tags themselves commonly contain a colon (e.g. "llama3:8b") — only the first two
+  // colons in the role id are structural, everything after is the model id verbatim.
+  setRole(data, 'worker2', 'cli:ollama:llama3:8b');
+  ok('case21 a model id that itself contains a colon (Ollama tag form) is preserved whole', data.roles.worker2 === 'cli:ollama:llama3:8b');
+}
+
+// ---- case 22: detectSignals reports an env key that is SET to an empty string ('') — it checks
+// key presence (`k in env`), never the value, so an empty-but-set var still counts (L4) ----
+{
+  const signals = await detectSignals({ PATH: '', GROQ_API_KEY: '' });
+  ok('case22 an env key present with an empty string value is still detected (name-only check)', signals.some((s) => s.id === 'env:GROQ_API_KEY'));
+  const absent = await detectSignals({ PATH: '' });
+  ok('case22 an env key not present at all is not detected', !absent.some((s) => s.id === 'env:GROQ_API_KEY'));
+}
+
+// ---- case 23: CLI `models set` rejects a missing `--effort` value and correctly parses
+// `--effort=value` form (both non-zero exit on missing value, both exit 0 and take effect when a
+// value is actually given) (L1) ----
+{
+  const dir = freshTmp();
+  fs.writeFileSync(path.join(dir, 'claude'), '#!/bin/sh\n', { mode: 0o755 });
+  const env = { ...process.env, PATH: `${dir}${path.delimiter}${path.dirname(process.execPath)}` };
+  const node = process.execPath;
+  execFileSync(node, [epdsBin, 'models', 'detect', '--write'], { cwd: dir, env, encoding: 'utf8' });
+
+  let missingFailed = false;
+  try {
+    execFileSync(node, [epdsBin, 'models', 'set', 'critic', 'cli:claude', '--effort'], { cwd: dir, env, encoding: 'utf8', stdio: 'pipe' });
+  } catch (error) {
+    missingFailed = error.status !== 0;
+  }
+  ok('case23 `models set ... --effort` with no value exits non-zero', missingFailed);
+
+  const eqOut = execFileSync(node, [epdsBin, 'models', 'set', 'critic', 'cli:claude', '--effort=high'], { cwd: dir, env, encoding: 'utf8' });
+  ok('case23 `models set ... --effort=high` (equals form) is parsed and takes effect', eqOut.includes('effort.critic = high'));
+  const listOut = JSON.parse(execFileSync(node, [epdsBin, 'models', 'list'], { cwd: dir, env, encoding: 'utf8' }));
+  ok('case23 `models list` confirms effort.critic = high after the --effort=high form', listOut.effort.critic === 'high');
+
+  let duplicateFailed = false;
+  try {
+    execFileSync(node, [epdsBin, 'models', 'set', 'reviewers', 'cli:claude,cli:claude'], { cwd: dir, env, encoding: 'utf8', stdio: 'pipe' });
+  } catch (error) {
+    duplicateFailed = error.status !== 0;
+  }
+  ok('case23 `models set` with a duplicate id in the list exits non-zero', duplicateFailed);
+}
+
+// ---- case 24: a role that is ALREADY null but carries a leftover stale effort[role] (e.g. hand-
+// edited models.json, or a file written by an older version of this code) has that effort deleted
+// on the very next `detect --write`, silently — no warning, since N2 only suppresses the "cleared
+// to null" noise line, not this cleanup (P8/N3 rework, docs/absorb-pstack.md item 3) ----
+{
+  const dir = freshTmp();
+  fs.writeFileSync(path.join(dir, 'claude'), '#!/bin/sh\n', { mode: 0o755 });
+  await saveModels(dir, {
+    version: 1,
+    detectedAt: null,
+    detected: [{ id: 'cli:claude', kind: 'cli', signal: 'stale-path' }],
+    roles: { critic: null },
+    effort: { critic: 'high' }
+  });
+  const { warnings } = await runDetect(dir, { write: true, env: { PATH: dir } });
+  const after = JSON.parse(fs.readFileSync(modelsPath(dir), 'utf8'));
+  ok('case24 already-null role with stale effort[role] warns 0 times', warnings.length === 0);
+  ok('case24 role stays null', after.roles.critic === null);
+  ok('case24 stale effort[role] on an already-null role is deleted', !('critic' in after.effort));
+}
+
 console.log(fail === 0 ? `\nPASS (0 failures)` : `\nFAIL (${fail} failures)`);
 process.exit(fail === 0 ? 0 : 1);

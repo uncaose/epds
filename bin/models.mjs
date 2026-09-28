@@ -12,7 +12,10 @@ import { constants } from 'node:fs';
 import { dirname, join } from 'node:path';
 import path from 'node:path';
 
-export const KNOWN_CLIS = ['claude', 'codex', 'cursor-agent', 'opencode', 'gemini', 'aider', 'ollama', 'lms'];
+// Cursor's own current headless docs (cursor.com/docs/cli/headless, re-checked P10) show the
+// binary as `agent`, not `cursor-agent` — but which name is actually on PATH can differ by install
+// version, so both are detected (docs/absorb-pstack.md CLI table note).
+export const KNOWN_CLIS = ['claude', 'codex', 'cursor-agent', 'agent', 'opencode', 'gemini', 'aider', 'ollama', 'lms'];
 export const KNOWN_ENV_KEYS = [
   'ANTHROPIC_API_KEY', 'OPENAI_API_KEY', 'GOOGLE_API_KEY', 'GEMINI_API_KEY',
   'OPENROUTER_API_KEY', 'MISTRAL_API_KEY', 'GROQ_API_KEY', 'XAI_API_KEY',
@@ -25,6 +28,12 @@ const RESERVED_ROLE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 
 // Windows has no execute bit; a CLI installed there resolves through one of these extensions.
 const WIN_EXTS = ['.exe', '.cmd', '.bat'];
+
+// N5: these CLIs run a *local* model the caller must name — "cli:ollama" or "cli:lms" alone is
+// ambiguous about which model actually answers (docs/COMMANDS.md's CLI invocation table: `ollama
+// run <model> "<prompt>"`, `lms chat <model> -p "<prompt>"` both require a model argument). A role
+// pointed at one of these must say which model, as `cli:<name>:<model>`, or setRole rejects it.
+const MODEL_REQUIRED_CLIS = new Set(['ollama', 'lms']);
 
 async function isExecutableFile(p) {
   try {
@@ -50,7 +59,10 @@ async function which(bin, pathDirs) {
   return null;
 }
 
-// env is injectable for tests; never logs or returns env[*] values, only which keys are set.
+// env is injectable for tests; never reads env[*] VALUES, only checks which keys are present
+// (`k in env` is a property-existence check — it never evaluates the value at all, so an L4
+// rework made this literal: the old `env[k].length > 0` form technically read the value into
+// memory to measure it, even though it was then discarded; `k in env` avoids that read entirely).
 export async function detectSignals(env = process.env) {
   const pathDirs = (env.PATH ?? '').split(path.delimiter).filter(Boolean);
   const clis = [];
@@ -59,7 +71,7 @@ export async function detectSignals(env = process.env) {
     if (found) clis.push({ id: `cli:${bin}`, kind: 'cli', signal: found });
   }
   const envSignals = KNOWN_ENV_KEYS
-    .filter((k) => typeof env[k] === 'string' && env[k].length > 0)
+    .filter((k) => k in env)
     .map((k) => ({ id: `env:${k}`, kind: 'env', signal: k }));
   return [...clis, ...envSignals];
 }
@@ -93,15 +105,17 @@ export async function loadModels(target) {
 // .gitignore (a file the project owns and may format however it likes), saveModels() writes a
 // small, idempotent epds/.gitignore next to models.json itself — one line, scoped to its own
 // directory, safe to commit alongside epds/trusted-sources.json.
+// N1 rework: this file is inside `epds/`, a directory the target project may already have its own
+// reasons to put other entries in (e.g. a local scratch file). APPEND the "models.json" line if
+// it's missing, never overwrite whatever is already there — still idempotent (checked first).
 async function ensureModelsGitignore(target) {
   const gitignorePath = join(dirname(modelsPath(target)), '.gitignore');
   const entry = 'models.json';
-  if (await exists(gitignorePath)) {
-    const contents = await readFile(gitignorePath, 'utf8');
-    if (contents.split('\n').map((l) => l.trim()).includes(entry)) return gitignorePath;
-  }
+  const contents = (await exists(gitignorePath)) ? await readFile(gitignorePath, 'utf8') : '';
+  if (contents.split('\n').map((l) => l.trim()).includes(entry)) return gitignorePath;
   await mkdir(dirname(gitignorePath), { recursive: true });
-  await writeFile(gitignorePath, `${entry}\n`, 'utf8');
+  const sep = contents.length === 0 || contents.endsWith('\n') ? '' : '\n';
+  await writeFile(gitignorePath, `${contents}${sep}${entry}\n`, 'utf8');
   return gitignorePath;
 }
 
@@ -123,31 +137,53 @@ export async function saveModels(target, data) {
 // K5: `detected` is replaced wholesale (see saveModels/loadModels comment above), so a role
 // assignment made in an earlier session can point at an id this session no longer detects (the
 // CLI got uninstalled, the env var got unset). Silently leaving that dangling reference in place
-// would let a reviewer panel or default model quietly point at nothing. Instead: any role whose
-// value (single id, or any id inside an array value — see setRole) is no longer in the freshly
-// detected set is warned about on stderr and cleared to null, never left stale.
-function reconcileRoles(roles, detected) {
+// would let a reviewer panel or default model quietly point at nothing. Instead: any id inside a
+// role's value that is no longer in the freshly detected set is warned about on stderr and dropped.
+// N2: a role already null is left alone — untouched, no warning — so re-running `detect --write`
+// twice in a row with nothing changed produces zero warnings, not a repeated "cleared to null"
+// noise line for a role that was already null.
+// N3: an array role only drops the ids that are actually missing, keeping the ones still detected
+// (a 2-reviewer panel losing one reviewer shouldn't also silently drop the other); it only becomes
+// null if EVERY id in it is missing. A role that ends this session as null (whether it started
+// null-bound or was fully cleared here) has its `effort[role]` self-report deleted too — an effort
+// level self-reported for an identity that no longer exists is stale, not corroborating. A role
+// that was ALREADY null still gets any leftover `effort[role]` deleted (silently, no warning — N2
+// only suppresses the noise line, not the stale-data cleanup); it can only be leftover from manual
+// `models.json` edits or an older version of this function, since `setRole`/this same reconcile
+// path always deletes `effort[role]` in the same step that clears `roles[role]` to `null`.
+function reconcileRoles(roles, detected, effort = {}) {
   const detectedIds = new Set(detected.map((d) => d.id));
-  const next = { ...roles };
+  const nextRoles = { ...roles };
+  const nextEffort = { ...effort };
   const warnings = [];
   for (const [role, value] of Object.entries(roles)) {
+    if (value === null) {
+      delete nextEffort[role];
+      continue;
+    }
     const ids = Array.isArray(value) ? value : [value];
+    const kept = ids.filter((id) => detectedIds.has(id));
     const missing = ids.filter((id) => !detectedIds.has(id));
-    if (missing.length > 0) {
+    if (missing.length === 0) continue;
+    if (kept.length === 0) {
       warnings.push(`role "${role}" pointed at ${missing.join(', ')}, no longer detected this session — cleared to null`);
-      next[role] = null;
+      nextRoles[role] = null;
+      delete nextEffort[role];
+    } else {
+      warnings.push(`role "${role}" lost ${missing.join(', ')}, no longer detected this session — narrowed to ${kept.join(', ')}`);
+      nextRoles[role] = kept.length === 1 ? kept[0] : kept;
     }
   }
-  return { roles: next, warnings };
+  return { roles: nextRoles, effort: nextEffort, warnings };
 }
 
 export async function runDetect(target, { write = false, env = process.env } = {}) {
   const detected = await detectSignals(env);
   if (!write) return { detected, written: null, warnings: [] };
   const data = await loadModels(target);
-  const { roles, warnings } = reconcileRoles(data.roles, detected);
+  const { roles, effort, warnings } = reconcileRoles(data.roles, detected, data.effort ?? {});
   for (const w of warnings) console.warn(`epds models detect --write: ${w}`);
-  const next = { ...data, detectedAt: new Date().toISOString(), detected, roles };
+  const next = { ...data, detectedAt: new Date().toISOString(), detected, roles, effort };
   const written = await saveModels(target, next);
   return { detected, written, warnings };
 }
@@ -165,6 +201,11 @@ export async function runDetect(target, { write = false, env = process.env } = {
 //    set, not that it names an invokable reviewer/model identity the panel could actually run —
 //    unlike a `cli:<name>` id, there is nothing to execute. Rejected outright, not routed through
 //    "the API", so a role always names something runnable.
+// 4. No id may repeat in the same list (L1) — a duplicate never adds a second reviewer, it's
+//    always a typo or a copy-paste slip, so it's rejected rather than silently deduplicated.
+// 5. `cli:ollama`/`cli:lms` (N5, MODEL_REQUIRED_CLIS) must carry a model: `cli:ollama:<model>`,
+//    not bare `cli:ollama` — checked against `detected` by its base `cli:<name>` entry, since
+//    detection only knows the CLI itself is on PATH, not which local models it can serve.
 // All ids are validated before anything is written — a rejection never leaves a partial list.
 // Throws (never silently no-ops) so the CLI can exit non-zero on rejection.
 export function setRole(data, role, modelId) {
@@ -181,15 +222,34 @@ export function setRole(data, role, modelId) {
   if (ids.length === 0) {
     throw new Error('modelId must contain at least one non-empty id');
   }
+  const seen = new Set();
   for (const id of ids) {
+    if (seen.has(id)) {
+      throw new Error(`"${id}" is listed more than once in "${modelId}" — duplicate ids are not allowed`);
+    }
+    seen.add(id);
     if (id.startsWith('env:')) {
       throw new Error(`"${id}" is an env-var signal, not an invokable identity — env:* ids cannot be assigned to a role`);
     }
-    if (!data.detected.some((d) => d.id === id)) {
+    const parts = id.split(':');
+    if (parts[0] === 'cli' && MODEL_REQUIRED_CLIS.has(parts[1])) {
+      // The model portion itself may contain a colon (e.g. an Ollama tag like "llama3:8b"), so
+      // only the first two colons are structural — everything after them is the model id verbatim.
+      const model = parts.slice(2).join(':');
+      if (parts.length < 3 || model.length === 0) {
+        throw new Error(`"${id}" requires a model id — use "cli:${parts[1]}:<model>" (e.g. "cli:${parts[1]}:llama3")`);
+      }
+      const base = `cli:${parts[1]}`;
+      if (!data.detected.some((d) => d.id === base)) {
+        throw new Error(`"${base}" is not in detected signals — run "epds models detect --write" first, or check "epds models list"`);
+      }
+    } else if (!data.detected.some((d) => d.id === id)) {
       throw new Error(`"${id}" is not in detected signals — run "epds models detect --write" first, or check "epds models list"`);
     }
   }
   data.roles[role] = ids.length === 1 ? ids[0] : ids;
+  // N3: reassigning a role invalidates any effort self-report made for its previous identity.
+  if (data.effort && role in data.effort) delete data.effort[role];
   return data;
 }
 
