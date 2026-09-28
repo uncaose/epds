@@ -25,7 +25,7 @@ your-journey/
 | `AGENTS.md CLAUDE.md PRODUCT.md METRICS.md DECISIONS.md` | 설치 후 프로젝트 루트에 생기는 `PRODUCT.md PROJECT-STATE.md METRICS.md AGENTS.md CLAUDE.md`(`templates/`가 원본) | 헌법·제품 맥락·절대 규칙 |
 | `agent/commands/*.md` | `docs/COMMANDS.md` + `adapters/claude-code/commands/*.md` | 재현 가능한 절차(발견/기능/실험/콘텐츠팩/QA/릴리스/회고) |
 | `agent/skills/<name>/SKILL.md` | 이 저장소 자체의 `SKILL.md`(EPDS 자신이 하나의 스킬) | 직무 규칙·라우팅 |
-| `agent/policies/*.md` | `docs/policies/*.md`(8개 파일, `SKILL.md` "Scope and safety rules" 절은 규칙 1문장+링크 인덱스) | 안전 경계 — pstack의 원칙-독립파일 구조를 따라 분리 완료(`docs/absorb-pstack.md` item 2 — 최초 판단(원문 그대로)은 "9개뿐이라 지금 쪼갤 만큼 반복 간극이 증명되지 않아 보류"(실제 8개, 2026-09-28 정정)였으나, 이후 판정에서 독립 파일 자체가 편집 단위를 좁혀 리뷰·수정을 쉽게 만든다는 근거로 상향) |
+| `agent/policies/*.md` | `docs/policies/*.md`(현재 12개 파일, `SKILL.md` "Scope and safety rules" 절은 규칙 1문장+링크 인덱스) | 안전 경계 — pstack의 원칙-독립파일 구조를 따라 분리 완료(`docs/absorb-pstack.md` item 2 — 최초 판단(원문 그대로)은 "9개뿐이라 지금 쪼갤 만큼 반복 간극이 증명되지 않아 보류"(실제 8개, 2026-09-28 정정)였으나, 이후 판정에서 독립 파일 자체가 편집 단위를 좁혀 리뷰·수정을 쉽게 만든다는 근거로 상향 — test-first/root-cause-not-symptom/premise-review-after-repeated-failure/test-behavior-not-implementation 4개가 이후 패스에서 추가돼 8→12개, 위 과거 기록 문구는 그대로 보존) |
 | `.claude/commands/` (얇은 포인터) | `adapters/claude-code/commands/*.md`(설치 시 `.claude/commands/`로 복사) | 런타임별 얇은 어댑터 |
 | `.agents/skills/*/cli` | `bin/epds.mjs`(setup/status/check/sources/models 서브커맨드) | 실행 가능한 CLI |
 | `templates/` | `templates/*.md`, `*.json` | AI가 채우는 안정된 출력 골격 |
