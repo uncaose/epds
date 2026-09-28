@@ -8,65 +8,102 @@ evidence_grade: community
 captured: 2026-09-28
 ---
 
+## Verdict vocabulary (shared with `docs/absorb-pstack.md`)
+
+- **Built** — EPDS had no counterpart; new code/file/template now exists.
+- **Built (partial)** — EPDS had no counterpart; a doc/template step now exists, but not a
+  full command or enforced code path (still LLM-guided, not machine-gated).
+- **Reinforced** — EPDS already had an equivalent or stronger mechanism; only documented the
+  equivalence, no code change.
+- **Deferred** — genuinely absent, logged as an upgrade lead (`docs/references/INDEX.md`), not
+  implemented — EPDS's own upgrade gate (`docs/COMMANDS.md` `/epds-upgrade`) requires a
+  demonstrated repeated bottleneck first, and none has been observed yet.
+- **Rejected** — duplicate of an existing EPDS mechanism, or importing it would weaken a gate.
+
 ## Analysis
 
-Cursor's `pstack` — poteto (Lauren Tan)'s personal Cursor workflow packaged as 46-47 skills (1
-router `poteto-mode` + 23 playbooks-as-principles + ~22 individual skills + setup/automation).
+Cursor's `pstack` — poteto (Lauren Tan)'s personal Cursor workflow packaged as 46-47 skills: 1
+router `poteto-mode`, which in turn indexes two *separate* 23-item lists (23 playbooks it routes a
+request to, and, independently, 23 one-rule-per-file design principles it applies while executing
+one) — plus ~22 individual skills and setup/automation. Both lists happen to total 23 items each;
+they are not the same list (raw-readme.md:38-77 = playbooks, raw-readme.md:194-225 = principles).
 MIT, ★8388, actively maintained (R0310 catalog). Reviewed twice (H154): once for wholesale
-adoption/rejection, once (this pass, `~/.../h154-pstack-vs-epds.html`) axis-by-axis against EPDS's
-actual code, not just its docs. Full origin material: `~/Projects/research/R0310-cursor-pstack/`.
+adoption/rejection, once axis-by-axis against EPDS's actual code, not just its docs. Full origin
+material: `~/Projects/research/R0310-cursor-pstack/` (R0310; `raw-readme.md` is 259 lines total —
+any citation past that line count is wrong and was corrected in this pass).
 
-**session-model-role-mapping** (adopted → built): `setup-pstack` detects which models a session can
+**session-model-role-mapping** (Built): `setup-pstack` detects which models a session can
 actually use and writes a role→model rule file so every other skill reads a live answer instead of
-guessing. EPDS had no counterpart at all — `SKILL.md` §Final report only recorded which model *was*
-used, after the fact. Built as `bin/models.mjs` (`epds models detect|list|set`) — generic detection
-(public CLI names + standard provider env-var names only, never values), role assignment left as an
-explicit user/LLM step rather than auto-guessed, so no project-specific alias is hardcoded into a
-portable public skill. See `docs/EPDS.md` §6 "세션 모델 감지".
+guessing (`excerpts/setup-pstack-SKILL.md:12-39`). EPDS had no counterpart at all — `SKILL.md`
+§Final report only recorded which model *was* used, after the fact. Built as `bin/models.mjs`
+(`epds models detect|list|set`) — generic detection (public CLI names + standard provider env-var
+names only, never values), role assignment left as an explicit user/LLM step rather than
+auto-guessed, so no project-specific alias is hardcoded into a portable public skill. `set`
+validates the id against the current `detected` list and rejects `__proto__`/`constructor`/
+`prototype` role names; `detect --write` replaces `detected` wholesale each run instead of merging
+in stale entries. `/verify` now reads `roles.critic`/`roles.reviewers` to build its review panel
+(see adversarial-review-panel below) — the first real consumer. See `docs/EPDS.md` §6 "세션 모델
+감지".
 
-**n-parallel-comparison** / **adversarial-review-panel** (observe, not built): `arena`/`swarm` run N
-independent attempts and let a human pick the best (`raw-readme.md:63-64,118`); `interrogate` spawns
-several models to try to break a diff before it lands (`raw-readme.md:104,120`). EPDS's own
-`docs/COMMANDS.md:33-35` upgrade gate requires a demonstrated repeated bottleneck before adding a
-command — no such gap has been observed yet in EPDS usage, so this is logged as an upgrade lead, not
-implemented now (would otherwise repeat pstack's own weakness #1: unbounded skill growth, R0310 §8).
+**n-parallel-comparison** (Built (partial)): `arena`/`swarm` run N independent attempts and let a
+human pick the best (`raw-readme.md:97,118-119,171,173`, corrected from a prior mis-citation of
+lines 63-64, which land on unrelated playbook-table rows). EPDS now has `templates/arena.md` (N attempts,
+fixed judging criteria, human/cross-model judge, decision = human picks), referenced from
+`/experiment`/`/decide` in `docs/COMMANDS.md`. Not a new command — routed through the existing
+delivery commands as a template choice, so it doesn't add to the command surface (avoiding
+pstack's own weakness #1: unbounded skill growth, R0310 §8).
 
-**plain-language-reexplain** (observe, low priority): `bro` restates the final answer in plain
-language (`raw-readme.md:134`) — thin enough (~1 prompt) that it is not worth a dedicated command;
-any EPDS command can already be asked to "explain that simply" in the same turn.
+**adversarial-review-panel** (Built (partial)): `interrogate` spawns several models to try to break
+a diff before it lands (`raw-readme.md:104,120`). `docs/COMMANDS.md` `/verify` now has a panel step:
+if `epds/models.json` `roles.critic`/`roles.reviewers` is set, each assigned id independently
+reviews for correctness/edge-cases/policy compliance before landing; no roles configured falls back
+to single-pass self-review (and says so). This is a documented LLM-guided step, not
+machine-enforced code — EPDS's `deterministic-by-doc` vs `LLM` distinction (`docs/EPDS.md` §6)
+still applies.
 
-**skill-router-natural-language** (reject — duplicate): `poteto-mode`'s 23-way natural-language
-classification is functionally equivalent to EPDS's `WORK-ROUTER.md` 7-way classification — both are
-text-matched, neither is code-enforced (`docs/EPDS.md:213` "LLM, no enforcement code" self-admits
-this for EPDS too). EPDS's version additionally carries a classification→role table
+**plain-language-reexplain** (Built (partial)): `bro` restates the final answer in plain language
+(`raw-readme.md:134`). EPDS's `SKILL.md` §Final report now has a required trailing
+`[Plain language]` one-line field instead of a dedicated command — the cost of one mandatory line is
+lower than the cost of a 15th command, and it can't be skipped the way an optional "explain that
+simply" follow-up ask could be.
+
+**skill-router-natural-language** (Rejected — duplicate): `poteto-mode`'s 23-way natural-language
+playbook classification is functionally equivalent to EPDS's `WORK-ROUTER.md` 7-way classification —
+both are text-matched, neither is code-enforced (`docs/EPDS.md:212` "LLM, no enforcement code"
+self-admits this for EPDS too). EPDS's version additionally carries a classification→role table
 (`docs/ROLES.md`) and STRATEGIC/SENSITIVE approval gates pstack's router lacks. Re-importing would
 duplicate, not add.
 
-**principle-independent-files** (reject — already logged, not yet warranted): pstack's 23 design
-principles are each their own small file (`raw-readme.md:196`). EPDS keeps its 9 scope/safety rules
-as one list in `SKILL.md` — already flagged as an upgrade candidate in `docs/LAYOUT.md`
-("agent/policies/\*.md" row) before this reference existed; 9 short rules don't yet show the repeated
-edit-friction pstack's 23-principle scale would justify splitting for.
+**principle-independent-files** (Built): pstack's 23 design principles are each their own small
+file (`raw-readme.md:196-225`). EPDS's 8 scope/safety rules were one list in `SKILL.md`; first
+pass logged this as "not yet warranted" (only 8 rules, no observed edit-friction). This pass split
+them into `docs/policies/*.md` (one file per rule, `SKILL.md` now an index+links list) — the
+independent-file unit itself is the point (narrower diff per edit, per-rule linkability from other
+docs), not a rule count threshold. `docs/LAYOUT.md` "agent/policies/\*.md" row updated to match.
 
-**standard-exit-convergence** (reject — already satisfied): pstack's `opening-a-pr` is the single
+**standard-exit-convergence** (Reinforced, extended): pstack's `opening-a-pr` is the single
 convergence point 22 of 23 playbooks end at, giving predictable output shape (`raw-readme.md:77`).
-EPDS's `SKILL.md` §Final report already plays this role for *all 14* commands, not a subset, and is
-a documented 5-block contract rather than a single playbook.
+EPDS's `SKILL.md` §Final report already played this role for *all 14* commands as a documented
+5-block contract. This pass adds `templates/pr-landing.md` — the same convergence idea applied one
+level down, at the commit/PR shape (small ordered commits, conventional-commits title,
+briefing-style body), referenced from `/build` in `docs/COMMANDS.md`.
 
-**encode-lessons-in-structure** (reject — already satisfied, more structured): pstack's `reflect`
-turns a finished task's lessons into an ad hoc skill-file edit (`raw-readme.md:475,563`). EPDS's
-`templates/retro.md` already has a dedicated "Permanent learning" field ("What should be encoded in
-tests, tools, policies, templates, or instructions?") plus a forced Keep/Expand/Iterate/Stop
-decision — a fixed contract, not a free-form file edit.
+**encode-lessons-in-structure** (Reinforced, extended): pstack's `reflect` turns a finished task's
+lessons into an ad hoc skill-file edit (`raw-readme.md:124` `/reflect` table row, `raw-readme.md:178`
+usage example, `raw-readme.md:225` the `encode-lessons-in-structure` principle definition — corrected
+from a prior mis-citation of lines 475/563, which don't exist in this 259-line file). EPDS's
+`templates/retro.md` already had a dedicated "Permanent learning" field plus a forced
+Keep/Expand/Iterate/Stop decision — a fixed contract, not a free-form file edit. This pass adds
+required "File diff / locator" and "Follow-up owner/date" sub-fields so a learning without a landed
+change is flagged as a tracked follow-up instead of silently staying prose-only.
 
 ## How EPDS uses it
 
 Full item-by-item disposition (pstack citation | EPDS citation | absorb method | acceptance
-criteria) is `docs/absorb-pstack.md`. Only one pattern changed EPDS's code
-(session-model-role-mapping → `bin/models.mjs`); the rest were either already structurally present
-or deliberately deferred under EPDS's own upgrade-gate discipline (`docs/COMMANDS.md:33-35`) — never
-by weakening an approval gate (`WORK-ROUTER.md` STRATEGIC/SENSITIVE stayed untouched; pstack's
-`never-block-on-the-human` exception was not imported).
+criteria) is `docs/absorb-pstack.md` — same verdict vocabulary as this file. No approval gate was
+weakened, removed, or bypassed by any of the above (`WORK-ROUTER.md` STRATEGIC/SENSITIVE stayed
+untouched; pstack's `never-block-on-the-human` exception was not imported — see
+`docs/absorb-pstack.md` § Conflicts checked).
 
 > "pstack (fka poteto stack) - it's the way I like to do agentic engineering with Cursor... a
 > collection of workflows, principles and skills." — `raw-readme.md:1-4` (R0310).
