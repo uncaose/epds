@@ -35,6 +35,20 @@ const WIN_EXTS = ['.exe', '.cmd', '.bat'];
 // pointed at one of these must say which model, as `cli:<name>:<model>`, or setRole rejects it.
 const MODEL_REQUIRED_CLIS = new Set(['ollama', 'lms']);
 
+// N1: a role value for a MODEL_REQUIRED_CLIS entry is stored as `cli:<name>:<model>` (setRole
+// above), but `detectSignals` only ever detects the bare CLI itself (`cli:<name>` — it has no way
+// to enumerate which local models a CLI can serve). Comparing the full `cli:ollama:llama3:8b`
+// string against `detectedIds` (which only ever holds `cli:ollama`) would always read as "missing"
+// and reconcileRoles would narrow/null the role even though the CLI is still right there — this
+// maps a model-qualified role value back to the base id `detectedIds` actually carries.
+function detectionKeyFor(id) {
+  const parts = id.split(':');
+  if (parts[0] === 'cli' && MODEL_REQUIRED_CLIS.has(parts[1]) && parts.length >= 3) {
+    return `cli:${parts[1]}`;
+  }
+  return id;
+}
+
 async function isExecutableFile(p) {
   try {
     const info = await stat(p);
@@ -162,8 +176,8 @@ function reconcileRoles(roles, detected, effort = {}) {
       continue;
     }
     const ids = Array.isArray(value) ? value : [value];
-    const kept = ids.filter((id) => detectedIds.has(id));
-    const missing = ids.filter((id) => !detectedIds.has(id));
+    const kept = ids.filter((id) => detectedIds.has(detectionKeyFor(id)));
+    const missing = ids.filter((id) => !detectedIds.has(detectionKeyFor(id)));
     if (missing.length === 0) continue;
     if (kept.length === 0) {
       warnings.push(`role "${role}" pointed at ${missing.join(', ')}, no longer detected this session — cleared to null`);

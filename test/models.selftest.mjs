@@ -486,5 +486,30 @@ function freshTmp() {
   ok('case24 stale effort[role] on an already-null role is deleted', !('critic' in after.effort));
 }
 
+// ---- case 25: reconcileRoles recognizes a MODEL_REQUIRED_CLIS role value
+// (cli:ollama:<model>/cli:lms:<model>) as still present when the base CLI is still detected —
+// detectSignals only ever emits the bare `cli:ollama` id, so comparing the full qualified id
+// against detectedIds verbatim would always read "missing" and silently null/narrow the role even
+// though nothing about the session changed (N1) ----
+{
+  const dir = freshTmp();
+  fs.writeFileSync(path.join(dir, 'claude'), '#!/bin/sh\n', { mode: 0o755 });
+  fs.writeFileSync(path.join(dir, 'ollama'), '#!/bin/sh\n', { mode: 0o755 });
+  const env = { ...process.env, PATH: `${dir}${path.delimiter}${path.dirname(process.execPath)}` };
+  const node = process.execPath;
+  execFileSync(node, [epdsBin, 'models', 'detect', '--write'], { cwd: dir, env, encoding: 'utf8' });
+  execFileSync(node, [epdsBin, 'models', 'set', 'critic', 'cli:ollama:llama3:8b'], { cwd: dir, env, encoding: 'utf8' });
+  execFileSync(node, [epdsBin, 'models', 'set', 'reviewers', 'cli:ollama:llama3:8b,cli:claude'], { cwd: dir, env, encoding: 'utf8' });
+
+  const { warnings } = await runDetect(dir, { write: true, env: { PATH: dir } });
+  const after = JSON.parse(fs.readFileSync(modelsPath(dir), 'utf8'));
+  ok('case25 model-qualified single-id role survives a re-detect unchanged (N1)', after.roles.critic === 'cli:ollama:llama3:8b');
+  ok(
+    'case25 model-qualified id inside an array role is not narrowed away (N1)',
+    Array.isArray(after.roles.reviewers) && after.roles.reviewers.includes('cli:ollama:llama3:8b') && after.roles.reviewers.includes('cli:claude')
+  );
+  ok('case25 no stale/missing warning fired for either role', !warnings.some((w) => w.includes('critic') || w.includes('reviewers')));
+}
+
 console.log(fail === 0 ? `\nPASS (0 failures)` : `\nFAIL (${fail} failures)`);
 process.exit(fail === 0 ? 0 : 1);
