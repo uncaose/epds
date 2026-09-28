@@ -148,18 +148,23 @@ const REQUIRED_POLICIES = [
   // without updating the tally sentence (or vice versa) fails loudly instead of silently drifting.
   function tallyVerdicts(sectionText) {
     const rows = sectionText.split('\n').filter((l) => /^\| \d+ \|/.test(l));
-    const counts = { built: 0, builtPartial: 0, reinforced: 0, rejected: 0 };
+    const counts = { built: 0, builtPartial: 0, reinforced: 0, rejected: 0, unclassified: 0, rowCount: rows.length };
     for (const row of rows) {
       const verdict = row.split('|').map((c) => c.trim())[4] ?? '';
       if (/Built \(partial\)/.test(verdict)) counts.builtPartial += 1;
       else if (/^Built\b/.test(verdict)) counts.built += 1;
       else if (/Reinforced/.test(verdict)) counts.reinforced += 1;
       else if (/Rejected/.test(verdict)) counts.rejected += 1;
+      else counts.unclassified += 1;
     }
     return counts;
   }
   const skillsTally = tallyVerdicts(skillsSection);
   const principlesTally = tallyVerdicts(principlesSection);
+  for (const [label, t] of [['Skills', skillsTally], ['Principles', principlesTally]]) {
+    ok(`case8 (L-b) ${label} table verdict tally sums to its row count`, t.built + t.builtPartial + t.reinforced + t.rejected + t.unclassified === t.rowCount);
+    ok(`case8 (L-b) ${label} table has 0 unclassified-verdict rows`, t.unclassified === 0);
+  }
   const combinedTally = {
     built: skillsTally.built + principlesTally.built,
     builtPartial: skillsTally.builtPartial + principlesTally.builtPartial,
