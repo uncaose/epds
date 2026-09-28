@@ -49,9 +49,11 @@ Usage:
   epds models list          Print epds/models.json (detected signals + role map)
   epds models set <role> <id>[,<id>...] [--effort <value>]
                              Assign one id, or a comma-separated list of ids, to a role
-                             (each id must be in "detected"; env:* ids are rejected).
+                             (each id must be in "detected"; env:* ids and duplicate ids
+                             are rejected; "cli:ollama"/"cli:lms" require a model, as
+                             "cli:ollama:<model>" — see docs/COMMANDS.md CLI invocation table).
                              --effort records an optional self-reported reasoning-effort
-                             value for that role.
+                             value for that role (--effort or --effort= with no value errors).
   epds status --json --target <path>
                              Deterministic evidence snapshot (no LLM calls)
   epds reference <url> [--write]
@@ -314,12 +316,30 @@ async function saveSources(data) {
   return path;
 }
 
+// L1 rework: `--key=value` (one token) was previously mis-parsed as a flag literally named
+// "key=value" whose value was whatever came next — `flags.key` stayed `undefined`, so a caller
+// checking `flags.key !== undefined` silently treated it as absent instead of erroring. Split on
+// the first `=` first; only fall back to consuming the next token as `--key value` form when that
+// next token doesn't itself look like another flag. A flag given with no value (`--key` at the end,
+// or immediately followed by another `--flag`) is recorded as `''` (present, not undefined) so a
+// caller can tell "missing value" apart from "flag not passed at all" and error on it.
 function parseFlags(rest) {
   const flags = {};
   for (let i = 0; i < rest.length; i += 1) {
-    if (rest[i].startsWith('--')) {
-      flags[rest[i].slice(2)] = rest[i + 1];
+    const token = rest[i];
+    if (!token.startsWith('--')) continue;
+    const eq = token.indexOf('=');
+    if (eq !== -1) {
+      flags[token.slice(2, eq)] = token.slice(eq + 1);
+      continue;
+    }
+    const key = token.slice(2);
+    const next = rest[i + 1];
+    if (next !== undefined && !next.startsWith('--')) {
+      flags[key] = next;
       i += 1;
+    } else {
+      flags[key] = '';
     }
   }
   return flags;
@@ -343,11 +363,27 @@ async function sourcesShow(id) {
   console.log(JSON.stringify(found, null, 2));
 }
 
+// P11: a value flag given with no value (`--kind` at the end, or `--kind=`) parses to `''` (see
+// parseFlags L1 rework above), which is a distinct state from "flag not passed at all"
+// (`undefined`). Every value-taking flag must error on that `''` state rather than silently
+// falling through to a default — `--kind` happened to already error via the KINDS.includes check,
+// but `--name`/`--note` did not (`'' ?? fallback` is `''`, not the fallback, since `??` only
+// replaces `null`/`undefined`), so an empty `--name` silently fell through to a generated id
+// instead of failing loudly on the caller's typo.
+function requireFlagValue(flags, key) {
+  if (key in flags && flags[key] === '') {
+    throw new Error(`--${key} requires a value`);
+  }
+  return flags[key];
+}
+
 async function sourcesAdd(url, flags) {
   if (!url) throw new Error('Usage: epds sources add <url> [--kind K] [--name N] [--note T]');
   const normalized = normalizeUrl(url);
-  const kind = flags.kind ?? 'doc';
+  const kind = requireFlagValue(flags, 'kind') ?? 'doc';
   if (!KINDS.includes(kind)) throw new Error(`--kind must be one of: ${KINDS.join(', ')}`);
+  requireFlagValue(flags, 'name');
+  requireFlagValue(flags, 'note');
 
   const data = await loadSources();
   if (data.sources.some((s) => s.url === normalized)) {

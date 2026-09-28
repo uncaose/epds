@@ -33,7 +33,7 @@
     "setup": "node ./bin/epds.mjs setup",
     "uninstall": "node ./bin/epds.mjs uninstall",
     "check": "node ./bin/epds.mjs check",
-    "test": "node test/status.selftest.mjs && node test/status.selftest-h125.mjs && node test/models.selftest.mjs && node test/layout.selftest.mjs"
+    "test": "node test/status.selftest.mjs && node test/status.selftest-h125.mjs && node test/models.selftest.mjs && node test/sources.selftest.mjs && node test/layout.selftest.mjs"
   },
   "keywords": [
     "claude-code",
