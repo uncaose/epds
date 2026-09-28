@@ -6,7 +6,7 @@
 // checked (never values — A19/secret-peek). No project-specific alias (e.g. a local model's
 // nickname) is hardcoded here; EPDS is a portable public skill (SKILL.md:24), not tied to any
 // one user's local-inventory.md or role-alias table.
-import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { dirname, join } from 'node:path';
 import path from 'node:path';
@@ -27,6 +27,8 @@ const WIN_EXTS = ['.exe', '.cmd', '.bat'];
 
 async function isExecutableFile(p) {
   try {
+    const info = await stat(p);
+    if (!info.isFile()) return false;
     const mode = process.platform === 'win32' ? constants.F_OK : constants.X_OK;
     await access(p, mode);
     return true;

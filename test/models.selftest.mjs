@@ -48,6 +48,12 @@ function freshTmp() {
     const noExecSignals = await detectSignals({ PATH: noExecDir });
     ok('case2 a non-executable file on PATH is not reported (X_OK enforced)', !noExecSignals.some((s) => s.id === 'cli:codex'));
   }
+
+  // a directory named like a known CLI, even if it were somehow +x, must not be reported (isFile enforced)
+  const dirNamedDir = freshTmp();
+  fs.mkdirSync(path.join(dirNamedDir, 'gemini'));
+  const dirNamedSignals = await detectSignals({ PATH: dirNamedDir });
+  ok('case2 a directory named like a known CLI is not reported (isFile enforced)', !dirNamedSignals.some((s) => s.id === 'cli:gemini'));
 }
 
 // ---- case 3: no project-specific alias hardcoded (only public tool names / standard env keys) ----
