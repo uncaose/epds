@@ -16,6 +16,7 @@ const sourceNotice = join(packageRoot, 'NOTICE');
 const sourceTemplates = join(packageRoot, 'templates');
 const sourceDocs = join(packageRoot, 'docs');
 const sourceReferences = join(packageRoot, 'docs', 'references');
+const sourcePolicies = join(packageRoot, 'docs', 'policies');
 
 const command = process.argv[2] ?? 'help';
 const args = new Set(process.argv.slice(3));
@@ -128,6 +129,29 @@ async function confirm(question) {
   }
 }
 
+// `epds models detect --write` writes epds/models.json relative to the CURRENT project
+// (`process.cwd()`), independent of whether the skill itself was installed --global or
+// --project. It is per-machine/session state (docs/absorb-pstack.md item 3), never a curated
+// artifact meant to be committed, so setup ensures the target project's .gitignore excludes it —
+// idempotent: skipped if the entry (or a broader `epds/` ignore) is already present.
+async function ensureModelsJsonGitignored() {
+  const gitignorePath = join(process.cwd(), '.gitignore');
+  const entry = 'epds/models.json';
+  let contents = '';
+  if (await exists(gitignorePath)) {
+    contents = await readFile(gitignorePath, 'utf8');
+    const alreadyCovered = contents
+      .split('\n')
+      .map((line) => line.trim())
+      .some((line) => line === entry || line === 'epds/' || line === '/epds/models.json');
+    if (alreadyCovered) return null;
+  }
+  const prefix = contents.length > 0 && !contents.endsWith('\n') ? '\n' : '';
+  const comment = '\n# EPDS: per-machine session model detection (docs/absorb-pstack.md item 3), never committed\n';
+  await writeFile(gitignorePath, `${contents}${prefix}${comment}${entry}\n`, 'utf8');
+  return gitignorePath;
+}
+
 async function copyOptionalTemplateReadme(target) {
   if (!(await isDirectory(sourceTemplates))) return;
   const targetTemplates = join(target, 'templates');
@@ -171,6 +195,9 @@ async function setup() {
   if (await isDirectory(sourceReferences)) {
     await cp(sourceReferences, join(target, 'docs', 'references'), { recursive: true });
   }
+  if (await isDirectory(sourcePolicies)) {
+    await cp(sourcePolicies, join(target, 'docs', 'policies'), { recursive: true });
+  }
 
   const marker = {
     name: 'EPDS',
@@ -182,6 +209,9 @@ async function setup() {
     attribution: 'Retain LICENSE and NOTICE when redistributing or modifying EPDS materials.'
   };
   await writeFile(join(target, '.installed-from.json'), `${JSON.stringify(marker, null, 2)}\n`, 'utf8');
+
+  const gitignoreTouched = await ensureModelsJsonGitignored();
+  if (gitignoreTouched) console.log(`Added epds/models.json to ${gitignoreTouched} (session-local model detection state).`);
 
   console.log(`\nEPDS installed successfully (${scope}).`);
   console.log(`Location: ${target}`);
@@ -390,7 +420,7 @@ async function sources() {
 }
 
 async function modelsCmd() {
-  const { runDetect, loadModels, saveModels } = await import('./models.mjs');
+  const { runDetect, loadModels, saveModels, setRole } = await import('./models.mjs');
   const [sub, ...rest] = process.argv.slice(3);
   const target = process.cwd();
   if (sub === 'detect') {
@@ -406,7 +436,7 @@ async function modelsCmd() {
     const [role, modelId] = rest;
     if (!role || !modelId) throw new Error('Usage: epds models set <role> <modelId>');
     const data = await loadModels(target);
-    data.roles[role] = modelId;
+    setRole(data, role, modelId);
     const path = await saveModels(target, data);
     console.log(`Set roles.${role} = ${modelId} -> ${path}`);
     return;
