@@ -14,8 +14,9 @@ The command must:
 4. If the target project has no runnable test command at all, propose the smallest one that fits
    its existing stack as part of the plan (not a prescribed framework — whatever the project's own
    language/tooling already implies) — `/verify` later checks this proposed command still runs
-   (docs/absorb-pstack.md item 3 N7 rework, pstack skills `create-verification-skill`/
-   `maintain-verification-skill`).
+   (docs/absorb-pstack.md "Full disposition" table, pstack skills 20 `create-verification-skill`/
+   21 `maintain-verification-skill`, N7 rework — not item 3, which is the separate `bin/models.mjs`
+   session-detection item; L3 correction).
 5. Ask for approval before writing.
 6. Verify links, references, and safe existing tests afterward.
 

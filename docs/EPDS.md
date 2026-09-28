@@ -236,8 +236,9 @@ exit 여야 게이트로 작동한다 — "했다" 주장만으로는 PASS 가 �
 
 `bin/models.mjs`(`epds models detect [--write]|list|set`, H154) — pstack의 setup-pstack(세션에서 쓸 수
 있는 모델을 스스로 감지해 역할별로 배정)이 EPDS에 없던 진짜 빈 칸이었다는 재검토 결론을 코드로 채움
-(`docs/absorb-pstack.md` item 3). 감지는 공개 CLI 이름(`claude`/`codex`/`cursor-agent`/`opencode`/
-`gemini`/`aider`/`ollama`/`lms`, PATH 존재 여부만)과 표준 프로바이더 env var *이름*만 본다 — 값은 절대
+(`docs/absorb-pstack.md` item 3). 감지는 공개 CLI 이름(`claude`/`codex`/`cursor-agent`/`agent`(조건부 — 실제 경로가 "cursor"를 포함할 때만,
+다른 도구와 이름이 겹치므로, N2)/`opencode`/`gemini`/`aider`/`ollama`/`lms`, PATH 존재 여부만)과 표준
+프로바이더 env var *이름*만 본다 — 값은 절대
 읽지 않는다(살아있는 자격증명을 메모리에 읽어 들였다가 버리는 동작 자체가 로그·출력으로 새어나갈 위험을
 만들고, 아예 읽지 않으면 그 위험이 원천 차단된다). 특정 프로젝트의 로컬 별칭(예: `gamedev-coder`)은
 하드코딩하지 않는다(EPDS는 이식 가능한 공개 스킬, SKILL.md:24). 역할↔모델 매핑(`roles`)은 감지가 자동으로
