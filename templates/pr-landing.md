@@ -16,8 +16,10 @@ one squashed diff. One topic per commit.
 
 ## PR title
 
-Conventional Commits format: `<type>(<scope>): <subject>` — `feat`/`fix`/`docs`/`refactor`/`test`/
-`chore`, imperative mood, no trailing period.
+Follow the target project's own existing commit/PR title convention first, if one is established
+(check recent `git log`, CONTRIBUTING.md, or AGENTS.md/CLAUDE.md). Fall back to Conventional
+Commits format only when no project convention exists: `<type>(<scope>): <subject>` —
+`feat`/`fix`/`docs`/`refactor`/`test`/`chore`, imperative mood, no trailing period.
 
 ## PR body (briefing-style, not narrative)
 

@@ -33,7 +33,8 @@ no attempt sees another attempt's output before judging.
 
 ## Decision
 
-Human selects. The panel/judge ranks; it does not choose (`human-selects-machine-judges`).
+Human selects. The panel/judge ranks candidates and surfaces tradeoffs — ranking is not deciding;
+the owner makes the final call.
 
 ## Permanent learning
 
