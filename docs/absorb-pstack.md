@@ -64,8 +64,8 @@ Gate check (G2, conflicts with approval gates): §"Conflicts checked" below.
 $ npm test  # exit 0
 status.selftest PASS (42 assertions)
 status.selftest-h125 PASS (8 assertions)
-models.selftest PASS (34 assertions, test/models.selftest.mjs — includes CLI-level set/list/detect
-  --write, validation failure, reserved-key rejection, stale-replace)
+models.selftest PASS (35 assertions, test/models.selftest.mjs — includes CLI-level set/list/detect
+  --write, validation failure, reserved-key rejection, stale-replace, isFile-guard)
 layout.selftest PASS (34 assertions, test/layout.selftest.mjs — policy/template file+link
   existence, setup installs docs/policies/, retro.md + SKILL.md field checks)
 ```
