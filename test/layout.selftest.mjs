@@ -142,6 +142,42 @@ const REQUIRED_POLICIES = [
   ok('case8 docs/absorb-pstack.md "Skills" table has exactly 24 rows', skillRows === 24);
   ok('case8 docs/absorb-pstack.md "Principles" table has exactly 23 rows', principleRows === 23);
   ok('case8 combined pstack disposition totals exactly 47 rows (24 skills + 23 principles)', skillRows + principleRows === 47);
+
+  // L6: the Verdict column (5th `|`-delimited cell) of every row, tallied per bucket, must equal
+  // the numbers the doc's own "Disposition tally" prose line claims — so a verdict edited in a row
+  // without updating the tally sentence (or vice versa) fails loudly instead of silently drifting.
+  function tallyVerdicts(sectionText) {
+    const rows = sectionText.split('\n').filter((l) => /^\| \d+ \|/.test(l));
+    const counts = { built: 0, builtPartial: 0, reinforced: 0, rejected: 0 };
+    for (const row of rows) {
+      const verdict = row.split('|').map((c) => c.trim())[4] ?? '';
+      if (/Built \(partial\)/.test(verdict)) counts.builtPartial += 1;
+      else if (/^Built\b/.test(verdict)) counts.built += 1;
+      else if (/Reinforced/.test(verdict)) counts.reinforced += 1;
+      else if (/Rejected/.test(verdict)) counts.rejected += 1;
+    }
+    return counts;
+  }
+  const skillsTally = tallyVerdicts(skillsSection);
+  const principlesTally = tallyVerdicts(principlesSection);
+  const combinedTally = {
+    built: skillsTally.built + principlesTally.built,
+    builtPartial: skillsTally.builtPartial + principlesTally.builtPartial,
+    reinforced: skillsTally.reinforced + principlesTally.reinforced,
+    rejected: skillsTally.rejected + principlesTally.rejected
+  };
+
+  const tallyLine = absorbMd.match(
+    /Skills — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 24\)\. Principles — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 23\)\. Combined across\s*all 47 rows: \*\*Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\*\*/
+  );
+  ok('case8 (L6) "Disposition tally" prose line is present and parseable', !!tallyLine);
+  if (tallyLine) {
+    const nums = tallyLine.slice(1).map((n) => Number(n));
+    const [skB, skBP, skR, skJ, prB, prBP, prR, prJ, coB, coBP, coR, coJ] = nums;
+    ok('case8 (L6) Skills table verdict counts match the tally sentence', skillsTally.built === skB && skillsTally.builtPartial === skBP && skillsTally.reinforced === skR && skillsTally.rejected === skJ);
+    ok('case8 (L6) Principles table verdict counts match the tally sentence', principlesTally.built === prB && principlesTally.builtPartial === prBP && principlesTally.reinforced === prR && principlesTally.rejected === prJ);
+    ok('case8 (L6) Combined verdict counts match the tally sentence', combinedTally.built === coB && combinedTally.builtPartial === coBP && combinedTally.reinforced === coR && combinedTally.rejected === coJ);
+  }
 }
 
 console.log(fail === 0 ? `\nPASS (0 failures)` : `\nFAIL (${fail} failures)`);
