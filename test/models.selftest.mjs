@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { detectSignals, loadModels, saveModels, runDetect, setRole, modelsPath, KNOWN_CLIS, KNOWN_ENV_KEYS } from '../bin/models.mjs';
+import { detectSignals, loadModels, saveModels, runDetect, setRole, setEffort, modelsPath, KNOWN_CLIS, KNOWN_ENV_KEYS } from '../bin/models.mjs';
 
 const here = path.dirname(new URL(import.meta.url).pathname);
 const epdsBin = path.join(here, '..', 'bin', 'epds.mjs');
@@ -166,6 +166,128 @@ function freshTmp() {
     reservedFailed = error.status !== 0;
   }
   ok('case9 `models set __proto__ ...` exits non-zero', reservedFailed);
+}
+
+// ---- case 10: saveModels() writes epds/.gitignore (one "models.json" line) next to models.json,
+// idempotently — `epds setup` no longer touches the target project's root .gitignore (K2) ----
+{
+  const dir = freshTmp();
+  const data = { version: 1, detectedAt: new Date().toISOString(), detected: [], roles: {}, effort: {} };
+  await saveModels(dir, data);
+  const gitignorePath = path.join(dir, 'epds', '.gitignore');
+  ok('case10 saveModels creates epds/.gitignore', fs.existsSync(gitignorePath));
+  ok('case10 epds/.gitignore contains exactly one "models.json" line', fs.readFileSync(gitignorePath, 'utf8') === 'models.json\n');
+  await saveModels(dir, data);
+  ok('case10 calling saveModels again is idempotent (no duplicate line)', fs.readFileSync(gitignorePath, 'utf8') === 'models.json\n');
+  ok('case10 root .gitignore was not created/touched', !fs.existsSync(path.join(dir, '.gitignore')));
+}
+
+// ---- case 11: setRole() accepts a comma-separated id list and stores it as an array; a bad id
+// anywhere in the list rejects the whole write (no partial roles.reviewers) (K4) ----
+{
+  const data = {
+    version: 1,
+    detectedAt: new Date().toISOString(),
+    detected: [
+      { id: 'cli:claude', kind: 'cli', signal: '/usr/local/bin/claude' },
+      { id: 'cli:codex', kind: 'cli', signal: '/usr/local/bin/codex' }
+    ],
+    roles: {},
+    effort: {}
+  };
+  setRole(data, 'reviewers', 'cli:claude, cli:codex');
+  ok('case11 comma list with 2+ ids is stored as an array', Array.isArray(data.roles.reviewers) && data.roles.reviewers.length === 2);
+  ok('case11 array preserves both ids, trimmed', data.roles.reviewers[0] === 'cli:claude' && data.roles.reviewers[1] === 'cli:codex');
+
+  let threw = false;
+  try { setRole(data, 'reviewers', 'cli:claude,cli:not-detected'); } catch { threw = true; }
+  ok('case11 one bad id in the list rejects the whole assignment', threw);
+  ok('case11 rejected assignment left the previous roles.reviewers untouched', Array.isArray(data.roles.reviewers) && data.roles.reviewers.length === 2);
+
+  setRole(data, 'critic', 'cli:claude');
+  ok('case11 a single id (no comma) is still stored as a plain string, not a 1-element array', data.roles.critic === 'cli:claude');
+}
+
+// ---- case 12: setRole() rejects any env:* id as a role value, even if it is in `detected` (K6)
+// — an env var's presence proves reachability, not an invokable identity ----
+{
+  const data = {
+    version: 1,
+    detectedAt: new Date().toISOString(),
+    detected: [{ id: 'env:OPENAI_API_KEY', kind: 'env', signal: 'OPENAI_API_KEY' }],
+    roles: {},
+    effort: {}
+  };
+  let threw = false;
+  try { setRole(data, 'critic', 'env:OPENAI_API_KEY'); } catch { threw = true; }
+  ok('case12 setRole rejects an env:* id even though it is in detected[]', threw);
+  ok('case12 rejected assignment left roles.critic unset', !('critic' in data.roles));
+
+  let threwMixed = false;
+  try { setRole(data, 'reviewers', 'cli:claude,env:OPENAI_API_KEY'); } catch { threwMixed = true; }
+  ok('case12 an env:* id anywhere in a comma list rejects the whole assignment', threwMixed);
+}
+
+// ---- case 13: runDetect write=true warns and clears to null any role whose id is no longer
+// detected this session (K5) — never leaves a dangling reference ----
+{
+  const dir = freshTmp();
+  fs.writeFileSync(path.join(dir, 'claude'), '#!/bin/sh\n', { mode: 0o755 });
+  await saveModels(dir, {
+    version: 1,
+    detectedAt: null,
+    detected: [
+      { id: 'cli:codex', kind: 'cli', signal: 'stale-path' },
+      { id: 'cli:claude', kind: 'cli', signal: 'stale-path' }
+    ],
+    roles: { critic: 'cli:codex', reviewers: ['cli:codex'], keeps: 'cli:claude' },
+    effort: {}
+  });
+  const originalWarn = console.warn;
+  const warnLines = [];
+  console.warn = (...a) => warnLines.push(a.join(' '));
+  let result;
+  try {
+    result = await runDetect(dir, { write: true, env: { PATH: dir } });
+  } finally {
+    console.warn = originalWarn;
+  }
+  ok('case13 stale role (single id) cleared to null', result.written && JSON.parse(fs.readFileSync(modelsPath(dir), 'utf8')).roles.critic === null);
+  ok('case13 stale role (array id) cleared to null', JSON.parse(fs.readFileSync(modelsPath(dir), 'utf8')).roles.reviewers === null);
+  ok('case13 a role whose id is still detected this session is left alone', JSON.parse(fs.readFileSync(modelsPath(dir), 'utf8')).roles.keeps === 'cli:claude');
+  ok('case13 returned warnings array is non-empty', Array.isArray(result.warnings) && result.warnings.length >= 2);
+  ok('case13 a warning was printed to console.warn', warnLines.some((l) => l.includes('no longer detected')));
+}
+
+// ---- case 14: setEffort() records an optional per-role reasoning-effort self-report next to
+// roles, validated non-empty, only for an already-assigned role (K7) ----
+{
+  const data = { version: 1, detectedAt: new Date().toISOString(), detected: [{ id: 'cli:claude', kind: 'cli', signal: '/usr/local/bin/claude' }], roles: {}, effort: {} };
+  setRole(data, 'critic', 'cli:claude');
+  setEffort(data, 'critic', 'high');
+  ok('case14 setEffort records effort[role]', data.effort.critic === 'high');
+
+  let threwEmpty = false;
+  try { setEffort(data, 'critic', ''); } catch { threwEmpty = true; }
+  ok('case14 setEffort rejects an empty-string effort value', threwEmpty);
+
+  let threwNoRole = false;
+  try { setEffort(data, 'unset-role', 'high'); } catch { threwNoRole = true; }
+  ok('case14 setEffort rejects a role with no assigned id yet', threwNoRole);
+}
+
+// ---- case 15: `epds models set <role> <id> --effort <value>` end-to-end (K7 CLI wiring) ----
+{
+  const dir = freshTmp();
+  fs.writeFileSync(path.join(dir, 'claude'), '#!/bin/sh\n', { mode: 0o755 });
+  const env = { ...process.env, PATH: `${dir}${path.delimiter}${path.dirname(process.execPath)}` };
+  const node = process.execPath;
+
+  execFileSync(node, [epdsBin, 'models', 'detect', '--write'], { cwd: dir, env, encoding: 'utf8' });
+  const setOut = execFileSync(node, [epdsBin, 'models', 'set', 'critic', 'cli:claude', '--effort', 'high'], { cwd: dir, env, encoding: 'utf8' });
+  ok('case15 CLI `models set ... --effort high` reports the effort', setOut.includes('effort.critic = high'));
+  const listOut = JSON.parse(execFileSync(node, [epdsBin, 'models', 'list'], { cwd: dir, env, encoding: 'utf8' }));
+  ok('case15 `models list` shows effort.critic = high', listOut.effort.critic === 'high');
 }
 
 console.log(fail === 0 ? `\nPASS (0 failures)` : `\nFAIL (${fail} failures)`);
