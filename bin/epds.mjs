@@ -16,6 +16,7 @@ const sourceNotice = join(packageRoot, 'NOTICE');
 const sourceTemplates = join(packageRoot, 'templates');
 const sourceDocs = join(packageRoot, 'docs');
 const sourceReferences = join(packageRoot, 'docs', 'references');
+const sourcePolicies = join(packageRoot, 'docs', 'policies');
 
 const command = process.argv[2] ?? 'help';
 const args = new Set(process.argv.slice(3));
@@ -42,6 +43,17 @@ Usage:
   epds sources remove <id|url>
                              Remove a trusted source by id or url
   epds sources show <id>    Print one source's full record
+  epds models detect [--write]
+                             Detect available model CLIs/API keys in this session (generic;
+                             no project-specific aliases hardcoded — see docs/absorb-pstack.md)
+  epds models list          Print epds/models.json (detected signals + role map)
+  epds models set <role> <id>[,<id>...] [--effort <value>]
+                             Assign one id, or a comma-separated list of ids, to a role
+                             (each id must be in "detected"; env:* ids and duplicate ids
+                             are rejected; "cli:ollama"/"cli:lms" require a model, as
+                             "cli:ollama:<model>" — see docs/COMMANDS.md CLI invocation table).
+                             --effort records an optional self-reported reasoning-effort
+                             value for that role (--effort or --effort= with no value errors).
   epds status --json --target <path>
                              Deterministic evidence snapshot (no LLM calls)
   epds reference <url> [--write]
@@ -122,11 +134,18 @@ async function confirm(question) {
   }
 }
 
-async function copyOptionalTemplateReadme(target) {
+// K2 (docs/absorb-pstack.md item 3 rework): `epds models detect --write` writes epds/models.json
+// relative to the CURRENT project (`process.cwd()`), independent of whether the skill itself was
+// installed --global or --project. It is per-machine/session state, never a curated artifact
+// meant to be committed — but `setup` no longer reaches into the target project's own root
+// .gitignore to say so (that file is the project's, formatted however it formats it). Instead
+// `saveModels()` in `bin/models.mjs` writes a small epds/.gitignore next to models.json itself,
+// the moment models.json is first written, scoped to its own directory only.
+async function copyTemplates(target) {
   if (!(await isDirectory(sourceTemplates))) return;
   const targetTemplates = join(target, 'templates');
-  await mkdir(targetTemplates, { recursive: true });
-  const readme = `# EPDS templates\n\nThese templates are shipped with the EPDS skill for reference.\nDo not copy them into a product repository blindly. Ask EPDS to inspect the\nrepository and propose a minimal installation plan first.\n`;
+  await cp(sourceTemplates, targetTemplates, { recursive: true });
+  const readme = `# EPDS templates\n\nProcess templates (arena.md, pr-landing.md, retro.md, experiment-brief.md,\nfeature-spec.md, adr.md, gate-report.md, WORK-ROUTER.md, epds-*.json) ship as-is —\nthe installed skill and its docs link to them directly.\n\nProduct-scaffold templates (PRODUCT.md, PROJECT-STATE.md, METRICS.md, AGENTS.md,\nCLAUDE.md) are NOT meant to be copied into a product repository blindly. Ask EPDS\nto inspect the repository and propose a minimal installation plan first.\n`;
   await writeFile(join(targetTemplates, 'README.md'), readme, 'utf8');
 }
 
@@ -153,7 +172,7 @@ async function setup() {
   await copyFile(sourceSkill, join(target, 'SKILL.md'));
   await copyFile(sourceLicense, join(target, 'LICENSE'));
   await copyFile(sourceNotice, join(target, 'NOTICE'));
-  await copyOptionalTemplateReadme(target);
+  await copyTemplates(target);
   if (await isDirectory(sourceDocs)) {
     await mkdir(join(target, 'docs'), { recursive: true });
     for (const entry of await readdir(sourceDocs, { withFileTypes: true })) {
@@ -164,6 +183,9 @@ async function setup() {
   }
   if (await isDirectory(sourceReferences)) {
     await cp(sourceReferences, join(target, 'docs', 'references'), { recursive: true });
+  }
+  if (await isDirectory(sourcePolicies)) {
+    await cp(sourcePolicies, join(target, 'docs', 'policies'), { recursive: true });
   }
 
   const marker = {
@@ -294,12 +316,30 @@ async function saveSources(data) {
   return path;
 }
 
+// L1 rework: `--key=value` (one token) was previously mis-parsed as a flag literally named
+// "key=value" whose value was whatever came next — `flags.key` stayed `undefined`, so a caller
+// checking `flags.key !== undefined` silently treated it as absent instead of erroring. Split on
+// the first `=` first; only fall back to consuming the next token as `--key value` form when that
+// next token doesn't itself look like another flag. A flag given with no value (`--key` at the end,
+// or immediately followed by another `--flag`) is recorded as `''` (present, not undefined) so a
+// caller can tell "missing value" apart from "flag not passed at all" and error on it.
 function parseFlags(rest) {
   const flags = {};
   for (let i = 0; i < rest.length; i += 1) {
-    if (rest[i].startsWith('--')) {
-      flags[rest[i].slice(2)] = rest[i + 1];
+    const token = rest[i];
+    if (!token.startsWith('--')) continue;
+    const eq = token.indexOf('=');
+    if (eq !== -1) {
+      flags[token.slice(2, eq)] = token.slice(eq + 1);
+      continue;
+    }
+    const key = token.slice(2);
+    const next = rest[i + 1];
+    if (next !== undefined && !next.startsWith('--')) {
+      flags[key] = next;
       i += 1;
+    } else {
+      flags[key] = '';
     }
   }
   return flags;
@@ -323,11 +363,27 @@ async function sourcesShow(id) {
   console.log(JSON.stringify(found, null, 2));
 }
 
+// P11: a value flag given with no value (`--kind` at the end, or `--kind=`) parses to `''` (see
+// parseFlags L1 rework above), which is a distinct state from "flag not passed at all"
+// (`undefined`). Every value-taking flag must error on that `''` state rather than silently
+// falling through to a default — `--kind` happened to already error via the KINDS.includes check,
+// but `--name`/`--note` did not (`'' ?? fallback` is `''`, not the fallback, since `??` only
+// replaces `null`/`undefined`), so an empty `--name` silently fell through to a generated id
+// instead of failing loudly on the caller's typo.
+function requireFlagValue(flags, key) {
+  if (key in flags && flags[key] === '') {
+    throw new Error(`--${key} requires a value`);
+  }
+  return flags[key];
+}
+
 async function sourcesAdd(url, flags) {
   if (!url) throw new Error('Usage: epds sources add <url> [--kind K] [--name N] [--note T]');
   const normalized = normalizeUrl(url);
-  const kind = flags.kind ?? 'doc';
+  const kind = requireFlagValue(flags, 'kind') ?? 'doc';
   if (!KINDS.includes(kind)) throw new Error(`--kind must be one of: ${KINDS.join(', ')}`);
+  requireFlagValue(flags, 'name');
+  requireFlagValue(flags, 'note');
 
   const data = await loadSources();
   if (data.sources.some((s) => s.url === normalized)) {
@@ -383,6 +439,34 @@ async function sources() {
   throw new Error('Usage: epds sources list|add <url>|remove <id|url>|show <id>');
 }
 
+async function modelsCmd() {
+  const { runDetect, loadModels, saveModels, setRole, setEffort } = await import('./models.mjs');
+  const [sub, ...rest] = process.argv.slice(3);
+  const target = process.cwd();
+  if (sub === 'detect') {
+    const { detected, written, warnings } = await runDetect(target, { write: args.has('--write') });
+    console.log(JSON.stringify({ detected, written, warnings }, null, 2));
+    return;
+  }
+  if (sub === 'list') {
+    console.log(JSON.stringify(await loadModels(target), null, 2));
+    return;
+  }
+  if (sub === 'set') {
+    const [role, modelId, ...flagArgs] = rest;
+    if (!role || !modelId) throw new Error('Usage: epds models set <role> <modelId>[,<modelId>...] [--effort <value>]');
+    const flags = parseFlags(flagArgs);
+    const data = await loadModels(target);
+    setRole(data, role, modelId);
+    if (flags.effort !== undefined) setEffort(data, role, flags.effort);
+    const path = await saveModels(target, data);
+    const effortNote = flags.effort !== undefined ? `, effort.${role} = ${flags.effort}` : '';
+    console.log(`Set roles.${role} = ${modelId}${effortNote} -> ${path}`);
+    return;
+  }
+  throw new Error('Usage: epds models detect [--write]|list|set <role> <modelId>[,<modelId>...] [--effort <value>]');
+}
+
 async function statusCmd() {
   const { runStatus } = await import('./status.mjs');
   const { output, exit } = runStatus(process.argv.slice(3));
@@ -402,6 +486,7 @@ try {
   else if (command === 'check') await check();
   else if (command === 'uninstall') await uninstall();
   else if (command === 'sources') await sources();
+  else if (command === 'models') await modelsCmd();
   else if (command === 'status') await statusCmd();
   else if (command === 'reference') await referenceCmd();
   else if (command === 'help' || command === '--help' || command === '-h') printUsage();

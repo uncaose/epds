@@ -1,5 +1,5 @@
 ---
-source: file:///Users/uncaose/Projects/wiki/harness/journal/reports/20260901-argo-company-org-plan.md
+source: private (this operator's own separate project; not publicly hosted — self-reported only, not independently verifiable by other EPDS users)
 kind: thread
 perspectives: [self, agent-ops]
 patterns: [custom-router-long-term]
@@ -10,10 +10,11 @@ captured: 2026-09-16
 
 ## Analysis
 
-argo — human의 다른 프로젝트(agent-game-harness)에서 실제로 운영 중인 "크루(머리)×하네스(손)×human(게이트)"
-조직 개념. 공개 저장소가 아니라 harness 자체의 내부 wiki 문서를 URL 대신 인용한다(브리프 지시: 실물 확인
-불가 시 `kind: thread`+"URL 미확인" 표기). EPDS 표1에서 "직접 만든 라우터"(사업/게임/콘텐츠 지표 판단
-기준 내재화, 장기 적합도 매우 높음)의 실제 운영 사례.
+argo — a custom orchestration concept this EPDS operator runs in a separate, non-public project:
+roughly "crew (planning) × harness (execution) × human (approval gate)". No public URL exists for
+it, so this entry is `kind: thread`, `evidence_grade: self` (a self-reported worked example, not a
+citable public source) — EPDS 표1에서 "직접 만든 라우터"(사업/게임/콘텐츠 지표 판단 기준 내재화, 장기
+적합도 매우 높음)의 실제 운영 사례.
 
 **custom-router-long-term**: 범용 에이전트 OS(예: Ouroboros)를 그대로 들여오지 않고, 도메인 지표(리텐션·
 전환·비용)를 판단 기준에 박아 넣은 자체 오케스트레이터를 쓴다. 리드: EPDS도 "도구/역할 카탈로그"에서
@@ -22,14 +23,15 @@ argo — human의 다른 프로젝트(agent-game-harness)에서 실제로 운영
 
 ## Measured
 
-n/a — document/thread source (verified 2026-09-18: local file exists, `ls` exit 0, 5934 bytes —
-`file:///Users/uncaose/Projects/wiki/harness/journal/reports/20260901-argo-company-org-plan.md`).
-공개 저장소가 아니므로 "url reachable" 대신 로컬 파일 존재를 확인.
+n/a — self-reported worked example, not a public document. No URL or local file path is cited here
+(unlike EPDS's other `docs/references/*.md` entries, which verify a public URL or a locally
+captured copy of one) because the source is this operator's own private project, not something
+another EPDS user could independently check. Treat this entry's weight accordingly — it argues for
+a *pattern* (build your own domain-aware router instead of a generic one), not for a specific
+implementation EPDS could adopt.
 
 ## How EPDS uses it
 
-Direction/Observe — EPDS 표1 "직접 만든 라우터" 항목의 실제 운영 사례. PRODUCT.md/METRICS.md에 프로젝트
-고유 판단 기준을 채우는 설계 근거로만 인용, 실행 의존성 없음.
-
-> (내부 문서 인용 — 공개 배포 대상 아님. 원문: "argo 특성 = 저빈도 몰아쓰기 적합·크루별 러너 지정
-> 가능·결재 게이트 상설", 결정 문서 §1)
+Direction/Observe — argues for the "직접 만든 라우터" pattern's long-term fit in EPDS's own §1
+comparison table. PRODUCT.md/METRICS.md에 프로젝트 고유 판단 기준을 채우는 설계 근거로만 인용, 실행
+의존성 없음.

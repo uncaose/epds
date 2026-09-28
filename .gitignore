@@ -11,3 +11,7 @@ coverage/
 
 # harness-local artifacts (not part of EPDS)
 journal/
+
+# per-machine model detection state (session-local, like pstack's ~/.cursor/rules — never a
+# curated project artifact the way epds/trusted-sources.json is; see docs/absorb-pstack.md item 3)
+epds/models.json

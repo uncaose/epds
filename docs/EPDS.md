@@ -1,7 +1,7 @@
 <!-- rewritten 2026-09-16: 결론-압축본 → 근거 흐름. human 판정("결론만 있고 흐름이 없다") 반영.
      원 결론형(69줄, completed 2026-09-16 from Perplexity thread 6f74f459)의 §Components/Why는 §4로 이동, 삭제 없음.
      rebuild-2 (2026-09-18, H119 §0 주어 교체 y): 주어 = "결론만 있는 산출물 차단"(b) → "수집→비교→선택→정의 과정"(a).
-     원 §0 문장은 삭제하지 않고 아래 "실패 인식" 절로 이동. 삭제 0 규율(journal/reports/20260918-epds-rebuild-v3.report.md §6). -->
+     원 §0 문장은 삭제하지 않고 아래 "실패 인식" 절로 이동. 삭제 0 규율(internal rebuild retrospective §6, private orchestrating-project notes not part of this public repo). -->
 
 # EPDS Architecture — 무엇을 막는가, 왜 이 형태인가
 
@@ -21,9 +21,9 @@
 > hand `[H11]` — carrying the product through to completion `[H6]`. Evidence-attached documents are
 > not a separate discipline — they fall out as a product of the process itself `[H41]`.
 
-`[H]` 로케이터: `[H1]`·`[H6]`·`[H11]` = `journal/reports/20260918-epds-origin-v2.report.md` §2(하네스 저장소
-`agent-game-harness`) / `[H13]`~`[H16]` = 같은 저장소 `journal/ctx.wal.jsonl:1956-1966` / `[H41]` = 같은 저장소
-`journal/ctx.wal.jsonl:1967`(origin-v2 raw-thread 는 `[H1]`~`[H40]` 까지만 사용 — 충돌 회피로 `[H41]` 신규 부여).
+`[H]` 로케이터: 이 문서를 만든 별도의 orchestrating 하네스 프로젝트(비공개, 이 EPDS 공개 저장소 밖)의 내부
+origin 스레드/작업 로그를 가리키는 출처 태그 — 그 프로젝트는 공개 저장소가 아니므로 경로를 인용하지 않는다
+(origin-v2 raw-thread 는 `[H1]`~`[H40]` 까지만 사용 — 충돌 회피로 `[H41]` 신규 부여).
 
 1. **문제** `[H1]` — "위 관점에 따른 스킬을 일일이 내가 찾아서 상황에 맞게 사용한다는건 할 수는 있겠지만
    실제 적절히 사용한다는건 어려운 일이다. ..." 상황마다 사람이 스킬·하네스를 고르는 것이 병목이다.
@@ -79,7 +79,7 @@ Direction → Problem → Hypothesis → Minimum Experiment → Spec → Build �
 
 ## §1. 살펴본 관점 — 도구 비교와 그 이유
 
-*대응 표: 표1 도구 비교(`journal/reports/20260918-epds-rebuild-plan.report.md` §1-b).*
+*대응 표: 표1 도구 비교(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
 
 EPDS를 설계하기 전에 4가지 관점을 실제로 비교했다([gstack](references/gstack.md),
 [superpowers](references/superpowers.md), [ouroboros](references/ouroboros.md), 직접 만든 라우터
@@ -99,7 +99,7 @@ Superpowers의 "습관화된 검증 스킬"을 Build/Verify에, Ouroboros의 "�
 
 ## §2. 검토한 패턴 10 — 택한 조합과 버린 것
 
-*대응 표: 표4 대안·보완 패턴 10종(`journal/reports/20260918-epds-rebuild-plan.report.md` §1-b).*
+*대응 표: 표4 대안·보완 패턴 10종(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
 
 human이 제공한 대안·보완 패턴 10종 중, EPDS가 실제로 쓰는 것과 의도적으로 버린 것:
 
@@ -118,7 +118,7 @@ human이 제공한 대안·보완 패턴 10종 중, EPDS가 실제로 쓰는 것
 
 ## §3. 참고 저장소 구조 — ai-job-search에서 가져온 것
 
-*대응 표: 표3 ai-job-search 구조 대응 + 표7 참고 저장소 평가 기준(`journal/reports/20260918-epds-rebuild-plan.report.md` §1-b).*
+*대응 표: 표3 ai-job-search 구조 대응 + 표7 참고 저장소 평가 기준(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
 
 [ai-job-search](references/ai-job-search.md)는 human이 직접 "이게 일반적인 AI 이용 수준의 패턴인가"라고
 물은 대상이다. 답: 아니다 — 대부분의 AI 이용 저장소는 프롬프트만 있고, ai-job-search는 **입력·절차·도구·
@@ -132,7 +132,7 @@ human이 제공한 대안·보완 패턴 10종 중, EPDS가 실제로 쓰는 것
 
 ## §4. EPDS 구성으로 수렴
 
-*대응 표: 표2 agency-agents 역할·산출물 + 표6 단계별 역할·산출물 9단계(`journal/reports/20260918-epds-rebuild-plan.report.md` §1-b) — 표6 이 §0 10단계 루프의 직접 원형.*
+*대응 표: 표2 agency-agents 역할·산출물 + 표6 단계별 역할·산출물 9단계(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b) — 표6 이 §0 10단계 루프의 직접 원형.*
 
 ```text
 EPDS Skill
@@ -154,7 +154,7 @@ Target project after setup
 
 Provenance: `[P8]`(raw-thread-full.md:2628 "즉 하네스는 기술 트랙과 제품 트랙을 분리해 봐야 합니다") + `[H10]`
 승인("`최종 정의`는 맞다" — 두 트랙을 포함한 §0 정의 전체를 승인). 구 표기 `[O] 하네스 오케 작성`은 철회
-(`journal/reports/20260918-epds-origin-v2.report.md` D-12).
+(internal origin-analysis notes (private orchestrating-project, not in this repo) D-12).
 
 | Track | Core question | Examples of evidence |
 |---|---|---|
@@ -181,7 +181,7 @@ Provenance: `[P8]`(raw-thread-full.md:2628 "즉 하네스는 기술 트랙과 �
 
 ## §5. 계열별 최소 요소 — 있는 것/없는 것
 
-*대응 표: 표8 추가 참고 패턴 계열 10 × 최소요소(`journal/reports/20260918-epds-rebuild-plan.report.md` §1-b).*
+*대응 표: 표8 추가 참고 패턴 계열 10 × 최소요소(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
 
 표8(추가 참고 패턴 계열) 중 EPDS 코어에 이미 있는 것과 아직 없는 것:
 
@@ -191,7 +191,7 @@ Provenance: `[P8]`(raw-thread-full.md:2628 "즉 하네스는 기술 트랙과 �
 | Agent Skills 표준 | `adapters/claude-code/commands/`, SKILL.md | — |
 | Eval frameworks | `docs/TESTS.md` "결과" 계층 | golden set·regression 스위트는 upgrade 시점 |
 | Prompt/agent red teaming | SKILL.md Scope/safety rules(외부 입력 비신뢰) | `evals/adversarial` 없음 |
-| CLI-first automation | `bin/epds.mjs check`(setup 검증) | `tools/validate-*` 프로젝트별 도구는 없음 |
+| CLI-first automation | `bin/epds.mjs check`(setup 검증), `epds models detect`(세션 모델 감지, §6) | `tools/validate-*` 프로젝트별 도구는 없음 |
 | Policy-as-code | SKILL.md 명문 규칙 | CI 강제는 프로젝트 몫 |
 | Observability | — | 이벤트 스키마·대시보드·롤백 알림 없음(이월) |
 | Experiment OS | `experiment` 커맨드, `templates/experiment-brief.md` | 결과 저장소·결정 규칙 자동화 없음 |
@@ -201,7 +201,7 @@ Provenance: `[P8]`(raw-thread-full.md:2628 "즉 하네스는 기술 트랙과 �
 ## §6. Harness extensions (not in origin)
 
 전 스레드([H1]~[H40], `raw-thread-full.md` 40+40턴) 근거 **0건** — 하네스 오케가 원점 인용 없이 추가한 4개.
-`[O]` 태그. 원점 밖 확장이므로 §0 정의에는 올리지 않는다(`journal/reports/20260918-epds-origin-v2.report.md`
+`[O]` 태그. 원점 밖 확장이므로 §0 정의에는 올리지 않는다(internal origin-analysis notes (private orchestrating-project, not in this repo)
 D-15, 기본안 = 유지하되 이 절로 분리).
 
 ### Deterministic vs LLM boundary `[O]`
@@ -212,7 +212,7 @@ D-15, 기본안 = 유지하되 이 절로 분리).
 | Triage | WORK-ROUTER 7-way classification (`SKILL.md` §Work router) | LLM | No enforcement code; natural-language classification |
 | Rule | Classification→role mapping (`docs/ROLES.md`) | deterministic-by-doc | Fixed table so the same request always routes to the same role |
 | Judgment | Facts/Interpretation/Assumptions/Owner-decision split (`SKILL.md` §Evidence-first protocol) | LLM | Separating known from inferred requires reading judgment |
-| Output | Final report 5 blocks + exit code + model/effort header (`SKILL.md` §Final report) | deterministic-by-doc | Fixed contract keeps results reproducible and comparable |
+| Output | Final report 5 blocks + `[Plain language]` line + exit code + model/effort header (`SKILL.md` §Final report) | deterministic-by-doc | Fixed contract keeps results reproducible and comparable |
 | Feedback | Retro keep/expand/iterate/stop (`docs/COMMANDS.md`) | LLM | Choosing the next cycle's direction is a judgment call |
 
 `deterministic-by-doc` means the order/contract is fixed in protocol text, not enforced by executable code — unlike open-code-review's code-enforced layers (R0295 turn[8]).
@@ -231,6 +231,32 @@ D-15, 기본안 = 유지하되 이 절로 분리).
 
 모든 명령은 exit code + 모델/effort 헤더를 남긴다(`SKILL.md` §Final report, H106). FAIL 은 반드시 비영
 exit 여야 게이트로 작동한다 — "했다" 주장만으로는 PASS 가 아니다.
+
+### 세션 모델 감지 `[O]`
+
+`bin/models.mjs`(`epds models detect [--write]|list|set`, H154) — pstack의 setup-pstack(세션에서 쓸 수
+있는 모델을 스스로 감지해 역할별로 배정)이 EPDS에 없던 진짜 빈 칸이었다는 재검토 결론을 코드로 채움
+(`docs/absorb-pstack.md` item 3). 감지는 공개 CLI 이름(`claude`/`codex`/`cursor-agent`/`agent`(조건부 — 실제 경로가 "cursor"를 포함할 때만,
+다른 도구와 이름이 겹치므로, N2)/`opencode`/`gemini`/`aider`/`ollama`/`lms`, PATH 존재 여부만)과 표준
+프로바이더 env var *이름*만 본다 — 값은 절대
+읽지 않는다(살아있는 자격증명을 메모리에 읽어 들였다가 버리는 동작 자체가 로그·출력으로 새어나갈 위험을
+만들고, 아예 읽지 않으면 그 위험이 원천 차단된다). 특정 프로젝트의 로컬 별칭(예: `gamedev-coder`)은
+하드코딩하지 않는다(EPDS는 이식 가능한 공개 스킬, SKILL.md:24). 역할↔모델 매핑(`roles`)은 감지가 자동으로
+채우지 않고 `epds models set <role> <id>[,<id>...] [--effort <value>]`로 명시 지정한다 — pstack의
+"역할별 배정"은 코드가 아니라 사람/LLM이 채우는 데이터로 남긴다("틀만 넣는다"). `set`은 각 `id`가 현재
+`detected` 목록에 있는지 검증하고(쉼표 목록이면 2개 이상은 배열로 저장), `__proto__`/`constructor`/
+`prototype`을 역할명으로, `env:*` id를 역할 값으로 거부한다(비영 exit — `env:*`는 "쓸 수 있는 키가
+있다"만 증명할 뿐 패널이 실제로 실행할 수 있는 정체성이 아니다). `--effort <value>`는 그 역할의 추론
+노력을 자기보고로 `effort[role]`에 남긴다(값 검증 없음 — EPDS는 특정 프로바이더의 effort 어휘를 강제하지
+않는다). `detect --write`는 매번 `detected`를 통째로 교체하고(예전 머신/세션의 stale 항목이 merge로
+영구 잔류하지 않게), 더 이상 감지되지 않는 id를 가리키던 역할은 경고 출력 후 `null` 처리한다. 결과는
+`epds/models.json`(세션/머신 로컬 상태 — `saveModels()`가 그 자리에서 `epds/.gitignore`(`models.json`
+한 줄)를 함께 쓴다, 대상 프로젝트 루트 `.gitignore`는 건드리지 않는다 — `epds/trusted-sources.json`과
+달리 프로젝트가 커밋해서 공유할 "정본"이 아니다). 첫 소비처: `/verify`가 `roles.critic`/`roles.reviewers`를
+읽어 교차검증 패널을 구성한다(`docs/COMMANDS.md` `/verify` ↳ panel).
+
+라우터 자동분류(poteto-mode)는 가져오지 않는다 — WORK-ROUTER 7분류(§Work router)가 이미 동급 기능이고
+`docs/ROLES.md`의 분류→역할 매핑까지 더 갖췄다(재수입=중복, `docs/absorb-pstack.md` item 1).
 
 ## Scope discipline
 
