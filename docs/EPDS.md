@@ -212,7 +212,7 @@ D-15, 기본안 = 유지하되 이 절로 분리).
 | Triage | WORK-ROUTER 7-way classification (`SKILL.md` §Work router) | LLM | No enforcement code; natural-language classification |
 | Rule | Classification→role mapping (`docs/ROLES.md`) | deterministic-by-doc | Fixed table so the same request always routes to the same role |
 | Judgment | Facts/Interpretation/Assumptions/Owner-decision split (`SKILL.md` §Evidence-first protocol) | LLM | Separating known from inferred requires reading judgment |
-| Output | Final report 5 blocks + exit code + model/effort header (`SKILL.md` §Final report) | deterministic-by-doc | Fixed contract keeps results reproducible and comparable |
+| Output | Final report 5 blocks + `[Plain language]` line + exit code + model/effort header (`SKILL.md` §Final report) | deterministic-by-doc | Fixed contract keeps results reproducible and comparable |
 | Feedback | Retro keep/expand/iterate/stop (`docs/COMMANDS.md`) | LLM | Choosing the next cycle's direction is a judgment call |
 
 `deterministic-by-doc` means the order/contract is fixed in protocol text, not enforced by executable code — unlike open-code-review's code-enforced layers (R0295 turn[8]).
@@ -241,8 +241,12 @@ exit 여야 게이트로 작동한다 — "했다" 주장만으로는 PASS 가 �
 A19)만 본다 — 특정 프로젝트의 로컬 별칭(예: `gamedev-coder`)은 하드코딩하지 않는다(EPDS는 이식 가능한
 공개 스킬, SKILL.md:24). 역할↔모델 매핑(`roles`)은 감지가 자동으로 채우지 않고 `epds models set <role>
 <id>`로 명시 지정한다 — pstack의 "역할별 배정"은 코드가 아니라 사람/LLM이 채우는 데이터로 남긴다("틀만
-넣는다"). 결과는 `epds/models.json`(세션/머신 로컬 상태, `.gitignore` 처리 — `epds/trusted-sources.json`과
-달리 프로젝트가 커밋해서 공유할 "정본"이 아니다).
+넣는다"). `set`은 `id`가 현재 `detected` 목록에 있는지 검증하고 `__proto__`/`constructor`/`prototype`을
+역할명으로 거부한다(비영 exit). `detect --write`는 매번 `detected`를 통째로 교체한다(예전 머신/세션의
+stale 항목이 merge로 영구 잔류하지 않게). 결과는 `epds/models.json`(세션/머신 로컬 상태 — `setup`이 대상
+프로젝트 `.gitignore`에 자동 추가 — `epds/trusted-sources.json`과 달리 프로젝트가 커밋해서 공유할
+"정본"이 아니다). 첫 소비처: `/verify`가 `roles.critic`/`roles.reviewers`를 읽어 교차검증 패널을 구성한다
+(`docs/COMMANDS.md` `/verify` ↳ panel).
 
 라우터 자동분류(poteto-mode)는 가져오지 않는다 — WORK-ROUTER 7분류(§Work router)가 이미 동급 기능이고
 `docs/ROLES.md`의 분류→역할 매핑까지 더 갖췄다(재수입=중복, `docs/absorb-pstack.md` item 1).
