@@ -90,6 +90,16 @@ it would weaken. No row below is `Deferred`.
 | 23 | `bro` | 134 | Built (partial) | `SKILL.md` §Final report `[Plain language]` | See cross-check table. |
 | 24 | `technical-writing` | 135 | Rejected | — | Diátaxis/Google-developer-style doc-layering standard is a prose-style concern; a target project's own docs/style guide is the right owner, not EPDS core. |
 
+**Correction (N3) — commit `cc6ce04` message overstated items 11/12/16**: that commit's message says
+`model-the-domain`/`boundary-discipline`/`separate-before-serializing-shared-state` were all
+"brought in line with `foundational-thinking`'s existing Reinforced verdict" — true for items 11
+and 12 (both landed as `Reinforced`), but item 16 landed as `Built (partial)`, not `Reinforced`: its
+own row text explicitly said `/spec` had no line covering the "is this state actually shared"
+question, so it was a genuinely smaller equivalence than 11/12, not the same one. The commit message
+lumped three rows into one claim; the table itself was already correct. This pass also closes the
+gap the row named (see item 16 above), so the distinction is now moot going forward, but the
+message text as written remains a record of that overstatement.
+
 ### Principles (23, `README.md:203-225`)
 
 | # | Principle | README.md line | Verdict | EPDS path | Reason |
@@ -109,7 +119,7 @@ it would weaken. No row below is `Deferred`.
 | 13 | `type-system-discipline` | 215 | Rejected | — | Language-specific (TypeScript-centric); EPDS is agent/stack-neutral. |
 | 14 | `make-operations-idempotent` | 216 | Built (partial) (P7 re-judgment) | `docs/policies/smallest-reversible-change.md` | `bin/epds.mjs` `sourcesAdd`/`setup` and `bin/models.mjs` are EPDS's own code behaving idempotently, not a rule stated anywhere for a target project's own tools to follow — citing only EPDS's own code as `Reinforced` evidence for a principle about how operations *should* be designed conflates "EPDS happens to do this" with "EPDS tells you to do this." This pass adds an explicit line to `docs/policies/smallest-reversible-change.md`: a tool/script built to perform a change should converge to the same end state regardless of a partial prior run — a genuinely new doc-level instruction, hence `Built (partial)`. |
 | 15 | `migrate-callers-then-delete-legacy-apis` | 217 | Reinforced (N7, corrected) | `docs/policies/smallest-reversible-change.md` | A prior pass called this "architecture-style, out of scope" — on re-examination that was imprecise: "migrate every caller, then delete the old path" is the exact same concern as `outcome-oriented-execution` above (item 7), which this pass resolved by extending `smallest-reversible-change.md`. Corrected from Rejected to Reinforced rather than left inconsistent with item 7. |
-| 16 | `separate-before-serializing-shared-state` | 218 | Built (partial) (P7 re-judgment) | `/spec` "Data contract" (see skill 6 `architect`), `templates/adr.md` when significant | Same correction direction as items 11/12 above: `/spec`'s "Data contract" step forces settling what gets persisted/serialized before `/build`, and a significant shared-state-ownership choice routes through `templates/adr.md` — but unlike items 11/12, `/spec` has no line that specifically asks "is this state actually shared, and should the sharing be eliminated first," so the coverage is partial, not a full equivalence. |
+| 16 | `separate-before-serializing-shared-state` | 218 | Built (partial) (N3 rework) | `templates/feature-spec.md` "Data contract" (see skill 6 `architect`), `templates/adr.md` when significant | Same correction direction as items 11/12 above: `/spec`'s "Data contract" step forces settling what gets persisted/serialized before `/build`, and a significant shared-state-ownership choice routes through `templates/adr.md`. A prior pass left this Built (partial) while noting `/spec` had no line asking "is this state actually shared, and should the sharing be eliminated first" — that gap was itself the missing piece; this pass adds that exact line to `templates/feature-spec.md` "Data contract". Left as `Built (partial)`, not escalated to `Reinforced`, because the line is new this pass, not a pre-existing equivalence. |
 | 17 | `prove-it-works` | 219 | Reinforced | `docs/policies/evidence-before-completion-claims.md` | Same rule, verbatim in spirit: verify the real artifact, don't self-report. |
 | 18 | `fix-root-causes` | 220 | Built (N7) | `docs/policies/root-cause-not-symptom.md` | New policy: trace a symptom to its root cause and check every caller of the code being touched before patching, rather than guarding only the path a report named. |
 | 19 | `sequence-verifiable-units` | 221 | Reinforced | `templates/pr-landing.md` "Commit sequence" | Small, ordered, independently-verifiable commits — same rule (item table row 4). |

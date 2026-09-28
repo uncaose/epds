@@ -14,6 +14,10 @@
 
 ## Data contract
 
+Is this state actually shared, and can the sharing itself be eliminated before deciding how to
+serialize or lock it? (pstack `separate-before-serializing-shared-state`, `docs/absorb-pstack.md`
+item 3 principle 16.)
+
 ## Observability
 
 ## Privacy and security
