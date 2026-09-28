@@ -96,5 +96,7 @@ rework). A CLI with no documented non-interactive invocation is not eligible for
 | `ollama` | `ollama run <model> "<prompt>"` (model required) | [Ollama CLI reference](https://docs.ollama.com/cli) |
 | `lms` | `lms chat <model> -p "<prompt>"` (model required by EPDS's own design choice — LM Studio's own docs list `[model]` as optional, prompting an interactive pick if omitted, which a non-interactive panel run cannot answer, so `epds models set` requires it in the role value instead) | [LM Studio `lms chat` docs](https://lmstudio.ai/docs/cli/local-models/chat) |
 
+`agent` collides in name with unrelated tools (a monitoring agent, another package's own CLI, ...) — being on PATH as `agent` alone is not evidence it's Cursor's. Detection only trusts it when the resolved (symlink-followed) real path names "cursor" (case-insensitive); otherwise it's skipped. When `agent` and `cursor-agent` resolve to the same real path, only one is reported — check `epds models list`'s `signal` path before assigning a role if you need to know which name actually got detected (N2, `docs/absorb-pstack.md` item 3).
+
 ## Natural-language examples
 

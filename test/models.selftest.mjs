@@ -511,5 +511,45 @@ function freshTmp() {
   ok('case25 no stale/missing warning fired for either role', !warnings.some((w) => w.includes('critic') || w.includes('reviewers')));
 }
 
+// ---- case 26: `agent` on PATH resolving to an unrelated tool (no "cursor" in its real path — a
+// plain name collision, e.g. a symlink to something named "grok") is NOT detected as cli:agent (N2) ----
+{
+  const dir = freshTmp();
+  const grokPath = path.join(dir, 'grok');
+  fs.writeFileSync(grokPath, '#!/bin/sh\n', { mode: 0o755 });
+  fs.symlinkSync(grokPath, path.join(dir, 'agent'));
+  const signals = await detectSignals({ PATH: dir });
+  ok('case26 `agent` resolving to an unrelated tool (no "cursor" in real path) is NOT detected', !signals.some((s) => s.id === 'cli:agent'));
+}
+
+// ---- case 27: `agent` on PATH whose resolved real path names "cursor" (case-insensitive, N2) IS
+// detected ----
+{
+  const dir = freshTmp();
+  const cursorDir = path.join(dir, 'Cursor', 'bin');
+  fs.mkdirSync(cursorDir, { recursive: true });
+  const realAgent = path.join(cursorDir, 'agent-bin');
+  fs.writeFileSync(realAgent, '#!/bin/sh\n', { mode: 0o755 });
+  fs.symlinkSync(realAgent, path.join(dir, 'agent'));
+  const signals = await detectSignals({ PATH: dir });
+  ok('case27 `agent` resolving into a path naming "cursor" (case-insensitive) IS detected', signals.some((s) => s.id === 'cli:agent'));
+}
+
+// ---- case 28: `agent` and `cursor-agent` resolving to the SAME real path are merged into one
+// detected entry, not two — the same binary under two names must not double a reviewer panel (N2) ----
+{
+  const dir = freshTmp();
+  const cursorDir = path.join(dir, 'cursor-install');
+  fs.mkdirSync(cursorDir, { recursive: true });
+  const realBin = path.join(cursorDir, 'cli-bin');
+  fs.writeFileSync(realBin, '#!/bin/sh\n', { mode: 0o755 });
+  fs.symlinkSync(realBin, path.join(dir, 'cursor-agent'));
+  fs.symlinkSync(realBin, path.join(dir, 'agent'));
+  const signals = await detectSignals({ PATH: dir });
+  ok('case28 cursor-agent IS detected', signals.some((s) => s.id === 'cli:cursor-agent'));
+  ok('case28 agent pointing at the SAME realpath as cursor-agent is NOT double-added', !signals.some((s) => s.id === 'cli:agent'));
+  ok('case28 exactly one cli entry results from the two same-realpath names', signals.filter((s) => s.kind === 'cli').length === 1);
+}
+
 console.log(fail === 0 ? `\nPASS (0 failures)` : `\nFAIL (${fail} failures)`);
 process.exit(fail === 0 ? 0 : 1);

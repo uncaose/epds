@@ -7,7 +7,7 @@
 // that value leaking into logs or output; not checking it at all avoids the risk entirely. No
 // project-specific alias (e.g. a local model's nickname) is hardcoded here; EPDS is a portable
 // public skill (SKILL.md:24), not tied to any one user's local alias table.
-import { access, mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, realpath, stat, writeFile } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { dirname, join } from 'node:path';
 import path from 'node:path';
@@ -80,9 +80,25 @@ async function which(bin, pathDirs) {
 export async function detectSignals(env = process.env) {
   const pathDirs = (env.PATH ?? '').split(path.delimiter).filter(Boolean);
   const clis = [];
+  // N2: "agent" is a generic-enough binary name that unrelated tools ship it too (a monitoring
+  // agent, a package's own CLI, ...) — being merely present on PATH under that name is not enough
+  // evidence it's actually Cursor's CLI. `cursor-agent` is unambiguous and detected as-is; `agent`
+  // is only trusted when its resolved (symlink-followed) real path names "cursor" (case-insensitive).
+  let cursorAgentRealpath = null;
   for (const bin of KNOWN_CLIS) {
     const found = await which(bin, pathDirs);
-    if (found) clis.push({ id: `cli:${bin}`, kind: 'cli', signal: found });
+    if (!found) continue;
+    let real = found;
+    try { real = await realpath(found); } catch { /* keep the PATH-resolved path on failure */ }
+    if (bin === 'cursor-agent') {
+      cursorAgentRealpath = real;
+    } else if (bin === 'agent') {
+      if (!/cursor/i.test(real)) continue; // not Cursor's `agent` — a name collision, skip it
+      // Same binary already reported as cursor-agent under its other name: don't double-count it
+      // into the panel as two independent reviewers.
+      if (cursorAgentRealpath && cursorAgentRealpath === real) continue;
+    }
+    clis.push({ id: `cli:${bin}`, kind: 'cli', signal: found });
   }
   const envSignals = KNOWN_ENV_KEYS
     .filter((k) => k in env)
