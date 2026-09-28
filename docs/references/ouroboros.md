@@ -25,7 +25,7 @@ Q00/ouroboros — 명세-실행-평가-기억을 도는 에이전트 OS(Python C
 ## Measured
 
 기존 설치 확인(2026-09-18, `ooo --version` = 0.51.17, PyPI `ouroboros-ai`가 아니라 시스템 `pip3 show`엔
-안 잡히는 격리 venv/pipx 설치 — `which ooo` = `/Users/uncaose/.local/bin/ooo`). `ooo qa
+안 잡히는 격리 venv/pipx 설치 — `which ooo` = a user-local `~/.local/bin/ooo`, not a system path). `ooo qa
 <b3.diff> -t code -q "..."` 실행: **codex 백엔드(기본) exit 1** — "You've hit your usage limit ...
 try again at Sep 21st, 2026 3:14 AM"(코덱스 쿼터 소진, 실사용 불가 확인). `ooo config backend gemini`로
 전환 후 재실행: **exit 1** — `ModelNotFoundError: models/claude-opus-5 is not found`(로컬 gemini-cli

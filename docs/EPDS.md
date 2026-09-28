@@ -1,7 +1,7 @@
 <!-- rewritten 2026-09-16: 결론-압축본 → 근거 흐름. human 판정("결론만 있고 흐름이 없다") 반영.
      원 결론형(69줄, completed 2026-09-16 from Perplexity thread 6f74f459)의 §Components/Why는 §4로 이동, 삭제 없음.
      rebuild-2 (2026-09-18, H119 §0 주어 교체 y): 주어 = "결론만 있는 산출물 차단"(b) → "수집→비교→선택→정의 과정"(a).
-     원 §0 문장은 삭제하지 않고 아래 "실패 인식" 절로 이동. 삭제 0 규율(journal/reports/20260918-epds-rebuild-v3.report.md §6). -->
+     원 §0 문장은 삭제하지 않고 아래 "실패 인식" 절로 이동. 삭제 0 규율(internal rebuild retrospective §6, private orchestrating-project notes not part of this public repo). -->
 
 # EPDS Architecture — 무엇을 막는가, 왜 이 형태인가
 
@@ -21,9 +21,9 @@
 > hand `[H11]` — carrying the product through to completion `[H6]`. Evidence-attached documents are
 > not a separate discipline — they fall out as a product of the process itself `[H41]`.
 
-`[H]` 로케이터: `[H1]`·`[H6]`·`[H11]` = `journal/reports/20260918-epds-origin-v2.report.md` §2(하네스 저장소
-`agent-game-harness`) / `[H13]`~`[H16]` = 같은 저장소 `journal/ctx.wal.jsonl:1956-1966` / `[H41]` = 같은 저장소
-`journal/ctx.wal.jsonl:1967`(origin-v2 raw-thread 는 `[H1]`~`[H40]` 까지만 사용 — 충돌 회피로 `[H41]` 신규 부여).
+`[H]` 로케이터: 이 문서를 만든 별도의 orchestrating 하네스 프로젝트(비공개, 이 EPDS 공개 저장소 밖)의 내부
+origin 스레드/작업 로그를 가리키는 출처 태그 — 그 프로젝트는 공개 저장소가 아니므로 경로를 인용하지 않는다
+(origin-v2 raw-thread 는 `[H1]`~`[H40]` 까지만 사용 — 충돌 회피로 `[H41]` 신규 부여).
 
 1. **문제** `[H1]` — "위 관점에 따른 스킬을 일일이 내가 찾아서 상황에 맞게 사용한다는건 할 수는 있겠지만
    실제 적절히 사용한다는건 어려운 일이다. ..." 상황마다 사람이 스킬·하네스를 고르는 것이 병목이다.
@@ -79,7 +79,7 @@ Direction → Problem → Hypothesis → Minimum Experiment → Spec → Build �
 
 ## §1. 살펴본 관점 — 도구 비교와 그 이유
 
-*대응 표: 표1 도구 비교(`journal/reports/20260918-epds-rebuild-plan.report.md` §1-b).*
+*대응 표: 표1 도구 비교(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
 
 EPDS를 설계하기 전에 4가지 관점을 실제로 비교했다([gstack](references/gstack.md),
 [superpowers](references/superpowers.md), [ouroboros](references/ouroboros.md), 직접 만든 라우터
@@ -99,7 +99,7 @@ Superpowers의 "습관화된 검증 스킬"을 Build/Verify에, Ouroboros의 "�
 
 ## §2. 검토한 패턴 10 — 택한 조합과 버린 것
 
-*대응 표: 표4 대안·보완 패턴 10종(`journal/reports/20260918-epds-rebuild-plan.report.md` §1-b).*
+*대응 표: 표4 대안·보완 패턴 10종(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
 
 human이 제공한 대안·보완 패턴 10종 중, EPDS가 실제로 쓰는 것과 의도적으로 버린 것:
 
@@ -118,7 +118,7 @@ human이 제공한 대안·보완 패턴 10종 중, EPDS가 실제로 쓰는 것
 
 ## §3. 참고 저장소 구조 — ai-job-search에서 가져온 것
 
-*대응 표: 표3 ai-job-search 구조 대응 + 표7 참고 저장소 평가 기준(`journal/reports/20260918-epds-rebuild-plan.report.md` §1-b).*
+*대응 표: 표3 ai-job-search 구조 대응 + 표7 참고 저장소 평가 기준(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
 
 [ai-job-search](references/ai-job-search.md)는 human이 직접 "이게 일반적인 AI 이용 수준의 패턴인가"라고
 물은 대상이다. 답: 아니다 — 대부분의 AI 이용 저장소는 프롬프트만 있고, ai-job-search는 **입력·절차·도구·
@@ -132,7 +132,7 @@ human이 제공한 대안·보완 패턴 10종 중, EPDS가 실제로 쓰는 것
 
 ## §4. EPDS 구성으로 수렴
 
-*대응 표: 표2 agency-agents 역할·산출물 + 표6 단계별 역할·산출물 9단계(`journal/reports/20260918-epds-rebuild-plan.report.md` §1-b) — 표6 이 §0 10단계 루프의 직접 원형.*
+*대응 표: 표2 agency-agents 역할·산출물 + 표6 단계별 역할·산출물 9단계(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b) — 표6 이 §0 10단계 루프의 직접 원형.*
 
 ```text
 EPDS Skill
@@ -154,7 +154,7 @@ Target project after setup
 
 Provenance: `[P8]`(raw-thread-full.md:2628 "즉 하네스는 기술 트랙과 제품 트랙을 분리해 봐야 합니다") + `[H10]`
 승인("`최종 정의`는 맞다" — 두 트랙을 포함한 §0 정의 전체를 승인). 구 표기 `[O] 하네스 오케 작성`은 철회
-(`journal/reports/20260918-epds-origin-v2.report.md` D-12).
+(internal origin-analysis notes (private orchestrating-project, not in this repo) D-12).
 
 | Track | Core question | Examples of evidence |
 |---|---|---|
@@ -181,7 +181,7 @@ Provenance: `[P8]`(raw-thread-full.md:2628 "즉 하네스는 기술 트랙과 �
 
 ## §5. 계열별 최소 요소 — 있는 것/없는 것
 
-*대응 표: 표8 추가 참고 패턴 계열 10 × 최소요소(`journal/reports/20260918-epds-rebuild-plan.report.md` §1-b).*
+*대응 표: 표8 추가 참고 패턴 계열 10 × 최소요소(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
 
 표8(추가 참고 패턴 계열) 중 EPDS 코어에 이미 있는 것과 아직 없는 것:
 
@@ -201,7 +201,7 @@ Provenance: `[P8]`(raw-thread-full.md:2628 "즉 하네스는 기술 트랙과 �
 ## §6. Harness extensions (not in origin)
 
 전 스레드([H1]~[H40], `raw-thread-full.md` 40+40턴) 근거 **0건** — 하네스 오케가 원점 인용 없이 추가한 4개.
-`[O]` 태그. 원점 밖 확장이므로 §0 정의에는 올리지 않는다(`journal/reports/20260918-epds-origin-v2.report.md`
+`[O]` 태그. 원점 밖 확장이므로 §0 정의에는 올리지 않는다(internal origin-analysis notes (private orchestrating-project, not in this repo)
 D-15, 기본안 = 유지하되 이 절로 분리).
 
 ### Deterministic vs LLM boundary `[O]`

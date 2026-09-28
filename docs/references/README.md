@@ -21,7 +21,7 @@ reads or writes this path today; the only file that exists is `templates/epds-re
 (a template with `external` all `null`), copied into a project's `epds/` on setup but never
 consulted afterward. Until `/epds-reference` (or equivalent) is built, `store` always behaves as
 `"local"` regardless of what a project's `epds/references.json` says
-(`journal/reports/20260918-epds-rebuild-plan.report.md` D-8).
+(internal rebuild-planning notes, private orchestrating-project, not in this repo, D-8).
 
 ```json
 {
