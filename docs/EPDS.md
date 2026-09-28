@@ -237,16 +237,22 @@ exit 여야 게이트로 작동한다 — "했다" 주장만으로는 PASS 가 �
 `bin/models.mjs`(`epds models detect [--write]|list|set`, H154) — pstack의 setup-pstack(세션에서 쓸 수
 있는 모델을 스스로 감지해 역할별로 배정)이 EPDS에 없던 진짜 빈 칸이었다는 재검토 결론을 코드로 채움
 (`docs/absorb-pstack.md` item 3). 감지는 공개 CLI 이름(`claude`/`codex`/`cursor-agent`/`opencode`/
-`gemini`/`aider`/`ollama`/`lms`, PATH 존재 여부만)과 표준 프로바이더 env var *이름*(값은 절대 읽지 않음 —
-A19)만 본다 — 특정 프로젝트의 로컬 별칭(예: `gamedev-coder`)은 하드코딩하지 않는다(EPDS는 이식 가능한
-공개 스킬, SKILL.md:24). 역할↔모델 매핑(`roles`)은 감지가 자동으로 채우지 않고 `epds models set <role>
-<id>`로 명시 지정한다 — pstack의 "역할별 배정"은 코드가 아니라 사람/LLM이 채우는 데이터로 남긴다("틀만
-넣는다"). `set`은 `id`가 현재 `detected` 목록에 있는지 검증하고 `__proto__`/`constructor`/`prototype`을
-역할명으로 거부한다(비영 exit). `detect --write`는 매번 `detected`를 통째로 교체한다(예전 머신/세션의
-stale 항목이 merge로 영구 잔류하지 않게). 결과는 `epds/models.json`(세션/머신 로컬 상태 — `setup`이 대상
-프로젝트 `.gitignore`에 자동 추가 — `epds/trusted-sources.json`과 달리 프로젝트가 커밋해서 공유할
-"정본"이 아니다). 첫 소비처: `/verify`가 `roles.critic`/`roles.reviewers`를 읽어 교차검증 패널을 구성한다
-(`docs/COMMANDS.md` `/verify` ↳ panel).
+`gemini`/`aider`/`ollama`/`lms`, PATH 존재 여부만)과 표준 프로바이더 env var *이름*만 본다 — 값은 절대
+읽지 않는다(살아있는 자격증명을 메모리에 읽어 들였다가 버리는 동작 자체가 로그·출력으로 새어나갈 위험을
+만들고, 아예 읽지 않으면 그 위험이 원천 차단된다). 특정 프로젝트의 로컬 별칭(예: `gamedev-coder`)은
+하드코딩하지 않는다(EPDS는 이식 가능한 공개 스킬, SKILL.md:24). 역할↔모델 매핑(`roles`)은 감지가 자동으로
+채우지 않고 `epds models set <role> <id>[,<id>...] [--effort <value>]`로 명시 지정한다 — pstack의
+"역할별 배정"은 코드가 아니라 사람/LLM이 채우는 데이터로 남긴다("틀만 넣는다"). `set`은 각 `id`가 현재
+`detected` 목록에 있는지 검증하고(쉼표 목록이면 2개 이상은 배열로 저장), `__proto__`/`constructor`/
+`prototype`을 역할명으로, `env:*` id를 역할 값으로 거부한다(비영 exit — `env:*`는 "쓸 수 있는 키가
+있다"만 증명할 뿐 패널이 실제로 실행할 수 있는 정체성이 아니다). `--effort <value>`는 그 역할의 추론
+노력을 자기보고로 `effort[role]`에 남긴다(값 검증 없음 — EPDS는 특정 프로바이더의 effort 어휘를 강제하지
+않는다). `detect --write`는 매번 `detected`를 통째로 교체하고(예전 머신/세션의 stale 항목이 merge로
+영구 잔류하지 않게), 더 이상 감지되지 않는 id를 가리키던 역할은 경고 출력 후 `null` 처리한다. 결과는
+`epds/models.json`(세션/머신 로컬 상태 — `saveModels()`가 그 자리에서 `epds/.gitignore`(`models.json`
+한 줄)를 함께 쓴다, 대상 프로젝트 루트 `.gitignore`는 건드리지 않는다 — `epds/trusted-sources.json`과
+달리 프로젝트가 커밋해서 공유할 "정본"이 아니다). 첫 소비처: `/verify`가 `roles.critic`/`roles.reviewers`를
+읽어 교차검증 패널을 구성한다(`docs/COMMANDS.md` `/verify` ↳ panel).
 
 라우터 자동분류(poteto-mode)는 가져오지 않는다 — WORK-ROUTER 7분류(§Work router)가 이미 동급 기능이고
 `docs/ROLES.md`의 분류→역할 매핑까지 더 갖췄다(재수입=중복, `docs/absorb-pstack.md` item 1).
