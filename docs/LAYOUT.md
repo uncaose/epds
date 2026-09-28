@@ -25,7 +25,7 @@ your-journey/
 | `AGENTS.md CLAUDE.md PRODUCT.md METRICS.md DECISIONS.md` | 설치 후 프로젝트 루트에 생기는 `PRODUCT.md PROJECT-STATE.md METRICS.md AGENTS.md CLAUDE.md`(`templates/`가 원본) | 헌법·제품 맥락·절대 규칙 |
 | `agent/commands/*.md` | `docs/COMMANDS.md` + `adapters/claude-code/commands/*.md` | 재현 가능한 절차(발견/기능/실험/콘텐츠팩/QA/릴리스/회고) |
 | `agent/skills/<name>/SKILL.md` | 이 저장소 자체의 `SKILL.md`(EPDS 자신이 하나의 스킬) | 직무 규칙·라우팅 |
-| `agent/policies/*.md` | `SKILL.md` "Scope and safety rules" 절(프라이버시·릴리스·외부입력 비신뢰) | 안전 경계 — 별도 파일로 아직 분리 안 함(upgrade 후보; pstack의 원칙-독립파일 구조가 같은 방향의 추가 근거, `docs/absorb-pstack.md` item 2 — 9개뿐이라 지금 쪼갤 만큼 반복 간극이 증명되지 않아 보류) |
+| `agent/policies/*.md` | `docs/policies/*.md`(8개 파일, `SKILL.md` "Scope and safety rules" 절은 목록+링크만) | 안전 경계 — pstack의 원칙-독립파일 구조를 따라 분리 완료(`docs/absorb-pstack.md` item 2 — 최초 판단은 "8개뿐이라 보류"였으나, 이후 판정에서 독립 파일 자체가 편집 단위를 좁혀 리뷰·수정을 쉽게 만든다는 근거로 상향) |
 | `.claude/commands/` (얇은 포인터) | `adapters/claude-code/commands/*.md`(설치 시 `.claude/commands/`로 복사) | 런타임별 얇은 어댑터 |
 | `.agents/skills/*/cli` | `bin/epds.mjs`(setup/status/check/sources/models 서브커맨드) | 실행 가능한 CLI |
 | `templates/` | `templates/*.md`, `*.json` | AI가 채우는 안정된 출력 골격 |
