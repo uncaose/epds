@@ -15,7 +15,9 @@ What decision does this comparison settle?
 | 2 | | | |
 
 Each attempt runs against the same input, budget, and time limit. Attempts must be independent —
-no attempt sees another attempt's output before judging.
+no attempt sees another attempt's output before judging. Also covers the "different independent
+slices, one aggregated report" shape (pstack's `swarm`): list each slice as its own row instead of
+each attempt — still one owner decision at the end, not a separate parallel-execution command.
 
 ## Judging
 

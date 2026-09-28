@@ -22,11 +22,12 @@ captured: 2026-09-28
 
 ## Analysis
 
-Cursor's `pstack` — poteto (Lauren Tan)'s personal Cursor workflow packaged as 46-47 skills: 1
-router `poteto-mode`, which in turn indexes two *separate* 23-item lists (23 playbooks it routes a
-request to, and, independently, 23 one-rule-per-file design principles it applies while executing
-one) — plus ~22 individual skills and setup/automation. Both lists happen to total 23 items each;
-they are not the same list (README.md:38-77 = playbooks, README.md:194-225 = principles).
+Cursor's `pstack` — poteto (Lauren Tan)'s personal Cursor workflow packaged as 47 skills+principles:
+24 skills total (`README.md:112-135`, the skills table — `poteto-mode` itself is one of the 24, not
+an additional 25th; it's the router that in turn indexes two *separate* 23-item lists — 23 playbooks
+it routes a request to, and, independently, the 23 one-rule-per-file design principles it applies
+while executing one). Both lists happen to total 23-24 items each; they are not the same list
+(README.md:38-77 = playbooks, README.md:194-225 = principles).
 MIT, ★8388, actively maintained. Public source:
 https://github.com/cursor/plugins/tree/main/pstack (the whole `pstack` plugin) —
 https://github.com/cursor/plugins/blob/main/pstack/README.md specifically for the file this page
@@ -72,7 +73,7 @@ still applies.
 lower than the cost of a 15th command, and it can't be skipped the way an optional "explain that
 simply" follow-up ask could be.
 
-**skill-router-natural-language** (Rejected — duplicate): `poteto-mode`'s 23-way natural-language
+**skill-router-natural-language** (Reinforced): `poteto-mode`'s 23-way natural-language
 playbook classification is functionally equivalent to EPDS's `WORK-ROUTER.md` 7-way classification —
 both are text-matched, neither is code-enforced (`docs/EPDS.md:212` "LLM, no enforcement code"
 self-admits this for EPDS too). EPDS's version additionally carries a classification→role table
@@ -82,7 +83,7 @@ duplicate, not add.
 **principle-independent-files** (Built): pstack's 23 design principles are each their own small
 file (`README.md:196-225`). EPDS's 8 scope/safety rules were one list in `SKILL.md`; first
 pass logged this as "not yet warranted" (only 8 rules, no observed edit-friction). This pass split
-them into `docs/policies/*.md` (one file per rule, `SKILL.md` now an index+links list) — the
+them into `docs/policies/*.md` (one file per rule, `SKILL.md` now a 1문장+링크 list) — the
 independent-file unit itself is the point (narrower diff per edit, per-rule linkability from other
 docs), not a rule count threshold. `docs/LAYOUT.md` "agent/policies/\*.md" row updated to match.
 
@@ -90,8 +91,8 @@ docs), not a rule count threshold. `docs/LAYOUT.md` "agent/policies/\*.md" row u
 convergence point 22 of 23 playbooks end at, giving predictable output shape (`README.md:77`).
 EPDS's `SKILL.md` §Final report already played this role for *all 14* commands as a documented
 5-block contract. This pass adds `templates/pr-landing.md` — the same convergence idea applied one
-level down, at the commit/PR shape (small ordered commits, conventional-commits title,
-briefing-style body), referenced from `/build` in `docs/COMMANDS.md`.
+level down, at the commit/PR shape (small ordered commits, 프로젝트 관례 우선 없으면 Conventional
+Commits title, briefing-style body), referenced from `/build` in `docs/COMMANDS.md`.
 
 **encode-lessons-in-structure** (Reinforced, extended): pstack's `reflect` turns a finished task's
 lessons into an ad hoc skill-file edit (`README.md:124` `/reflect` table row, `README.md:178`
