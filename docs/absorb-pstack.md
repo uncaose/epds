@@ -192,7 +192,9 @@ layout.selftest PASS (93 assertions, test/layout.selftest.mjs — rule-sentence 
 
 Total: 238 assertions across 5 files, exit 0. SKILL.md: see `wc -l SKILL.md` (L7 — index stays one
 sentence + link per rule regardless of policy-file count; the file itself is checked not to have
-grown into full rule text inline). Public-path grep (P14): `grep -rn "/Users/\|agent-game-harness\|
-journal/reports/" .` (excluding `.git`) — 0 matches.
+grown into full rule text inline). Public-path grep (P14): internal path pattern 3종 grep 0건 — 0
+matches for a home-directory absolute path, the internal harness repo name, or its journal reports
+directory, excluding `.git` (pattern strings deliberately not spelled out here so this sentence
+cannot match its own grep).
 
 Branch: `absorb-pstack`. Not pushed (local-only per instruction).
