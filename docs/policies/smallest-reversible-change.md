@@ -16,4 +16,9 @@ partial prior run — safe to re-run after an interrupted attempt, not just safe
 (docs/absorb-pstack.md item 14 P7 rework, pstack's `make-operations-idempotent` principle,
 `README.md:216`).
 
+The smallest change also means the fewest layers between question and answer and the least hidden
+state a reader has to hold in their head — collapse a one-caller wrapper into its caller, shrink
+mutable scope, rather than leaving indirection a smaller change could have removed (L4,
+docs/absorb-pstack.md item 3 rework, pstack's `minimize-reader-load` principle, `README.md:208`).
+
 Referenced from: `SKILL.md` § Scope and safety rules — see `docs/policies/README.md` for why these are separate files.
