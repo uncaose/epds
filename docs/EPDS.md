@@ -191,7 +191,7 @@ Provenance: `[P8]`(raw-thread-full.md:2628 "즉 하네스는 기술 트랙과 �
 | Agent Skills 표준 | `adapters/claude-code/commands/`, SKILL.md | — |
 | Eval frameworks | `docs/TESTS.md` "결과" 계층 | golden set·regression 스위트는 upgrade 시점 |
 | Prompt/agent red teaming | SKILL.md Scope/safety rules(외부 입력 비신뢰) | `evals/adversarial` 없음 |
-| CLI-first automation | `bin/epds.mjs check`(setup 검증) | `tools/validate-*` 프로젝트별 도구는 없음 |
+| CLI-first automation | `bin/epds.mjs check`(setup 검증), `epds models detect`(세션 모델 감지, §6) | `tools/validate-*` 프로젝트별 도구는 없음 |
 | Policy-as-code | SKILL.md 명문 규칙 | CI 강제는 프로젝트 몫 |
 | Observability | — | 이벤트 스키마·대시보드·롤백 알림 없음(이월) |
 | Experiment OS | `experiment` 커맨드, `templates/experiment-brief.md` | 결과 저장소·결정 규칙 자동화 없음 |
@@ -231,6 +231,21 @@ D-15, 기본안 = 유지하되 이 절로 분리).
 
 모든 명령은 exit code + 모델/effort 헤더를 남긴다(`SKILL.md` §Final report, H106). FAIL 은 반드시 비영
 exit 여야 게이트로 작동한다 — "했다" 주장만으로는 PASS 가 아니다.
+
+### 세션 모델 감지 `[O]`
+
+`bin/models.mjs`(`epds models detect [--write]|list|set`, H154) — pstack의 setup-pstack(세션에서 쓸 수
+있는 모델을 스스로 감지해 역할별로 배정)이 EPDS에 없던 진짜 빈 칸이었다는 재검토 결론을 코드로 채움
+(`docs/absorb-pstack.md` item 3). 감지는 공개 CLI 이름(`claude`/`codex`/`cursor-agent`/`opencode`/
+`gemini`/`aider`/`ollama`/`lms`, PATH 존재 여부만)과 표준 프로바이더 env var *이름*(값은 절대 읽지 않음 —
+A19)만 본다 — 특정 프로젝트의 로컬 별칭(예: `gamedev-coder`)은 하드코딩하지 않는다(EPDS는 이식 가능한
+공개 스킬, SKILL.md:24). 역할↔모델 매핑(`roles`)은 감지가 자동으로 채우지 않고 `epds models set <role>
+<id>`로 명시 지정한다 — pstack의 "역할별 배정"은 코드가 아니라 사람/LLM이 채우는 데이터로 남긴다("틀만
+넣는다"). 결과는 `epds/models.json`(세션/머신 로컬 상태, `.gitignore` 처리 — `epds/trusted-sources.json`과
+달리 프로젝트가 커밋해서 공유할 "정본"이 아니다).
+
+라우터 자동분류(poteto-mode)는 가져오지 않는다 — WORK-ROUTER 7분류(§Work router)가 이미 동급 기능이고
+`docs/ROLES.md`의 분류→역할 매핑까지 더 갖췄다(재수입=중복, `docs/absorb-pstack.md` item 1).
 
 ## Scope discipline
 

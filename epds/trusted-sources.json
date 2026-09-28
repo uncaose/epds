@@ -573,6 +573,42 @@
       "added": "2026-09-18",
       "note": "human 2026-09-18 H121 y — 파킹(JIT). LICENSE 파일 없음 — 재사용 제약: 링크/카테고리명만, 원문 콘텐츠 그대로 복사 금지. Source: R0300 (~/Projects/research/R0300-free-for-dev/catalog.md).",
       "origin": "human-url"
+    },
+    {
+      "id": "cursor-pstack",
+      "url": "https://github.com/cursor/plugins/tree/main/pstack",
+      "kind": "skill",
+      "name": "cursor/pstack (poteto stack)",
+      "purpose": "개인(poteto) Cursor 워크플로 46-47스킬 묶음 — H154 재검토로 session-model-role-mapping만 EPDS에 없던 진짜 빈칸으로 확인, bin/models.mjs로 코드화",
+      "perspectives": [
+        "agent-ops",
+        "delivery"
+      ],
+      "patterns": [
+        "session-model-role-mapping",
+        "n-parallel-comparison",
+        "adversarial-review-panel",
+        "plain-language-reexplain",
+        "skill-router-natural-language",
+        "principle-independent-files",
+        "standard-exit-convergence",
+        "encode-lessons-in-structure"
+      ],
+      "applies_to": [
+        "build",
+        "verify",
+        "retro"
+      ],
+      "evidence_grade": "community",
+      "meta": {
+        "install": "Cursor plugin (poteto-mode router + individual skills)",
+        "invoke": "/poteto-mode or individual skill slash command",
+        "license": "MIT",
+        "last_release": null,
+        "activity": "R0310 catalog: ★8388, actively maintained"
+      },
+      "added": "2026-09-28",
+      "note": "H154 재검토 — session-model-role-mapping 1개만 채택(코드화), 라우터 자동분류는 WORK-ROUTER 중복이라 미채택. docs/references/cursor-pstack.md"
     }
   ]
 }

@@ -42,6 +42,12 @@ Usage:
   epds sources remove <id|url>
                              Remove a trusted source by id or url
   epds sources show <id>    Print one source's full record
+  epds models detect [--write]
+                             Detect available model CLIs/API keys in this session (generic;
+                             no project-specific aliases hardcoded — see docs/absorb-pstack.md)
+  epds models list          Print epds/models.json (detected signals + role map)
+  epds models set <role> <id>
+                             Assign a role name to a detected (or manually entered) model id
   epds status --json --target <path>
                              Deterministic evidence snapshot (no LLM calls)
   epds reference <url> [--write]
@@ -383,6 +389,31 @@ async function sources() {
   throw new Error('Usage: epds sources list|add <url>|remove <id|url>|show <id>');
 }
 
+async function modelsCmd() {
+  const { runDetect, loadModels, saveModels } = await import('./models.mjs');
+  const [sub, ...rest] = process.argv.slice(3);
+  const target = process.cwd();
+  if (sub === 'detect') {
+    const { detected, written } = await runDetect(target, { write: args.has('--write') });
+    console.log(JSON.stringify({ detected, written }, null, 2));
+    return;
+  }
+  if (sub === 'list') {
+    console.log(JSON.stringify(await loadModels(target), null, 2));
+    return;
+  }
+  if (sub === 'set') {
+    const [role, modelId] = rest;
+    if (!role || !modelId) throw new Error('Usage: epds models set <role> <modelId>');
+    const data = await loadModels(target);
+    data.roles[role] = modelId;
+    const path = await saveModels(target, data);
+    console.log(`Set roles.${role} = ${modelId} -> ${path}`);
+    return;
+  }
+  throw new Error('Usage: epds models detect [--write]|list|set <role> <modelId>');
+}
+
 async function statusCmd() {
   const { runStatus } = await import('./status.mjs');
   const { output, exit } = runStatus(process.argv.slice(3));
@@ -402,6 +433,7 @@ try {
   else if (command === 'check') await check();
   else if (command === 'uninstall') await uninstall();
   else if (command === 'sources') await sources();
+  else if (command === 'models') await modelsCmd();
   else if (command === 'status') await statusCmd();
   else if (command === 'reference') await referenceCmd();
   else if (command === 'help' || command === '--help' || command === '-h') printUsage();

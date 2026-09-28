@@ -95,7 +95,7 @@ At the end of any EPDS task, report:
 [Risks and next step] Remaining risks / Recommended next action / PROJECT-STATE update needed
 ```
 
-Every executed command shown in a report must carry its exit code — no row may omit it, and a raw output pipe that discards it does not excuse the omission. The report header must record the executing model's alias and its reasoning effort so results can be reproduced.
+Every executed command shown in a report must carry its exit code — no row may omit it, and a raw output pipe that discards it does not excuse the omission. The report header must record the executing model's alias and its reasoning effort so results can be reproduced. If `epds models detect --write` has been run for this session, cite `epds/models.json` `detected`/`roles` instead of guessing; otherwise self-report as before.
 
 Every Fact listed under `[Evidence used]` must cite a file:line (or turn/log id for external sources) — a claim without a locator is not verified evidence.
 
