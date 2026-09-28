@@ -361,7 +361,7 @@
       "url": null,
       "kind": "thread",
       "name": "argo(내부 하네스 크루 운영 개념)",
-      "purpose": "하네스 자체의 크루(머리)×하네스(손)×human(게이트) 운영 개념 — 공개 리포 아님, 내부 wiki 문서로 대체 인용. EPDS 표1 '직접 만든 라우터'(장기 매우 높음) 항목의 실사례",
+      "purpose": "크루(planning)×하네스(execution)×human(approval gate) 운영 개념 — 공개 리포·URL 없음, self-reported 사례로만 인용(docs/references/argo-internal.md). EPDS 표1 '직접 만든 라우터'(장기 매우 높음) 항목의 실사례",
       "perspectives": [
         "self",
         "agent-ops"
@@ -579,7 +579,7 @@
       "url": "https://github.com/cursor/plugins/tree/main/pstack",
       "kind": "skill",
       "name": "cursor/pstack (poteto stack)",
-      "purpose": "개인(poteto) Cursor 워크플로 46-47스킬 묶음 — H154 재검토로 session-model-role-mapping만 EPDS에 없던 진짜 빈칸으로 확인, bin/models.mjs로 코드화",
+      "purpose": "개인(poteto) Cursor 워크플로 47항목(24스킬+23원칙) 묶음 — H154 재검토(다회, docs/absorb-pstack.md) 전 47항목 disposition: session-model-role-mapping(bin/models.mjs)·principle-independent-files(docs/policies/)·n-parallel-comparison(templates/arena.md)·adversarial-review-panel(/verify 패널)·plain-language-reexplain(Final report 필드)·standard-exit-convergence/encode-lessons-in-structure(확장) 등 다수 Built/Built(partial)/Reinforced, 라우터(poteto-mode) 등 EPDS 중복 항목·언어/스타일 전용 항목은 Rejected",
       "perspectives": [
         "agent-ops",
         "delivery"
@@ -608,7 +608,7 @@
         "activity": "R0310 catalog: ★8388, actively maintained"
       },
       "added": "2026-09-28",
-      "note": "H154 재검토 — session-model-role-mapping 1개만 채택(코드화), 라우터 자동분류는 WORK-ROUTER 중복이라 미채택. docs/references/cursor-pstack.md"
+      "note": "H154 재검토(다회, 최신 4차) — 47항목 전체 item-by-item disposition은 docs/absorb-pstack.md, 요약은 docs/references/cursor-pstack.md. 라우터(poteto-mode) 자동분류는 WORK-ROUTER 중복이라 미채택; 코드-스타일/언어 전용 항목(no-comments, typescript-best-practices 등)은 EPDS 스코프 밖으로 미채택."
     }
   ]
 }
