@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// bin/unified.mjs — unified document template: generator (`epds new`) + checker (`epds check-doc`).
+// bin/unified.mjs — unified document template: generator (`epds from-template`) + checker (`epds template-check`).
 // Pure functions + a tiny CLI wrapper. Core = templates/unified/core.md + kinds/<kind>.md (public).
 // A profile (e.g. a private project's extra fields) is a directory: frontmatter.txt, <kind>.md, VERSION.
 import fs from 'node:fs';
@@ -72,6 +72,8 @@ export function checkDoc(text, opts = {}) {
   return errs;
 }
 
+function localDate() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+
 function slug(s) { return String(s).trim().replace(/[^\w.-]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase(); }
 
 export function buildDoc(kind, name, opts = {}) {
@@ -92,7 +94,7 @@ export function buildDoc(kind, name, opts = {}) {
     const kf = path.join(prof, `${kind}.md`);
     if (fs.existsSync(kf)) extraBlock = '\n' + read(kf).replace(/^\n+/, '');
   }
-  const vars = { version, kind, id, updated: opts.date || new Date().toISOString().slice(0, 10),
+  const vars = { version, kind, id, updated: opts.date || localDate(),
     owner: opts.owner || 'unknown', source: opts.source || 'none: fill in' };
   core = core.replace(/\{\{(version|kind|id|updated|owner|source)\}\}/g, (_, k) => vars[k]);
   if (SLIM_KINDS.includes(kind)) {
@@ -109,13 +111,13 @@ function opt(argv, name) { const i = argv.indexOf(name); return i >= 0 ? argv[i 
 export function runNew(argv) {
   const pos = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && argv[i - 1].startsWith('--') && argv[i - 1] !== '--stdout' && argv[i - 1] !== '--force'));
   const [kind, name] = pos;
-  if (!kind || !name) return { code: 2, out: 'usage: epds new <kind> <name> [--out <file>] [--stdout] [--profile <dir>] [--owner O] [--source S] [--force]' };
+  if (!kind || !name) return { code: 2, out: 'usage: epds from-template <kind> <name> [--out <file>] [--stdout] [--profile <dir>] [--owner O] [--source S] [--force]' };
   let doc;
   try { doc = buildDoc(kind, name, { profileDir: opt(argv, '--profile'), owner: opt(argv, '--owner'), source: opt(argv, '--source') }); }
-  catch (e) { return { code: 2, out: `epds new: ${e.message}` }; }
+  catch (e) { return { code: 2, out: `epds from-template: ${e.message}` }; }
   if (argv.includes('--stdout')) return { code: 0, out: doc.replace(/\n$/, '') };
   const out = opt(argv, '--out') || `${slug(name)}.md`;
-  if (fs.existsSync(out) && !argv.includes('--force')) return { code: 1, out: `epds new: ${out} exists (use --force)` };
+  if (fs.existsSync(out) && !argv.includes('--force')) return { code: 1, out: `epds from-template: ${out} exists (use --force)` };
   fs.mkdirSync(path.dirname(path.resolve(out)), { recursive: true });
   fs.writeFileSync(out, doc);
   return { code: 0, out: `created ${out}` };
@@ -123,7 +125,7 @@ export function runNew(argv) {
 
 export function runCheckDoc(argv) {
   const files = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && argv[i - 1] === '--require'));
-  if (!files.length) return { code: 2, out: 'usage: epds check-doc <file>... [--strict] [--require key,key]' };
+  if (!files.length) return { code: 2, out: 'usage: epds template-check <file>... [--strict] [--require key,key]' };
   const req = (opt(argv, '--require') || '').split(',').filter(Boolean);
   const lines = []; let bad = 0;
   for (const f of files) {

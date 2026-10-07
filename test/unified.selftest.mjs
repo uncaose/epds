@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// test/unified.selftest.mjs — unified template: `epds new` / `epds check-doc` / status bypass gap.
+// test/unified.selftest.mjs — unified template: `epds from-template` / `epds template-check` / status bypass gap.
 // `node test/unified.selftest.mjs` -> exit 0.
 import fs from 'node:fs';
 import os from 'node:os';
@@ -18,13 +18,16 @@ const run = (...a) => spawnSync('node', [bin, ...a], { encoding: 'utf8' });
 // generated docs for every kind pass; strict fails until {{fill}} is replaced
 for (const k of KINDS) {
   const f = path.join(tmp, `${k}.md`);
-  const r = run('new', k, `sample-${k}`, '--out', f);
+  const r = run('from-template', k, `sample-${k}`, '--out', f);
   ok(`new ${k} exits 0`, r.status === 0);
-  ok(`check-doc PASS for generated ${k}`, run('check-doc', f).status === 0);
-  ok(`check-doc --strict FAILs unfilled ${k}`, run('check-doc', '--strict', f).status === 1);
+  ok(`check-doc PASS for generated ${k}`, run('template-check', f).status === 0);
+  ok(`check-doc --strict FAILs unfilled ${k}`, run('template-check', '--strict', f).status === 1);
 }
-ok('new refuses unknown kind', run('new', 'nope', 'x', '--out', path.join(tmp, 'x.md')).status === 2);
-ok('new refuses overwrite without --force', run('new', 'brief', 'sample-brief', '--out', path.join(tmp, 'brief.md')).status === 1);
+ok('new refuses unknown kind', run('from-template', 'nope', 'x', '--out', path.join(tmp, 'x.md')).status === 2);
+ok('new refuses overwrite without --force', run('from-template', 'brief', 'sample-brief', '--out', path.join(tmp, 'brief.md')).status === 1);
+
+const oldN = run('check-doc', path.join(tmp, 'brief.md'));
+ok('old name check-doc still works (+warning)', oldN.status === 0 && String(oldN.stderr).includes('renamed'));
 
 // violation samples (each must be caught)
 const good = buildDoc('report', 'g', { date: '2026-01-01' });

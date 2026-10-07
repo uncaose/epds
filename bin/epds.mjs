@@ -56,10 +56,10 @@ Usage:
                              value for that role (--effort or --effort= with no value errors).
   epds status --json --target <path>
                              Deterministic evidence snapshot (no LLM calls)
-  epds new <kind> <name> [--out F] [--stdout] [--profile DIR]
-                             Create a document from the unified template (kind: brief|report|spec|critic|decision|research)
-  epds check-doc <file>... [--strict] [--require k,k]
-                             Check the unified-template mark and required sections (exit 1 on violation)
+  epds from-template <kind> <name> [--out F] [--stdout] [--profile DIR]
+                             Create a document from the unified template (old name: new; kind: brief|report|spec|critic|decision|research)
+  epds template-check <file>... [--strict] [--require k,k]
+                             Check the unified-template mark and required sections (old name: check-doc; exit 1 on violation)
   epds reference <url> [--write]
                              Score a repo against RUBRIC.md, optionally write a metacard skeleton
 
@@ -480,7 +480,8 @@ async function statusCmd() {
 
 async function unifiedCmd() {
   const u = await import('./unified.mjs');
-  const { code, out } = command === 'new' ? u.runNew(process.argv.slice(3)) : u.runCheckDoc(process.argv.slice(3));
+  if (command === 'new' || command === 'check-doc') console.error(`epds: '${command}' is renamed '${command === 'new' ? 'from-template' : 'template-check'}' (old name works until 2026-10-22)`);
+  const { code, out } = (command === 'new' || command === 'from-template') ? u.runNew(process.argv.slice(3)) : u.runCheckDoc(process.argv.slice(3));
   (code === 0 ? console.log : console.error)(out);
   process.exitCode = code;
 }
@@ -500,7 +501,7 @@ try {
   else if (command === 'models') await modelsCmd();
   else if (command === 'status') await statusCmd();
   else if (command === 'reference') await referenceCmd();
-  else if (command === 'new' || command === 'check-doc') await unifiedCmd();
+  else if (command === 'new' || command === 'check-doc' || command === 'from-template' || command === 'template-check') await unifiedCmd();
   else if (command === 'help' || command === '--help' || command === '-h') printUsage();
   else {
     console.error(`Unknown command: ${command}`);

@@ -109,5 +109,5 @@ export function collectTemplateBypass(target) {
   }
   if (total === 0) return null;
   return { id: 'doc.template.bypass', value: { total, marked: total - bypass.length, bypass: bypass.length, sample: bypass.slice(0, 5) },
-    locator: DOC_DIRS.join(','), cmd: 'epds check-doc <file>', exit: 0 };
+    locator: DOC_DIRS.join(','), cmd: 'epds template-check <file>', exit: 0 };
 }
