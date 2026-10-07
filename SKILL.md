@@ -1,6 +1,6 @@
 ---
 name: epds
-description: Evidence-First Product Delivery System. Use when the user asks to set up EPDS, assess a project’s current state, decide what to do next, evaluate an idea before implementation, design a minimum experiment, audit agent instructions, improve AGENTS.md or CLAUDE.md, prepare a release decision, or analyze an external repository/tool for reusable patterns. EPDS first inspects project evidence and trusted public sources, asks only owner-only decisions, then routes work through direction, problem, hypothesis, experiment, spec, build, verify, release, observe, and retro.
+description: Evidence-First Product Delivery System. Use when the user asks to set up EPDS, assess a project’s current state, decide what to do next, evaluate an idea before implementation, design a minimum experiment, audit agent instructions, improve AGENTS.md or CLAUDE.md, prepare a release decision, or analyze an external repository/tool for reusable patterns. EPDS first inspects project evidence and trusted public sources, asks only owner-only decisions, then routes work through direction, problem, hypothesis, experiment, spec, build, verify, release, observe, and retro. Also use when asked to build, make or create an app, game, tool or feature from a request, even a short or vague one-liner or with no human available to answer, so the work is carried through to a finished product that has been run and checked.
 argument-hint: "[setup|status|audit|upgrade|reference <URL>|discover|decide|experiment|spec|build|verify|release|observe|retro]"
 ---
 
@@ -22,6 +22,18 @@ Direction → Problem → Hypothesis → Minimum Experiment → Spec → Build �
 ```
 
 EPDS is not an LLM runtime, IDE, autonomous deployment system, or a replacement for Claude Code, Codex, OpenCode, or Cursor. The runtime reads files, edits code, and executes tools. EPDS decides what evidence to collect, what information is missing, which questions are worth asking, and which delivery gate must be passed next.
+
+## Run to completion (the loop)
+
+EPDS carries the product to the end itself; it does not hand the owner a plan (`docs/EPDS.md` §0). Every build request, however short, runs this loop. Do not stop at any step short of step 7.
+
+1. **Take stock.** Read whatever material exists, then write three lines: state, position, next direction. An empty folder is a state too; the request itself is then the answer to "what do you want".
+2. **Questions never block.** Ask only what a reachable human can answer. If no human can answer (non-interactive run, "no human available", or no reply), do not end the turn on a question: write each open question with the default you chose under `Assumptions` in the Final report and continue. Ending without the deliverable because a question is open is unfinished work.
+3. **Sharpen before building.** Write 3 to 7 acceptance checks, each one an observable action plus its expected result (for example "press ArrowRight, the hero moves one cell"; "type a note, reload, the note is still listed"). Fill gaps in a vague request with the most common reading and record it as an assumption.
+4. **Build** the smallest complete version at the requested path.
+5. **Execute it.** Run the real artifact (headless browser, test runner, CLI) and perform every acceptance check by running it, with its exit code. Reading the code, grepping the source for strings, or a screenshot you never looked at are not checks. If you take a screenshot, open and inspect it; if you cannot view images, assert on DOM or text state instead. A page that crashes on load, or an overlay that hides the content, fails every check.
+6. **Fix and re-run** each failing check, up to 5 rounds. If the same check fails twice for the same reason, change the premise instead of patching again.
+7. **Done means** every acceptance check was executed and passed, with the deliverable at the requested path. If any check still fails, say which one and why; never write "complete".
 
 ## Trigger and routing
 
@@ -103,6 +115,7 @@ At the end of any EPDS task, report:
 [Evidence used] Facts / Interpretation / Assumptions / External research
 [Work completed] Changed / Not changed
 [Verification] Tests/tools run / Results / Unverified items
+[Acceptance] N of M acceptance checks executed and passed (list each check with its exit code); Assumptions made in place of unanswered questions
 [Risks and next step] Remaining risks / Recommended next action / PROJECT-STATE update needed
 [Plain language] One line, no jargon: what happened and what it means for the reader
 ```
