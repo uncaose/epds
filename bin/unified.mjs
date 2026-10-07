@@ -9,6 +9,9 @@ import { fileURLToPath } from 'node:url';
 export const CORE_VERSION = '1';
 export const KINDS = ['brief', 'report', 'spec', 'critic', 'decision', 'research'];
 export const STATUSES = ['draft', 'active', 'done', 'deprecated'];
+// Slim kinds: short operational docs (delegation briefs). No 7-section skeleton, no kind block; fewer required keys.
+export const SLIM_KINDS = ['brief'];
+const SLIM_REQUIRED_KEYS = ['template', 'kind', 'id', 'updated'];
 const REQUIRED_KEYS = ['template', 'kind', 'id', 'status', 'updated', 'owner', 'source'];
 const TEMPLATE_RE = /^unified@\d+(\.\d+)*(\+[a-z][\w-]*@\d+(\.\d+)*)*$/;
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -36,11 +39,16 @@ export function checkDoc(text, opts = {}) {
   const p = parseFrontmatter(text);
   if (!p) return ['no frontmatter (template bypass): file must start with --- / template: unified@N / ... / ---'];
   const { fm, body } = p;
-  for (const k of [...REQUIRED_KEYS, ...(opts.require || [])]) if (!fm[k]) errs.push(`frontmatter key missing or empty: ${k}`);
+  const slim = SLIM_KINDS.includes(fm.kind);
+  for (const k of [...(slim ? SLIM_REQUIRED_KEYS : REQUIRED_KEYS), ...(opts.require || [])]) if (!fm[k]) errs.push(`frontmatter key missing or empty: ${k}`);
   if (fm.template && !TEMPLATE_RE.test(fm.template)) errs.push(`template mark invalid: "${fm.template}" (want unified@N[+profile@M])`);
   if (fm.kind && !KINDS.includes(fm.kind)) errs.push(`kind invalid: "${fm.kind}" (one of ${KINDS.join('|')})`);
   if (fm.status && !STATUSES.includes(fm.status)) errs.push(`status invalid: "${fm.status}" (one of ${STATUSES.join('|')})`);
   if (fm.updated && !/^\d{4}-\d{2}-\d{2}$/.test(fm.updated)) errs.push(`updated must be YYYY-MM-DD: "${fm.updated}"`);
+  if (slim) {
+    if (opts.strict && /\{\{fill\}\}/.test(text)) errs.push('unfilled {{fill}} markers remain (strict)');
+    return errs;
+  }
   // sections "## 0." .. "## 6." in order, each with a non-trivial body
   const lines = body.split(/\r?\n/);
   const heads = [];
@@ -87,6 +95,11 @@ export function buildDoc(kind, name, opts = {}) {
   const vars = { version, kind, id, updated: opts.date || new Date().toISOString().slice(0, 10),
     owner: opts.owner || 'unknown', source: opts.source || 'none: fill in' };
   core = core.replace(/\{\{(version|kind|id|updated|owner|source)\}\}/g, (_, k) => vars[k]);
+  if (SLIM_KINDS.includes(kind)) {
+    const fmLines = [`template: unified@${vars.version}`, `kind: ${kind}`, `id: ${id}`, `updated: ${vars.updated}`];
+    const body = read(path.join(tplDir, 'kinds', `${kind}.md`)).replace(/\s+$/, '\n') + (extraBlock ? extraBlock.replace(/^\n+/, '').replace(/\s+$/, '\n') : '');
+    return `---\n${fmLines.join('\n')}\n${extraFm}---\n${body}`;
+  }
   core = core.replace(/\n---\n\n# /, `\n${extraFm}---\n\n# `);
   return core.replace(/\s+$/, '\n') + read(path.join(tplDir, 'kinds', `${kind}.md`)).replace(/\s+$/, '\n') + (extraBlock ? extraBlock.replace(/\s+$/, '\n') : '');
 }

@@ -42,6 +42,14 @@ bad('kind block missing', good.replace(/## \[kind: report\][\s\S]*$/, ''), 'kind
 bad('foreign kind block', good + '\n## [kind: brief] x\n', 'foreign');
 ok('--require catches missing profile key', checkDoc(good, { require: ['data_tier'] }).some((e) => e.includes('data_tier')));
 
+// slim brief: short, no 7 sections; report keeps them
+const sb = buildDoc('brief', 'sb', { date: '2026-01-01' });
+ok('slim brief <= 12 lines, no section skeleton', sb.split('\n').length <= 12 && !/^## 0\./m.test(sb));
+ok('slim brief passes check-doc (sections not required)', checkDoc(sb).length === 0);
+ok('slim brief strict fails unfilled', checkDoc(sb, { strict: true }).length > 0);
+ok('report still requires sections', checkDoc(good.replace(/## 3\.[\s\S]*?(?=## 4\.)/, '')).length > 0);
+ok('full-form legacy brief still passes', checkDoc(good.replace('kind: report', 'kind: brief').replace('## [kind: report]', '## [kind: brief]')).length === 0);
+
 // profile: version suffix + extra frontmatter + extra kind block, still passes
 const prof = path.join(tmp, 'prof'); fs.mkdirSync(prof);
 fs.writeFileSync(path.join(prof, 'VERSION'), 'acme@2\n');

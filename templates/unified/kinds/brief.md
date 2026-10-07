@@ -1,6 +1,4 @@
-
-## [kind: brief] Delegation brief
-- Task and owner (who executes):
-- Done contract: finish only when every acceptance item passes; report PASS | FAIL | PARTIAL | QUESTION.
-- Return format: result line, changed files, evidence, `STALL: none | <cause>`.
-- Do not register or publish anything external.
+Goal: {{fill}} one line, what and why.
+Done when: {{fill}} observable check -> expected result (command, exit 0). Report PASS | FAIL | PARTIAL | QUESTION.
+Facts of this environment: {{fill}} paths, versions, constraints the executor cannot guess.
+Reply: result line, changed files + evidence, `STALL: none | <cause>`. Nothing external is registered or published.
