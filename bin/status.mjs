@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { collectGit, collectTest, collectJudges, collectSimDumps } from './status-collect.mjs';
-import { collectLifecycle, collectLifecycleStale, collectMetricsStatus } from './status-collect-docs.mjs';
+import { collectLifecycle, collectLifecycleStale, collectMetricsStatus, collectTemplateBypass } from './status-collect-docs.mjs';
 export function validateFacts(facts) {
   for (const f of facts) {
     if (typeof f.locator !== 'string' || f.locator.length === 0) {
@@ -200,6 +200,7 @@ export function runStatus(argv) {
     if (staleFact) facts.push(staleFact);
   }
   facts.push(collectMetricsStatus(target));
+  const bypassFact = collectTemplateBypass(target); if (bypassFact) facts.push(bypassFact);
   facts.push(...collectJudges(target));
   const simFact = collectSimDumps(target); if (simFact) facts.push(simFact);
   const factCheck = validateFacts(facts);

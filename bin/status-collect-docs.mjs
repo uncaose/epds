@@ -5,6 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { hasUnifiedMark } from './unified.mjs';
 
 export function collectLifecycle(target) {
   const rel = 'docs/lifecycle-status.md';
@@ -91,4 +92,22 @@ export function collectMetricsStatus(target) {
   const pass = failing.length === 0;
   return { id: 'metrics.status', value: { corrupted: false, measuredAt, rows, failing: failing.map((r) => r.metric) },
     locator: rel, cmd: 'read METRICS.md', exit: pass ? 0 : 1, track: 'product' };
+}
+// Unified-template bypass gap (informational, no track: never changes a verdict). Counts .md files in
+// the conventional doc dirs that lack the `template: unified@N` mark. Absent dirs -> no fact.
+const DOC_DIRS = ['docs/specs', 'docs/reports', 'journal/reports', 'docs/decisions'];
+export function collectTemplateBypass(target) {
+  let total = 0; const bypass = [];
+  for (const rel of DOC_DIRS) {
+    const dir = path.join(target, rel);
+    let names; try { names = fs.readdirSync(dir).filter((n) => n.endsWith('.md')); } catch { continue; }
+    for (const n of names) {
+      total += 1;
+      let text = ''; try { text = fs.readFileSync(path.join(dir, n), 'utf8'); } catch { /* unreadable counts as bypass */ }
+      if (!hasUnifiedMark(text)) bypass.push(`${rel}/${n}`);
+    }
+  }
+  if (total === 0) return null;
+  return { id: 'doc.template.bypass', value: { total, marked: total - bypass.length, bypass: bypass.length, sample: bypass.slice(0, 5) },
+    locator: DOC_DIRS.join(','), cmd: 'epds check-doc <file>', exit: 0 };
 }

@@ -101,3 +101,9 @@ rework). A CLI with no documented non-interactive invocation is not eligible for
 
 ## Natural-language examples
 
+
+## Document template commands (CLI)
+
+- `epds new <kind> <name> [--out F] [--profile DIR]` creates a document from `templates/unified/` (core sections 0-6 + one kind block; kinds: brief, report, spec, critic, decision, research). A profile directory (`frontmatter.txt`, `<kind>.md`, `VERSION`) adds project-private fields without changing the public core.
+- `epds check-doc <file>... [--strict] [--require key,key]` verifies the `template: unified@N` mark, required frontmatter, sections 0-6 and the `[Acceptance] ... -> ...` line; exit 1 on violation. `--strict` also fails on unfilled `{{fill}}` markers.
+- `epds status` reports `doc.template.bypass` (informational): how many docs in `docs/specs`, `docs/reports`, `journal/reports`, `docs/decisions` lack the mark.
