@@ -8,6 +8,7 @@ import crypto from 'node:crypto';
 
 const root = path.join(path.dirname(new URL(import.meta.url).pathname), '..');
 const skill = fs.readFileSync(path.join(root, 'SKILL.md'), 'utf8');
+const protocol = fs.readFileSync(path.join(root, 'docs', 'PROTOCOL.md'), 'utf8');
 const epds = fs.readFileSync(path.join(root, 'docs', 'EPDS.md'), 'utf8');
 let fail = 0;
 const ok = (label, cond) => { console.log(`  ${cond ? 'ok  ' : 'FAIL'} ${label}`); if (!cond) fail += 1; };
@@ -22,7 +23,7 @@ ok('R1 description triggers on build/make/create requests', /build, make or crea
 ok('R1 description covers vague one-liners and no-human runs', /vague one-liner/.test(desc) && /no human available/.test(desc));
 
 // R2 completion loop exists with 7 numbered steps, before the routing table
-ok('R2 "Run to completion" section exists before "Trigger and routing"', loop.length > 0 && skill.indexOf('## Run to completion') < skill.indexOf('## Trigger and routing'));
+ok('R2 "Run to completion" section exists before "Fast path"', loop.length > 0 && skill.indexOf('## Run to completion') < skill.indexOf('## Fast path'));
 ok('R2 loop has 7 numbered steps', (loop.match(/^\d\. \*\*/gm) || []).length === 7);
 ok('R2 acceptance checks are written before building', /Sharpen before building[\s\S]*3 to 7 acceptance checks/.test(loop) && loop.indexOf('Sharpen') < loop.indexOf('**Build**'));
 ok('R2 loop has bounded retry (5 rounds)', /up to 5 rounds/.test(loop));
@@ -33,7 +34,12 @@ ok('R3 questions never block when no human can answer', /Questions never block/.
 
 // R4 verification must execute the artifact
 ok('R4 grep/unviewed screenshot are not checks', /grepping the source/.test(loop) && /screenshot you never looked at/.test(loop));
-ok('R4 Final report carries an [Acceptance] line with exit codes', /\[Acceptance\] N of M acceptance checks executed and passed/.test(skill));
+ok('R4 Final report carries an [Acceptance] line with exit codes', /\[Acceptance\] N of M acceptance checks executed and passed/.test(protocol));
+
+// v3 (H361): SKILL.md short; TRIVIAL fast path; web check script wired into step 5
+ok('V3 SKILL.md <= 40 lines', skill.split('\n').length <= 41);
+ok('V3 fast path: 2-3 checks, 2 fix rounds, short report, small-model sentence', /## Fast path[\s\S]*small or low-cost model[\s\S]*2 to 3 acceptance checks[\s\S]*at most 2 fix rounds[\s\S]*\[Plain language\]/.test(skill));
+ok('V3 step 5 directs bin/check.mjs for web deliverables', /bin\/check\.mjs/.test(loop) && fs.existsSync(path.join(root, 'bin', 'check.mjs')));
 
 // guard: §0 human definition block unchanged (verbatim, no interpretation)
 const sec0 = (epds.match(/## §0\.[\s\S]*?(?=`\[H\]` 로케이터)/) || [''])[0];

@@ -1,0 +1,4 @@
+{"checks":[
+ {"name":"add a note, reload, still listed","steps":[{"type":"#in","text":"milk"},{"press":"Enter"},{"reload":true}],"expect":[{"text":"milk"},{"count":"li","eq":1}]},
+ {"name":"no console errors on load","steps":[],"expect":[{"consoleErrors":0}]}
+]}

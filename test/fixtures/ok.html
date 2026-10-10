@@ -1,0 +1,6 @@
+<!doctype html><meta charset=utf-8><input id=in><ul id=l></ul>
+<script>
+const L=document.getElementById('l'),I=document.getElementById('in');
+const draw=()=>{L.innerHTML='';(JSON.parse(localStorage.n||'[]')).forEach(t=>{const li=document.createElement('li');li.textContent=t;L.append(li)})};
+I.addEventListener('keydown',e=>{if(e.key==='Enter'){localStorage.n=JSON.stringify([...JSON.parse(localStorage.n||'[]'),I.value]);I.value='';draw()}});draw();
+</script>

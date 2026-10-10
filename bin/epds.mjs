@@ -177,6 +177,8 @@ async function setup() {
   await copyFile(sourceLicense, join(target, 'LICENSE'));
   await copyFile(sourceNotice, join(target, 'NOTICE'));
   await copyTemplates(target);
+  await mkdir(join(target, 'bin'), { recursive: true });
+  await copyFile(join(packageRoot, 'bin', 'check.mjs'), join(target, 'bin', 'check.mjs')); // web acceptance checker (SKILL.md step 5)
   if (await isDirectory(sourceDocs)) {
     await mkdir(join(target, 'docs'), { recursive: true });
     for (const entry of await readdir(sourceDocs, { withFileTypes: true })) {

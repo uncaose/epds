@@ -1,0 +1,73 @@
+#!/usr/bin/env node
+// bin/check.mjs <html> <checks.json> — run acceptance checks against a web artifact in headless Chromium.
+// Format: docs/CHECK.md. exit 0 = all PASS, 1 = some FAIL, 2 = playwright/browser missing or bad usage.
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
+
+const [htmlArg, checksArg] = process.argv.slice(2);
+if (!htmlArg || !checksArg) { console.error('usage: node bin/check.mjs <html> <checks.json>'); process.exit(2); }
+
+const require = createRequire(import.meta.url); // honors NODE_PATH
+let pw;
+for (const n of ['playwright', 'playwright-core']) { try { pw = require(n); break; } catch {} }
+if (!pw) {
+  console.error('playwright not found. Install: npm i playwright-core && npx playwright install chromium (or set NODE_PATH to a node_modules dir that has playwright-core).');
+  process.exit(2);
+}
+
+function chromePath() {
+  if (process.env.EPDS_CHROME) return process.env.EPDS_CHROME;
+  if (fs.existsSync('/usr/bin/chromium')) return '/usr/bin/chromium';
+  const cache = path.join(os.homedir(), 'Library', 'Caches', 'ms-playwright');
+  try {
+    for (const d of fs.readdirSync(cache).filter((x) => /^chromium-\d+$/.test(x)).sort().reverse()) {
+      const p = path.join(cache, d, 'chrome-mac-arm64', 'Google Chrome for Testing.app', 'Contents', 'MacOS', 'Google Chrome for Testing');
+      if (fs.existsSync(p)) return p;
+    }
+  } catch {}
+  return undefined; // playwright default
+}
+
+const { checks } = JSON.parse(fs.readFileSync(checksArg, 'utf8'));
+const url = pathToFileURL(path.resolve(htmlArg)).href;
+let browser;
+try { browser = await pw.chromium.launch({ executablePath: chromePath(), args: ['--no-sandbox'] }); }
+catch (e) { console.error(`cannot launch chromium (${String(e.message).split('\n')[0]}). Set EPDS_CHROME=<chrome path> or run: npx playwright install chromium`); process.exit(2); }
+
+async function step(page, s) {
+  if ('click' in s) await page.click(s.click, { timeout: 3000 });
+  else if ('dblclick' in s) await page.dblclick(s.dblclick, { timeout: 3000 });
+  else if ('type' in s) await page.fill(s.type, s.text ?? '', { timeout: 3000 });
+  else if ('press' in s) await page.keyboard.press(s.press);
+  else if ('reload' in s) await page.reload();
+  else if ('wait' in s) await page.waitForTimeout(s.wait);
+  else throw new Error(`unknown step ${JSON.stringify(s)}`);
+}
+async function expectOne(page, errs, e) {
+  if ('text' in e) { const t = await page.evaluate(() => document.body.innerText); return [t.includes(e.text), `text "${e.text}"`]; }
+  if ('count' in e) { const n = await page.locator(e.count).count(); return [n === e.eq, `count(${e.count}) = ${n}, want ${e.eq}`]; }
+  if ('consoleErrors' in e) return [errs.length === e.consoleErrors, `consoleErrors = ${errs.length}, want ${e.consoleErrors}${errs[0] ? ` (${errs[0].slice(0, 80)})` : ''}`];
+  throw new Error(`unknown expect ${JSON.stringify(e)}`);
+}
+
+let failed = 0;
+for (const c of checks) {
+  const ctx = await browser.newContext(); const page = await ctx.newPage(); const errs = [];
+  page.on('pageerror', (e) => errs.push(String(e.message)));
+  page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
+  let msg = '';
+  try {
+    await page.goto(url);
+    for (const s of c.steps || []) await step(page, s);
+    for (const e of c.expect || []) { const [good, d] = await expectOne(page, errs, e); if (!good) { msg = d; break; } }
+  } catch (e) { msg = String(e.message).split('\n')[0]; }
+  console.log(`${msg ? 'FAIL' : 'PASS'} ${c.name}${msg ? ` -- ${msg}` : ''}`);
+  if (msg) failed += 1;
+  await ctx.close();
+}
+await browser.close();
+console.log(`${checks.length - failed}/${checks.length} checks passed`);
+process.exit(failed ? 1 : 0);

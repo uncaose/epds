@@ -1,0 +1,5 @@
+<!doctype html><meta charset=utf-8><input id=in><ul id=l></ul>
+<script>
+document.getElementById('in').addEventListener('keydown',e=>{if(e.key==='Enter'){const li=document.createElement('li');li.textContent=e.target.value;document.getElementById('l').append(li)}}); // no persistence
+console.error('boom');
+</script>

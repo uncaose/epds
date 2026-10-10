@@ -34,7 +34,7 @@ const REQUIRED_POLICIES = [
 
 // ---- case 1: every docs/policies/<slug>.md link SKILL.md makes actually exists on disk ----
 {
-  const skillMd = fs.readFileSync(path.join(root, 'SKILL.md'), 'utf8');
+  const skillMd = fs.readFileSync(path.join(root, 'docs', 'PROTOCOL.md'), 'utf8'); // v3: index moved from SKILL.md
   const linked = [...skillMd.matchAll(/\]\((docs\/policies\/[a-z0-9-]+\.md)\)/g)].map((m) => m[1]);
   ok('case1 SKILL.md links at least 12 policy files', linked.length >= 12);
   for (const rel of linked) {
@@ -53,7 +53,7 @@ const REQUIRED_POLICIES = [
 // file (e.g. reused verbatim in a different section, which would pass a whole-document substring
 // check without actually indexing that rule) ----
 {
-  const skillMd = fs.readFileSync(path.join(root, 'SKILL.md'), 'utf8');
+  const skillMd = fs.readFileSync(path.join(root, 'docs', 'PROTOCOL.md'), 'utf8'); // v3
   const lines = skillMd.split('\n');
   for (const name of REQUIRED_POLICIES) {
     const policyText = fs.readFileSync(path.join(root, 'docs', 'policies', name), 'utf8');
@@ -109,7 +109,7 @@ const REQUIRED_POLICIES = [
   let linkCount = 0;
   for (const src of sources) {
     const text = fs.readFileSync(src, 'utf8');
-    const links = [...text.matchAll(/]\((docs\/[a-z0-9-/]+\.md|templates\/[a-z0-9-.]+\.(?:md|json))\)/g)].map((m) => m[1]);
+    const links = [...text.matchAll(/]\((docs\/[A-Za-z0-9-/]+\.md|templates\/[a-z0-9-.]+\.(?:md|json))\)/g)].map((m) => m[1]);
     for (const rel of links) {
       linkCount += 1;
       ok(`case7 ${path.basename(src)} link resolves in install: ${rel}`, fs.existsSync(path.join(installedRoot, rel)));
@@ -126,7 +126,7 @@ const REQUIRED_POLICIES = [
 
 // ---- case 6: SKILL.md Final report carries the plain-language line (item 8) ----
 {
-  const skillMd = fs.readFileSync(path.join(root, 'SKILL.md'), 'utf8');
+  const skillMd = fs.readFileSync(path.join(root, 'docs', 'PROTOCOL.md'), 'utf8'); // v3
   ok('case6 Final report has a [Plain language] line', skillMd.includes('[Plain language]'));
 }
 
