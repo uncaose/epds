@@ -7,8 +7,10 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 
-const [htmlArg, checksArg] = process.argv.slice(2);
-if (!htmlArg || !checksArg) { console.error('usage: node bin/check.mjs <html> <checks.json>'); process.exit(2); }
+const argv = process.argv.slice(2);
+const verbose = argv.includes('--verbose');
+const [htmlArg, checksArg] = argv.filter((a) => a !== '--verbose');
+if (!htmlArg || !checksArg) { console.error('usage: node bin/check.mjs <html> <checks.json> [--verbose]'); process.exit(2); }
 
 const require = createRequire(import.meta.url); // honors NODE_PATH
 let pw;
@@ -64,7 +66,7 @@ for (const c of checks) {
     for (const s of c.steps || []) await step(page, s);
     for (const e of c.expect || []) { const [good, d] = await expectOne(page, errs, e); if (!good) { msg = d; break; } }
   } catch (e) { msg = String(e.message).split('\n')[0]; }
-  console.log(`${msg ? 'FAIL' : 'PASS'} ${c.name}${msg ? ` -- ${msg}` : ''}`);
+  if (msg || verbose) console.log(`${msg ? 'FAIL' : 'PASS'} ${c.name}${msg ? ` -- ${msg}` : ''}`);
   if (msg) failed += 1;
   await ctx.close();
 }

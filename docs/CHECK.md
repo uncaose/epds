@@ -1,7 +1,7 @@
 # bin/check.mjs — acceptance checks for web artifacts
 
 `node bin/check.mjs <html> <checks.json>` — opens the file in headless Chromium, one fresh browser context per check.
-Prints `PASS|FAIL <name>` per check and `N/M checks passed`. Exit 0 = all pass, 1 = any fail, 2 = playwright or Chromium missing (the message says how to install; `NODE_PATH` = dir holding playwright-core, `EPDS_CHROME` = chrome path).
+Prints `FAIL <name> -- reason` per failing check and `N/M checks passed` (`--verbose` also prints `PASS <name>`). Exit 0 = all pass, 1 = any fail, 2 = playwright or Chromium missing (the message says how to install; `NODE_PATH` = dir holding playwright-core, `EPDS_CHROME` = chrome path).
 
 ```json
 {"checks": [

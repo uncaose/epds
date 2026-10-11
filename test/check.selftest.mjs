@@ -11,7 +11,9 @@ const fx = (n) => path.join(root, 'test', 'fixtures', n);
 ok('no args -> exit 2', run().status === 2);
 const good = run(fx('ok.html'), fx('checks.json'));
 if (good.status === 2) { console.log(`SKIP (playwright/chromium missing): ${good.stderr.trim()}`); process.exit(0); }
-ok('good fixture -> exit 0, all PASS', good.status === 0 && !/FAIL/.test(good.stdout) && /2\/2 checks passed/.test(good.stdout));
+ok('good fixture -> exit 0, only summary line', good.status === 0 && good.stdout.trim() === '2/2 checks passed');
+const vb = run(fx('ok.html'), fx('checks.json'), '--verbose');
+ok('--verbose lists PASS lines', vb.status === 0 && /PASS add a note/.test(vb.stdout));
 const bad = run(fx('bad.html'), fx('checks.json'));
 ok('bad fixture -> exit 1, FAIL lines', bad.status === 1 && /FAIL add a note/.test(bad.stdout) && /FAIL no console errors/.test(bad.stdout));
 console.log(fail ? `FAIL (${fail} failures)` : 'PASS (0 failures)');

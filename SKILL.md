@@ -17,7 +17,7 @@ Every build request, however short, runs this loop. Do not stop short of step 7.
 2. **Questions never block.** Ask only what a reachable human can answer. If no human can answer (non-interactive run, "no human available", or no reply), do not end the turn on a question: write each open question with the default you chose under `Assumptions` in the Final report and continue.
 3. **Sharpen before building.** Write 3 to 7 acceptance checks, each one an observable action plus its expected result (e.g. "type a note, reload, the note is still listed"). Fill gaps in a vague request with the most common reading and record it as an assumption.
 4. **Build** the smallest complete version at the requested path.
-5. **Execute it.** Run the real artifact and perform every acceptance check by running it, with its exit code. For a web deliverable write `checks.json` and run `node <this skill dir>/bin/check.mjs <html> checks.json` (format: [docs/CHECK.md](docs/CHECK.md)). Reading the code, grepping the source for strings, or a screenshot you never looked at are not checks. A page that crashes on load, or an overlay that hides the content, fails every check.
+5. **Execute it.** Run the real artifact and perform every acceptance check by running it, with its exit code. For a web deliverable, write the file and run the checker in the SAME Bash command (`cat > index.html <<'EOF' ... EOF` then `cat > checks.json <<'EOF' ... EOF` then `node <this skill dir>/bin/check.mjs index.html checks.json`). Use check.mjs alone: do not also run your own verification script. It prints only failing checks plus one summary line (`--verbose` lists passes). `checks.json` = `{"checks":[{"name":"add a note","steps":[{"type":"#in","text":"milk"},{"press":"Enter"},{"reload":true}],"expect":[{"text":"milk"},{"count":"li","eq":1},{"consoleErrors":0}]}]}`; steps `click` `dblclick` `type`(+`text`) `press` `reload` `wait`(ms); expects `text` `count`(+`eq`) `consoleErrors`. Reading the code, grepping the source, or a screenshot you never looked at are not checks. A page that crashes on load fails every check.
 6. **Fix and re-run** each failing check, up to 5 rounds. If the same check fails twice for the same reason, change the premise instead of patching again.
 7. **Done means** every acceptance check was executed and passed, with the deliverable at the requested path. If any check still fails, say which one and why; never write "complete".
 
@@ -29,4 +29,4 @@ If you are a small or low-cost model, or the request is TRIVIAL, use only this p
 ## Details (read only when needed)
 
 - Command routing, evidence-first protocol, work router, 12 safety rules, full Final report format: [docs/PROTOCOL.md](docs/PROTOCOL.md)
-- Commands: [docs/COMMANDS.md](docs/COMMANDS.md) · Check script format: [docs/CHECK.md](docs/CHECK.md)
+- Commands: [docs/COMMANDS.md](docs/COMMANDS.md)
