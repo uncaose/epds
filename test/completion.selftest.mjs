@@ -25,9 +25,9 @@ ok('R1 description covers vague one-liners and no-human runs', /vague one-liner/
 // R2 completion loop exists with 7 numbered steps, before the routing table
 ok('R2 "Run to completion" section exists before "Fast path"', loop.length > 0 && skill.indexOf('## Run to completion') < skill.indexOf('## Fast path'));
 ok('R2 loop has 7 numbered steps', (loop.match(/^\d\. \*\*/gm) || []).length === 7);
-ok('R2 acceptance checks are written before building', /Sharpen before building[\s\S]*3 to 7 acceptance checks/.test(loop) && loop.indexOf('Sharpen') < loop.indexOf('**Build**'));
+ok('R2 lifecycle table is written before building', /Sharpen before building[\s\S]*templates\/LIFECYCLE\.md[\s\S]*One transition = one executable check/.test(loop) && loop.indexOf('Sharpen') < loop.indexOf('**Build**'));
 ok('R2 loop has bounded retry (5 rounds)', /up to 5 rounds/.test(loop));
-ok('R2 Done requires every check executed and passed', /Done means[\s\S]*every acceptance check was executed and passed/.test(loop));
+ok('R2 Done requires every check executed and passed', /Done means[\s\S]*every (?:acceptance check|lifecycle row) was executed and passed/.test(loop));
 
 // R3 no-human path: questions never block
 ok('R3 questions never block when no human can answer', /Questions never block/.test(loop) && /Assumptions/.test(loop) && /do not end the turn on a question/.test(loop));
@@ -38,7 +38,7 @@ ok('R4 Final report carries an [Acceptance] line with exit codes', /\[Acceptance
 
 // v3 (H361): SKILL.md short; TRIVIAL fast path; web check script wired into step 5
 ok('V3 SKILL.md <= 40 lines', skill.split('\n').length <= 41);
-ok('V3 fast path: 2-3 checks, 2 fix rounds, short report, small-model sentence', /## Fast path[\s\S]*small or low-cost model[\s\S]*2 to 3 acceptance checks[\s\S]*at most 2 fix rounds[\s\S]*\[Plain language\]/.test(skill));
+ok('V7 fast path: classification only, no model-size branch, no check-count cap, 2 fix rounds, short report', /## Fast path[\s\S]*at most 2 fix rounds[\s\S]*\[Plain language\]/.test(skill) && !/small or low-cost model|2 to 3 acceptance checks|Thinking budget/.test(skill));
 ok('V3 step 5 directs bin/check.mjs for web deliverables', /bin\/check\.mjs/.test(loop) && fs.existsSync(path.join(root, 'bin', 'check.mjs')));
 
 // guard: §0 human definition block unchanged (verbatim, no interpretation)

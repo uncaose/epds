@@ -10,6 +10,23 @@ import { pathToFileURL } from 'node:url';
 const argv = process.argv.slice(2);
 const verbose = argv.includes('--verbose');
 const [htmlArg, checksArg] = argv.filter((a) => a !== '--verbose');
+
+// LIFECYCLE.md mode (no browser): every table row needs all 5 cells filled, no <placeholder>, and an exit code in the last cell.
+if (htmlArg && htmlArg.endsWith('.md') && !checksArg) {
+  const text = fs.readFileSync(htmlArg, 'utf8').split(/^## Example.*$/m)[0];
+  const rows = text.split('\n').filter((l) => l.trim().startsWith('|') && !/^\|[\s:|-]+\|$/.test(l.trim())).slice(1) // slice(1) = header
+    .map((l) => l.trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim()));
+  const bad = [];
+  rows.forEach((c, i) => {
+    const who = c[0] || `row ${i + 1}`;
+    if (c.length !== 5 || c.some((x) => !x)) bad.push(`FAIL ${who} -- empty cell (all 5 columns must be filled)`);
+    else if (c.some((x) => /<[^>]*>/.test(x))) bad.push(`FAIL ${who} -- unfilled <placeholder>`);
+    else if (!/exit(\s*code)?\s*[=:]?\s*\d+/i.test(c[4])) bad.push(`FAIL ${who} -- "how executed" has no exit code`);
+  });
+  if (rows.length < 4) bad.push(`FAIL table -- ${rows.length} rows, need at least 4 (first visit, event, end, after end)`);
+  console.log([...bad, `${rows.length - bad.filter((b) => !b.startsWith('FAIL table')).length}/${rows.length} lifecycle rows complete`].join('\n'));
+  process.exit(bad.length ? 1 : 0);
+}
 if (!htmlArg || !checksArg) { console.error('usage: node bin/check.mjs <html> <checks.json> [--verbose]'); process.exit(2); }
 
 const require = createRequire(import.meta.url); // honors NODE_PATH

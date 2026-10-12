@@ -13,3 +13,5 @@ Prints `FAIL <name> -- reason` per failing check and `N/M checks passed` (`--ver
 
 Steps: `{"click": sel}` `{"dblclick": sel}` `{"type": sel, "text": s}` `{"press": key}` `{"reload": true}` `{"wait": ms}` `{"advance": ms}` (simulated clock: pending timers fire and `Date` moves, so a 25-minute timer or a next-day rollover is checkable in milliseconds; every check starts with real time flowing) `{"viewport": [w, h]}` (e.g. `[390, 844]` phone).
 Expects: `{"text": s}` (page text contains s) · `{"count": sel, "eq": n}` · `{"consoleErrors": n}` · `{"noOverflow": true}` (no horizontal scroll at the current viewport).
+
+`node bin/check.mjs LIFECYCLE.md` (no second argument) validates a filled `templates/LIFECYCLE.md` table instead: every row needs all 5 cells filled, no `<placeholder>`, and an exit code in the last cell; at least 4 rows. Text after a `## Example` heading is ignored. Exit 0 = complete, 1 = incomplete.
