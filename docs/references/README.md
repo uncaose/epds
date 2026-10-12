@@ -45,13 +45,13 @@ the answer to `epds/references.json`, and never ask again.
 
 | EPDS frontmatter field | research INDEX.md column | Note |
 |---|---|---|
-| `source` | (URL, inside the R#### file itself) | INDEX row's 출처 column is the source *type* (github/perplexity/web), not the URL |
-| `kind` | 유형 | approximate — research uses finer-grained types (tool-research, design-report, ...) |
-| `patterns` | 태그 | |
+| `source` | (URL, inside the R#### file itself) | INDEX row's source column is the source *type* (github/perplexity/web), not the URL |
+| `kind` | type | approximate — research uses finer-grained types (tool-research, design-report, ...) |
+| `patterns` | tags | |
 | `perspectives` | — no equivalent column | keep as EPDS-only metadata in the pointer entry |
 | `applies_to` | — no equivalent column | EPDS-only |
-| `evidence_grade` | — no exact equivalent | research's 평가 (1-5 score) and 평가 페르소나 grade *quality*, not *source trust*; set `evidence_grade` by hand |
-| `captured` | 날짜 | |
+| `evidence_grade` | — no exact equivalent | research's evaluation (1-5 score) and evaluation persona grade *quality*, not *source trust*; set `evidence_grade` by hand |
+| `captured` | date | |
 | (file itself) | ID (`R####`, links to the source file) | |
 
 ## File
@@ -81,7 +81,7 @@ captured: YYYY-MM-DD
 ## Body
 
 1. Three-line lede: what this source is, why it's relevant, where in EPDS it applies.
-2. Per pattern: 1-3 lines of "lead" (실마리) — the concrete unblock this pattern gives, not a
+2. Per pattern: 1-3 lines of "lead" (lead) — the concrete unblock this pattern gives, not a
    restatement of the pattern's definition.
 3. Quote the original, at most 5 lines, for attribution. Do not paste the full source.
 

@@ -1,37 +1,37 @@
-# Reference Evaluation Rubric — `/epds-reference` 10항
+# Reference Evaluation Rubric — `/epds-reference` 10 items
 
-출처: human 제공 표7("ai-job-search처럼 완성도 높은 저장소를 찾아 녹여라"의 평가 기준). `/epds-reference
-<URL>` (`adapters/claude-code/commands/epds-reference.md`)이 외부 저장소·도구·프레임워크를 분석할 때 이
-루브릭으로 채점하고, 최종 추천(Adopt/Adapt/Observe/Reject)의 근거로 각 항목의 좋은/경고 신호를 인용한다.
+source: human provided by human pyo7("ai-job-searchcheoreom wanseongdo nopeun jeojangsoreul chata nokyeora"ui evaluation gijun). `/epds-reference
+<URL>` (`adapters/claude-code/commands/epds-reference.md`)i oebu jeojangso·dogu·peureimwokeureul bunseokhal ttae i
+rubeurikeuro chaejeomhago, choetypes chucheon(Adopt/Adapt/Observe/Reject)ui evidencero gak itemsui joteun/warning signalreul citedda.
 
-## 10항
+## 10 items
 
-| # | 평가 항목 | 확인 질문 | 좋은 신호 | 경고 신호 |
+| # | evaluation item | check question | good signal | warning signal |
 |---|---|---|---|---|
-| 1 | 실제 문제 | 어떤 반복 업무/리스크를 해결하나 | 사용 사례·목표 사용자 선명 | "AI 팀"만 있고 산출물 불명 |
-| 2 | 산출물 계약 | 결과가 어떤 파일·스키마·템플릿으로 남나 | YAML/JSON/MD/코드 계약 | 채팅 출력만 |
-| 3 | 검증 | AI 결과를 무엇으로 판정하나 | lint·test·E2E·컴파일·eval·CI | "AI가 검토했다" |
-| 4 | 도구화 | 반복 검증을 코드로 했나 | tools/scripts/CLI/CI | 프롬프트에만 "확인하라" |
-| 5 | 실패 처리 | 멈춤·재시도·폴백이 정의됐나 | 오류 메시지, 회귀, 롤백 | 성공 경로 데모만 |
-| 6 | 유지보수 | 변경 이력·기여가 건강한가 | 릴리스·이슈·테스트·문서 갱신 | 오래된 문서·깨진 예제 |
-| 7 | 보안 | 비밀·개인정보·외부 입력 처리 | 최소 권한, `.env.example`, 스캔, 정책 | 키를 파일에, 외부 프롬프트 신뢰 |
-| 8 | 이식성 | 특정 모델/IDE 없이 핵심이 생존하나 | 도구 중립 문서·CLI·테스트 | 특정 채팅 UI 종속 |
-| 9 | 비용 | 호출·API·운영 비용이 통제되나 | 캐시·예산·폴백·로컬 실행 | 무제한 호출 가정 |
-| 10 | 제품 연결 | 사용자 가치/사업 지표가 개선되나 | 성공 지표·시나리오 | 개발자 생산성 주장만 |
+| 1 | Real problem | eotteon banbok eopmu/riseukeureul haegyeolhana | sayong sarye·mokpyo sayongja seonmyeong | "AI tim"man itgo sanchulmul bulmyeong |
+| 2 | Artifact contract | Outcomega eotteon pail·seukima·tempeulriteuro namna | YAML/JSON/MD/kodeu gyeyak | chaeting chulryeokman |
+| 3 | Verification | AI Outcomereul mueoteuro panjeonghana | lint·test·E2E·keompail·eval·CI | "AI reviewed it" |
+| 4 | Tooling | banbok Verificationeul kodeuro haetna | tools/scripts/CLI/CI | peurompeuteueman "checkedhara" |
+| 5 | Failure handling | meomchum·jaesido·polbaeki definitiondwaetna | oryu mesiji, hoegwi, rolbaek | seonggong gyeongro demoman |
+| 6 | Maintainability | byeongyeong iryeok·giyeoga geonganghanga | rilriseu·isyu·teseuteu·document gaengsin | oraedoen document·kkaejin yeje |
+| 7 | Security | bimil·gaeinjeongbo·oebu ipryeok cheori | choeso gwonhan, `.env.example`, seukaen, jeongchaek | kireul paile, oebu peurompeuteu sinroe |
+| 8 | Portability | teukjeong model/IDE eopsi haeksimi saengjonhana | dogu jungrip document·CLI·teseuteu | teukjeong chaeting UI typessok |
+| 9 | Cost | hochul·API·unyeong Costi tongjedoena | cache·yesan·polbaek·local run | mujehan hochul gajeong |
+| 10 | Product linkage | sayongja gachi/saeop jipyoga Improvementdoena | seonggong jipyo·sinario | gaebalja saengsanseong jujangman |
 
-## 배선
+## wiring
 
-`adapters/claude-code/commands/epds-reference.md` step 4("Report the recommendation")는 이 10항 중
-경고 신호가 확인된 항목을 명시하고, Adopt/Adapt/Observe/Reject 판단을 그 항목에 근거해 쓴다 — 근거 없는
-등급만 있는 보고는 반려 대상(§0 원칙과 동일: 결론만 있고 흐름이 없는 산출물 금지).
+`adapters/claude-code/commands/epds-reference.md` step 4("Report the recommendation")neun i 10 items jung
+warning signalga checkeddoen itemseul mark, Adopt/Adapt/Observe/Reject pandaneul geu itemse evidencehae sseunda — evidence eopsneun
+deunggeupman itneun bogoneun banryeo target(§0 wonchikgwa dongil: gyeolronman itgo flowi eopsneun sanchulmul geumji).
 
-## 채점 예시(이번 8개 소스, 요약)
+## scoring examples(this 8gae source, summary)
 
-| 소스 | 강한 항목 | 약한/미확인 항목 |
+| source | strong items | weak/unconfirmed items |
 |---|---|---|
-| [gstack](gstack.md) | 1(실제 문제), 6(유지보수: 890 open issues=활발) | 9(비용: 명령 다수, 초기 흐름 무거움) |
-| [superpowers](superpowers.md) | 3(검증: TDD/디버깅 스킬 내장), 8(이식성: 6개 런타임 지원) | 10(제품 연결: 엔지니어링 실행 품질 한정) |
-| [ouroboros](ouroboros.md) | 4(도구화: CLI+MCP), 2(계약: acceptance spec) | 9(비용: 멀티 LLM 프로바이더, 예산 미확인), 7(보안: PostHog 텔레메트리 opt-out 미확인 — R0229) |
-| [ai-job-search](ai-job-search.md) | 2,3,4,7(README 표3 전체) | 6(스타 수 대비 실사용 활동 미검증) |
+| [gstack](gstack.md) | 1(Real problem), 6(Maintainability: 890 open issues=hwalbal) | 9(Cost: myeongryeong dasu, chogi flow mugeoum) |
+| [superpowers](superpowers.md) | 3(Verification: TDD/debugging skill naejang), 8(Portability: 6gae reontaim jiwon) | 10(Product linkage: enjinieoring run pumjil hanjeong) |
+| [ouroboros](ouroboros.md) | 4(Tooling: CLI+MCP), 2(gyeyak: acceptance spec) | 9(Cost: meolti LLM provider, yesan unconfirmed), 7(Security: PostHog telremeteuri opt-out unconfirmed — R0229) |
+| [ai-job-search](ai-job-search.md) | 2,3,4,7(README pyo3 jeonche) | 6(seuta su daebi silsayong hwaldong miVerification) |
 
-각 소스의 전체 근거는 `docs/references/<slug>.md` 참고.
+gak sourceui full evidenceneun `docs/references/<slug>.md` see.

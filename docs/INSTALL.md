@@ -46,7 +46,7 @@ npx github:uncaose/epds setup --global --yes
 The installer only copies the EPDS Skill package. It does not configure a target project. To configure a project, open it in Claude Code after installation and say:
 
 ```text
-EPDS 설정해줘.
+EPDS seoljeonghaejwo.
 ```
 
 ## Option B: clone and symlink
@@ -120,7 +120,7 @@ EPDS requires Node.js 20 or newer.
 
 - Confirm the file exists at `~/.claude/skills/epds/SKILL.md` or `./.claude/skills/epds/SKILL.md`.
 - Start a new Claude Code session in the target project.
-- Ask naturally: `EPDS 설정해줘.`
+- Ask naturally: `EPDS seoljeonghaejwo.`
 - If slash commands are not listed in your runtime, natural-language triggering still works when the skill is loaded.
 
 ### Existing EPDS skill was replaced

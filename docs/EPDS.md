@@ -1,17 +1,17 @@
-<!-- rewritten 2026-09-16: 결론-압축본 → 근거 흐름. human 판정("결론만 있고 흐름이 없다") 반영.
-     원 결론형(69줄, completed 2026-09-16 from Perplexity thread 6f74f459)의 §Components/Why는 §4로 이동, 삭제 없음.
-     rebuild-2 (2026-09-18, H119 §0 주어 교체 y): 주어 = "결론만 있는 산출물 차단"(b) → "수집→비교→선택→정의 과정"(a).
-     원 §0 문장은 삭제하지 않고 아래 "실패 인식" 절로 이동. 삭제 0 규율(internal rebuild retrospective §6, private orchestrating-project notes not part of this public repo). -->
+<!-- rewritten 2026-09-16: conclusion-compressed version → evidence flow. human panjeong("only conclusions, no flow") reflected.
+     original conclusion form(69jul, completed 2026-09-16 from Perplexity thread 6f74f459)ui §Components/Whyneun §4ro idong, no deletion.
+     rebuild-2 (2026-09-18, H119 §0 subject replacement y): subject = "blocking conclusion-only artifacts"(b) → "collection→comparison→selection→definition process"(a).
+     the original §0 sentence was not deleted and was moved below to "Failure Recognition" section. zero-deletion discipline(internal rebuild retrospective §6, private orchestrating-project notes not part of this public repo). -->
 
-# EPDS Architecture — 무엇을 막는가, 왜 이 형태인가
+# EPDS Architecture — what it blocks and why this form
 
-## §0. EPDS 가 무엇이고, 왜 이것인가
+## §0. what EPDS is and why this
 
-> **EPDS 는 — 사람이 스킬을 일일이 찾아 고르지 않고**`[H1]` **— 기존 자료가 있으면 분석해 "상태, 위치, 다음
-> 방향"을 뽑고 없으면 "네가 원하는게 뭐냐"를 묻고**`[H13]`**, 그 질문 하나하나로 "상태, 위치, 최종 결과물과
-> 그 방향"을 점점 더 구체화하며**`[H16]` **전체를 다시 구성해 다음 스텝을 뽑아**`[H14]`**, 그것을 "내가 손수
-> 하는게 아니다" 직접 실행해**`[H11]` **제품을 "완주를 해서 제품을 만들어 내는"**`[H6]` **도구다. 근거가
-> 동봉된 문서는 별도 규율이 아니라 "과정의 결과물로서" 생긴다**`[H41]`**.**
+> **EPDS neun — without a person finding and choosing skills one by one**`[H1]` **— if existing material exists, analyze it and extract "state, position, next
+> direction"eul and if not, "what do you want"reul mutgo**`[H13]`**, with each of those questions "Status, wichi, the final outcome and
+> that direction"eul make progressively more concrete**`[H16]` **recompose the whole and derive the next step**`[H14]`**, geugeoteul "I manually
+> am not doing it" directly runhae**`[H11]` **the product "complete the run and produce the product"**`[H6]` **tool. evidence
+> the bundled document is not a separate rule but "as a result of the process" is created**`[H41]`**.**
 >
 > *(English)* EPDS is a tool that — instead of a person hunting through skills one by one `[H1]` —
 > analyzes existing evidence to produce "state, position, next direction" when material exists, or
@@ -21,118 +21,118 @@
 > hand `[H11]` — carrying the product through to completion `[H6]`. Evidence-attached documents are
 > not a separate discipline — they fall out as a product of the process itself `[H41]`.
 
-`[H]` 로케이터: 이 문서를 만든 별도의 orchestrating 하네스 프로젝트(비공개, 이 EPDS 공개 저장소 밖)의 내부
-origin 스레드/작업 로그를 가리키는 출처 태그 — 그 프로젝트는 공개 저장소가 아니므로 경로를 인용하지 않는다
-(origin-v2 raw-thread 는 `[H1]`~`[H40]` 까지만 사용 — 충돌 회피로 `[H41]` 신규 부여).
+`[H]` Locator: separate orchestrating haneseu peurojekteu(private, outside this public EPDS repository)ui internal
+origin source tag pointing to origin threads/task logs — geu peurojekteuneun is not a public repository, so paths are not cited
+(origin-v2 raw-thread neun `[H1]`~`[H40]` used only through — newly assigned to avoid collision `[H41]` newly assigned).
 
-1. **문제** `[H1]` — "위 관점에 따른 스킬을 일일이 내가 찾아서 상황에 맞게 사용한다는건 할 수는 있겠지만
-   실제 적절히 사용한다는건 어려운 일이다. ..." 상황마다 사람이 스킬·하네스를 고르는 것이 병목이다.
-2. **범위** `[H6]` — 게임·숏폼·영어학습 어디서 시작해도 같은 절차로 "완주를 해서 제품을 만들어 내는" 하나의
-   방법. 그래서 EPDS 는 도메인 스킬 묶음이 아니다.
-3. **방법** `[P6]`(raw-thread-full.md:2027, 제안) → `[H8]`(raw-thread-full.md:2440, 채택) — `방향 → 문제 →
-   가설 → 최소 실험 → 명세 → 구현 → 검증 → 출시 → 관측 → 회고`. 각 단계는 "문서가 있나"가 아니라 "다음
-   단계로 갈 만큼 믿을 수 있는 증거가 있나"로 판정한다.
-4. **증거 우선** `[H9]` 지시 → `[P9]`(raw-thread-full.md:3007-3016) 정식화 — 저장소·테스트·지표를 먼저 읽고,
-   부족하면 공개 자료를 조사하고, 외부에서 알 수 없는 것만 최대 5개 묻는다. 8단계 전문 = 아래 "증거 우선순위".
-5. **두 트랙** `[P8]`(raw-thread-full.md:2628) + `[H10]` 승인("`최종 정의`는 맞다") — 제품/사업(사용자가
-   정말 원하고 다시 오는가)과 기술/전달(안전·신뢰·유지 가능한가)을 따로 진단한다. 다음 행동 = 더 약한
-   트랙을 미는 가장 작은 행동 하나.
-6. **실행 형태** `[H11]` → `[H36]`(2회차 재확인) — "내가 손수 하는게 아니다 … 최소/적합/전체 설정을 진행해
-   주기를 원한다"(H11) / "지시서에 가깝다. 이럴거면 네가 직접 처리하는게 맞다"(H36). 사람이 따라할 지시서 금지.
-7. **승인된 최종 정의** `[H10]`("`최종 정의`는 맞다") — `[P9]` verbatim: "아이디어 또는 진행 중인 프로젝트의
-   현재 증거 상태를 먼저 진단하고, 저장소·문서·테스트·지표·사용자 자료와 필요 시 신뢰 가능한 인터넷 자료에서
-   정보를 수집하며, 외부에서 알 수 없는 사업적 결정만 사용자에게 물어보고, 현재 병목을 통과하는 데 필요한
-   최소 스킬·에이전트·도구를 선택하여 제품을 방향부터 회고까지 완주시키는 범용 AI 제품 전달 하네스."
-8. **이름** `[H13]`·`[H14]`·`[H15]` — "Playbook → EPDS". harness 라는 일반 용어와 충돌하지 않는 고유 명칭 요구.
+1. **problem** `[H1]` — "wi perspectivee ttareun skilleul ilili naega chataseo sanghwange matge sayonghandaneungeon hal suneun itgetjiman
+   silje jeokjeolhi sayonghandaneungeon eoryeoun ilida. ..." sanghwangmada sarami skill·haneseureul goreuneun geoti byeongmokida.
+2. **scope** `[H6]` — games, short-form content, or English learning as one method with the same procedure no matter where it starts "complete the run and produce the product" one
+   method. Therefore EPDS is not a domain skill bundle.
+3. **method** `[P6]`(raw-thread-full.md:2027, proposal) → `[H8]`(raw-thread-full.md:2440, adopted) — `direction → problem →
+   hypothesis → minimum experiment → spec → build → verify → release → observe → retro`. each stage is judged by "whether a document exists"ga anira "next
+   whether there is evidence reliable enough to move to the next stage"ro panjeonghanda.
+4. **evidence first** `[H9]` instruction → `[P9]`(raw-thread-full.md:3007-3016) formalized — read repositories, tests, and metrics first,
+   if insufficient, research public material, ask at most five things that cannot be known externally. full eight-stage text = below "Evidence Priority".
+5. **two tracks** `[P8]`(raw-thread-full.md:2628) + `[H10]` approval("`choetypes definition`neun matda") — product/business(users
+   really want it and return)gwa technical/delivery(safe, reliable, and maintainable)eul diagnose separately. next action = weaker
+   one smallest action that advances the track.
+6. **execution form** `[H11]` → `[H36]`(2round reconfirmation) — "I manually am not doing it … proceed with minimum/fit/full setup
+   want you to do it"(H11) / "it is close to an instruction sheet. If so, you should handle it directly"(H36). no instruction sheet for a person to follow.
+7. **approved final definition** `[H10]`("`choetypes definition`neun matda") — `[P9]` verbatim: "for an idea or ongoing project,
+   first diagnose the current evidence state, from repositories, documents, tests, metrics, user material, and when needed reliable internet material
+   collect information, ask the user only for business decisions that cannot be known externally, needed to pass the current bottleneck
+   select the minimum skills, agents, and tools to the product complete product delivery from direction through retro as a general-purpose AI product delivery harness."
+8. **name** `[H13]`·`[H14]`·`[H15]` — "Playbook → EPDS". harness raneun requires a unique name that does not conflict with the generic term.
 
-근거: [tech-bridge-ai](references/tech-bridge-ai-code-quality.md) — 원점 계기가 된 유튜브 영상 자막(`[H1]`
-발화 직전 첨부). 코드가 완벽해도 제품이 부족할 수 있다 — 코드 정확성과 제품 증거는 별개 질문.
+evidence: [tech-bridge-ai](references/tech-bridge-ai-code-quality.md) — YouTube video subtitles that triggered the origin(`[H1]`
+attached just before the utterance). even perfect code can leave the product insufficient — code correctness and product evidence are separate questions.
 
-### 증거 우선순위 (8단계, `[P9]` 복원)
+### Evidence Priority (8Stage, `[P9]` restored)
 
-`raw-thread-full.md:3007-3015` verbatim — EPDS 4항목의 "증거 우선"을 정식화한 8단계. 최하위(8) = AI 추론.
+`raw-thread-full.md:3007-3015` verbatim — EPDS 4itemsui "evidence first"eul formalizedhan 8Stage. lowest(8) = AI inference.
 
-1. 실제 사용자 행동 데이터·매출/비용·장애 기록·인터뷰 관찰
-2. 실제 배포 환경의 E2E·CI·성능·보안·프라이버시 검사
-3. 저장소의 코드·명세·ADR·이슈·커밋
-4. 사용자가 명시한 제약과 의도
-5. 공식 문서·공식 정책·원저자 자료
-6. 신뢰 가능한 연구·벤치마크·산업 자료
-7. 커뮤니티·블로그·경험담
-8. AI 추론
+1. actual user behavior data, revenue/cost, incident records, interview observations
+2. E2E, CI, performance, security, and privacy checks in the real deployment environment
+3. repository code, specs, ADRs, issues, and commits
+4. constraints and intent explicitly stated by the user
+5. official docs, official policies, and original-author material
+6. reliable research, benchmarks, and industry material
+7. community, blogs, and experience reports
+8. AI inference
 
-### 실패 인식 (구 §0, 2026-09-16 작성 — 이동됨, 삭제 아님)
+### Failure Recognition (old §0, 2026-09-16 written — moved, not deleted)
 
-EPDS는 "AI가 빨리, 많이 만든다"를 막지 않는다. **결론만 있고 그 결론에 이른 근거가 사라진 산출물**을 막는다
-([tech-bridge-ai](references/tech-bridge-ai-code-quality.md): 코드가 완벽해도 제품이 부족할 수 있다 — 코드
-정확성과 제품 증거는 별개 질문). 압축된 결론은 재검증할 수 없고, 재검증할 수 없는 결론은 다음 실패에서
-그대로 반복된다. 그래서 EPDS의 모든 산출물은 "무엇을(what)"뿐 아니라 "왜 이것이고 다른 것이 아닌가(why not
-the alternative)"를 같은 파일에 남긴다.
+EPDSneun "AIga make fast and much"reul does not block. **artifacts that have only conclusions and have lost the evidence leading to them**eul makneunda
+([tech-bridge-ai](references/tech-bridge-ai-code-quality.md): even perfect code can leave the product insufficient — kodeu
+jeonghwakseonggwa jepum jeunggeoneun byeolgae jilmun). compressed conclusions cannot be reverified, jaeVerificationhal su eopsneun gyeolroneun next silpaeeseo
+geudaero banbokdoenda. geuraeseo EPDSui all artifacts "what(what)"as well as "why this and not the alternative(why not
+the alternative)"reul leave in the same file.
 
-`[O]` 표기 원칙: 원점([H])에 없는 것(결정론/LLM 경계·file:line 의무·UNMEASURED 3분화·exit 대조)은 `[O]` 로
-명시하고 이 §0 에 올리지 않는다 — 전문 = "Harness extensions (not in origin)"(§6).
+`[O]` notation principle: origin([H])not in(determinism/LLM boundary, file:line requirement, UNMEASURED three-way split, exit comparison)eun `[O]` ro
+mark i §0 do not place in — full text = "Harness extensions (not in origin)"(§6).
 
 ```text
 Direction → Problem → Hypothesis → Minimum Experiment → Spec → Build → Verify → Release → Observe → Retro
 ```
-`[P6]`(raw-thread-full.md:2027, 제안) → `[H8]`(raw-thread-full.md:2440, 채택).
+`[P6]`(raw-thread-full.md:2027, proposal) → `[H8]`(raw-thread-full.md:2440, adopted).
 
-## §1. 살펴본 관점 — 도구 비교와 그 이유
+## §1. Reviewed Perspectives — tool comparison and rationale
 
-*대응 표: 표1 도구 비교(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
+*corresponding table: pyo1 tool comparison(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
 
-EPDS를 설계하기 전에 4가지 관점을 실제로 비교했다([gstack](references/gstack.md),
-[superpowers](references/superpowers.md), [ouroboros](references/ouroboros.md), 직접 만든 라우터
-= [argo](references/argo-internal.md) 실사례):
+EPDSreul before designing actually compared four perspectives([gstack](references/gstack.md),
+[superpowers](references/superpowers.md), [ouroboros](references/ouroboros.md), custom router
+= [argo](references/argo-internal.md) actual case):
 
-| 관점 | 핵심 역할 | 적합도 | 이유 |
+| perspective | core role | fit | reason |
 |---|---|---|---|
-| gstack | 역할 기반 제품 개발 스프린트(CEO→디자인→DX→엔지니어링→QA→보안→배포) | 매우 높음 | 순서가 커맨드로 고정돼 재현 가능 — 다만 명령 수 많고 초기 흐름 무거움 |
-| Superpowers | 개발 방법론(TDD·디버깅·협업)을 습관화하는 스킬 | 높음 | 실행 규율은 강하나 사업 판단(무엇을 왜 만드는가)이 빠져 있다 — EPDS가 그 앞단(Direction~Hypothesis)을 채움 |
-| Ouroboros | 명세-실행-평가-기억 에이전트 OS, 모호성 게이트+진화 루프 | 조건부 높음 | 개념(게이트·수렴)은 강하게 겹치나, 초기 MVP에 "에이전트 OS" 전체를 놓으면 제품 개발 자체가 멈춘다 |
-| 직접 만든 라우터(argo류) | 사업·제품 지표(리텐션·전환·비용)를 판단 기준에 내재화 | 장기 매우 높음 | 범용 카탈로그로는 도메인 판단을 못한다 — 그러나 초기부터 이것만 만들면 과설계 |
+| gstack | role-based product development sprint(CEO→dijain→DX→enjinieoring→QA→Security→baepo) | very high | reproducible because the order is fixed as commands — but many commands and heavy initial flow |
+| Superpowers | development methodology(TDD·debugging·collaboration)eul skill that habituates | high | execution discipline is strong, but business judgment(what and why to build)i is missing — EPDSga geu front end(Direction~Hypothesis)eul fills |
+| Ouroboros | spec-execute-evaluate-memory eijeonteu OS, ambiguity gate+evolution loop | conditionally high | concepts(gate/convergence)eun strongly overlap, but, initial MVPe "eijeonteu OS" putting the whole thing in place stops product development itself |
+| custom router(argoryu) | business/product metrics(retention/conversion/cost)reul embedded into decision criteria | very high long-term | a general catalog cannot make domain judgments — but building only this from the beginning is overdesign |
 
-**왜 EPDS는 이 넷 중 하나를 그대로 쓰지 않고 조합했는가**: gstack의 "순서가 커맨드"를 骨格로,
-Superpowers의 "습관화된 검증 스킬"을 Build/Verify에, Ouroboros의 "게이트가 곧 진행 조건"을 evidence-first
-프로토콜(질문 5개 이하)로 약화 차용하고, "직접 만든 라우터"는 프로젝트마다 PRODUCT.md/METRICS.md를 채우는
-것으로 위임했다 — EPDS 자체가 사업 판단을 대신 내리지 않는다(Scope discipline, §5 참고).
+**wae EPDSneun i net jung hanareul geudaero sseuji anhgo johaphaetneunga**: gstackui "sunseoga keomaendeu"reul 骨格ro,
+Superpowersui "seupgwanhwadoen Verification skill"eul Build/Verifye, Ouroborosui "geiteuga got jinhaeng jogeon"eul evidence-first
+peurotokol(jilmun 5gae iha)ro yakhwa chayonghago, "custom router"neun peurojekteumada PRODUCT.md/METRICS.mdreul chaeuneun
+geoteuro wiimdone — EPDS jachega saeop pandaneul daesin naeriji anhneunda(Scope discipline, §5 see).
 
-## §2. 검토한 패턴 10 — 택한 조합과 버린 것
+## §2. reviewed patterns 10 — chosen combination and rejected items
 
-*대응 표: 표4 대안·보완 패턴 10종(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
+*corresponding table: pyo4 alternative/supplemental patterns 10types(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
 
-human이 제공한 대안·보완 패턴 10종 중, EPDS가 실제로 쓰는 것과 의도적으로 버린 것:
+humani provided by alternative/supplemental patterns 10types jung, EPDSga what EPDS actually uses and deliberately rejects:
 
-| 패턴 | 택함/버림 | 이유 |
+| pattern | chosen/rejected | reason |
 |---|---|---|
-| Spec-driven | 택함 | `templates/feature-spec.md`, `spec` 커맨드 — 복잡 기능엔 필요, 문서>구현 위험은 Scope discipline으로 상쇄 |
-| Test-first/Proof-carrying | 택함(부분) | `verify` 커맨드가 담당하나 EPDS 자체는 테스트 프레임워크를 강제하지 않음 — `docs/TESTS.md` 참고 |
-| Planner–Executor–Reviewer | 택함 | `build`(executor)와 `verify`(독립 reviewer 관점)를 분리한 커맨드 구조에 반영 |
-| Router–Specialist | 택함 | 작업 분류(`WORK-ROUTER.md`: TRIVIAL/FEATURE/EXPLORATORY/STRATEGIC/SENSITIVE/RELEASE/GROWTH)가 라우터, 역할은 `docs/ROLES.md` |
-| Artifact-first | 택함 | 모든 산출물=파일(PRODUCT.md/PROJECT-STATE.md/템플릿) — 채팅 결론만 남기지 않음 |
-| Policy-as-code | 택함(약하게) | Scope/safety rules를 SKILL.md에 명문화, CI 강제는 프로젝트 몫(권장, 강제 아님) |
-| Prompt-first | 버림 | 재현성·검증 부족이 EPDS가 정확히 막으려는 실패 |
-| Command/Skill-first(단독) | 부분 채택 | 명령 과다 피로를 피하려 커맨드 수를 14개로 제한(SKILL.md 라우팅표) |
-| Event-driven agent | 버림(이월) | 통제·비용 문제 — CI 실패/배포 감시 자동화는 프로젝트가 직접 얹을 몫, EPDS 코어에 넣지 않음 |
-| Eval-driven | 부분 채택 | `docs/TESTS.md` "결과" 계층·`evals/`가 담당, 골든셋 설계는 upgrade 시점으로 미룸 |
+| Spec-driven | chosen | `templates/feature-spec.md`, `spec` keomaendeu — needed for complex features, document>guhyeon risk is Scope disciplineoffset by |
+| Test-first/Proof-carrying | chosen(partial) | `verify` keomaendeuga handles, but EPDS itself does not force a test framework — `docs/TESTS.md` see |
+| Planner–Executor–Reviewer | chosen | `build`(executor)wa `verify`(independent reviewer perspective)reul reflected in the separated command structure |
+| Router–Specialist | chosen | work classification(`WORK-ROUTER.md`: TRIVIAL/FEATURE/EXPLORATORY/STRATEGIC/SENSITIVE/RELEASE/GROWTH)ga router, roles are `docs/ROLES.md` |
+| Artifact-first | chosen | all artifacts = files(PRODUCT.md/PROJECT-STATE.md/tempeulrit) — does not leave only chat conclusions |
+| Policy-as-code | chosen(weakly) | Scope/safety rulesreul SKILL.mde written explicitly, CI enforcement belongs to the project(gwonjang, not mandatory) |
+| Prompt-first | rejected | lack of reproducibility/verification is EPDSga exactly the failure EPDS tries to prevent |
+| Command/Skill-first(standalone) | partly adopted | too-many-commands fatiguereul to avoid command count to 14limited to(SKILL.md routing table) |
+| Event-driven agent | rejected(deferred) | control/cost issue — CI silpae/baepo monitoring automation is for the project to add directly, EPDS not placed in core |
+| Eval-driven | partly adopted | `docs/TESTS.md` "Outcome" layer·`evals/`ga damdang, golden set design is deferred until upgrade time |
 
-## §3. 참고 저장소 구조 — ai-job-search에서 가져온 것
+## §3. reference repository structure — ai-job-searchwhat was taken from
 
-*대응 표: 표3 ai-job-search 구조 대응 + 표7 참고 저장소 평가 기준(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
+*corresponding table: pyo3 ai-job-search structure mapping + pyo7 reference repository evaluation criteria(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
 
-[ai-job-search](references/ai-job-search.md)는 human이 직접 "이게 일반적인 AI 이용 수준의 패턴인가"라고
-물은 대상이다. 답: 아니다 — 대부분의 AI 이용 저장소는 프롬프트만 있고, ai-job-search는 **입력·절차·도구·
-검증·안전 규칙을 저장소 구조로 분리**했다(표3, `docs/LAYOUT.md`에 전체 대응표). EPDS가 가져온 것:
+[ai-job-search](references/ai-job-search.md)neun humani directly "is this a normal level pattern for AI use"rago
+was the target asked about. answer: no — most AI-use repositories only have prompts, ai-job-searchneun **ipryeok·jeolcha·dogu·
+Verification·anjeon gyuchikeul jeojangso structurero separate**done(pyo3, `docs/LAYOUT.md`e full mapping table). EPDSga what EPDS took:
 
-- 헌법(CLAUDE.md/AGENTS.md)과 실행 절차(commands)를 분리 — "무엇을 항상 지키는가"와 "이번에 뭘 하는가"를
-  같은 파일에 섞지 않는다.
-- 검증 도구(`tools/verify_*`)는 "AI가 검토했다"가 아니라 실행 가능한 판정이어야 한다 — `verify` 커맨드의
-  "독립 품질 증거 수집"이 이 원칙을 그대로 따른다.
-- 템플릿은 AI가 채우는 안정된 골격이지, 매번 새로 설계하는 대상이 아니다.
+- constitution(CLAUDE.md/AGENTS.md)gwa execution procedures(commands)reul separate — "what is always followed"wa "what is done this time"reul
+  do not mix in the same file.
+- verification tools(`tools/verify_*`)neun "AI reviewed it"ga anira must be executable judgments — `verify` keomaendeuui
+  "independent quality evidence collection"i follows this principle directly.
+- templates are stable skeletons filled by AI, not, things redesigned each time.
 
-## §4. EPDS 구성으로 수렴
+## §4. EPDS converged into EPDS composition
 
-*대응 표: 표2 agency-agents 역할·산출물 + 표6 단계별 역할·산출물 9단계(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b) — 표6 이 §0 10단계 루프의 직접 원형.*
+*corresponding table: pyo2 agency-agents roles/artifacts + pyo6 roles/artifacts by stage 9Stage(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b) — pyo6 i §0 10Stage rupeuui direct prototype.*
 
 ```text
 EPDS Skill
@@ -150,10 +150,10 @@ Target project after setup
   ├── epds/  templates/  specs/  decisions/  docs/  tests/  evals/  tools/
 ```
 
-### 두 트랙 진단
+### two tracks diagnosis
 
-Provenance: `[P8]`(raw-thread-full.md:2628 "즉 하네스는 기술 트랙과 제품 트랙을 분리해 봐야 합니다") + `[H10]`
-승인("`최종 정의`는 맞다" — 두 트랙을 포함한 §0 정의 전체를 승인). 구 표기 `[O] 하네스 오케 작성`은 철회
+Provenance: `[P8]`(raw-thread-full.md:2628 "jeuk haneseuneun gisul teuraekgwa jepum teuraekeul separatehae bwaya hapnida") + `[H10]`
+approval("`choetypes definition`neun matda" — two trackseul pohamhan §0 definition jeonchereul approval). gu pyogi `[O] harness orchestration written`eun withdrawn
 (internal origin-analysis notes (private orchestrating-project, not in this repo) D-12).
 
 | Track | Core question | Examples of evidence |
@@ -161,48 +161,48 @@ Provenance: `[P8]`(raw-thread-full.md:2628 "즉 하네스는 기술 트랙과 �
 | Product/business | Does this create a real, repeatable user outcome? | Behavior, interviews, experiments, retention, conversion, cost reduction |
 | Technical/delivery | Does it work safely, reliably, and maintainably? | Tests, E2E, performance, security/privacy checks, staging, rollback |
 
-다음 행동 = 두 트랙 중 더 약한 게이트를 가장 작은 단위로 미는 것.
+next action = two tracks jung weaker geiteureul gajang jakeun danwiro mineun geot.
 
 ### Evidence rules
 
-리포지토리와 실제 사용자/운영 데이터가 일반 조언보다 우선한다. `epds/trusted-sources.json`(기반 항목 5개
-+ §1~§3에서 인용한 8개, id는 `epds sources list` 참고)이 "공개 소스를 언제, 무엇으로 쓸지"의 config
-정본이다. CLI: `epds sources list|add|remove|show` — 상세는 `README.md`.
+the repository and real user/operational data outrank general advice. `epds/trusted-sources.json`(base entries 5gae
++ §1~§3eseo cited 8gae, idneun `epds sources list` see)i "when and for what public sources are used"ui config
+canonical sourceida. CLI: `epds sources list|add|remove|show` — details in `README.md`.
 
 **End-reason distribution.** When a simulation, replay, or drop-log artifact exists, its end-reason (or termination-cause) distribution is a required Facts line. If one value accounts for 100% of the sample, mark every verdict built on it as a "censored sample", not a clean pass.
 
-### Templates/tests/tools/evals/policies가 존재하는 이유
+### Templates/tests/tools/evals/policiesga why they exist
 
-- **Templates**: 중요 결정이 빠지는 것을 막고 세션/모델 간 인수인계를 만든다.
-- **Tests**: 기대 동작을 증명하고 회귀를 막는다.
-- **Evals**: AI 생성/판정 결과를 안정된 예시·실패 사례와 대조한다.
-- **Tools**: "please check carefully" 대신 검증을 실행 가능하게 만든다.
-- **Policies**: 에이전트가 급해도 개인정보·승인·릴리스 경계를 지킨다.
+- **Templates**: prevent important decisions from being omitted and create handoff between sessions/models.
+- **Tests**: prove expected behavior and prevent regressions.
+- **Evals**: compare AI generation/judgment results against stable examples/failure cases.
+- **Tools**: "please check carefully" make verification executable instead of.
+- **Policies**: keep privacy, approval, and release boundaries even when the agent is rushed.
 
-## §5. 계열별 최소 요소 — 있는 것/없는 것
+## §5. minimum elements by family — present/missing
 
-*대응 표: 표8 추가 참고 패턴 계열 10 × 최소요소(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
+*corresponding table: pyo8 additional reference pattern families 10 × choesoyoso(internal rebuild-planning notes (private orchestrating-project, not in this repo) §1-b).*
 
-표8(추가 참고 패턴 계열) 중 EPDS 코어에 이미 있는 것과 아직 없는 것:
+pyo8(additional reference pattern families) jung EPDS what already exists in EPDS core and what is still missing:
 
-| 계열 | EPDS에 있음 | 없음(프로젝트가 채우거나 upgrade 대상) |
+| family | present in EPDS | none(filled by the project or upgrade target) |
 |---|---|---|
-| Spec-driven | `templates/feature-spec.md`, `spec` 커맨드 | 비목표·ADR은 `templates/adr.md`로 있으나 강제 아님 |
-| Agent Skills 표준 | `adapters/claude-code/commands/`, SKILL.md | — |
-| Eval frameworks | `docs/TESTS.md` "결과" 계층 | golden set·regression 스위트는 upgrade 시점 |
-| Prompt/agent red teaming | SKILL.md Scope/safety rules(외부 입력 비신뢰) | `evals/adversarial` 없음 |
-| CLI-first automation | `bin/epds.mjs check`(setup 검증), `epds models detect`(세션 모델 감지, §6) | `tools/validate-*` 프로젝트별 도구는 없음 |
-| Policy-as-code | SKILL.md 명문 규칙 | CI 강제는 프로젝트 몫 |
-| Observability | — | 이벤트 스키마·대시보드·롤백 알림 없음(이월) |
-| Experiment OS | `experiment` 커맨드, `templates/experiment-brief.md` | 결과 저장소·결정 규칙 자동화 없음 |
-| Content pipeline | — | 콘텐츠 lint·provenance 없음(도메인 특화, 코어 밖) |
-| Replay/simulation | — | seed 고정·deterministic test 없음(도메인 특화) |
+| Spec-driven | `templates/feature-spec.md`, `spec` keomaendeu | non-goals·ADReun `templates/adr.md`ro iteuna not mandatory |
+| Agent Skills standard | `adapters/claude-code/commands/`, SKILL.md | — |
+| Eval frameworks | `docs/TESTS.md` "Outcome" layer | golden set·regression suiteneun upgrade time |
+| Prompt/agent red teaming | SKILL.md Scope/safety rules(distrust external input) | `evals/adversarial` none |
+| CLI-first automation | `bin/epds.mjs check`(setup Verification), `epds models detect`(session model detection, §6) | `tools/validate-*` no project-specific tools |
+| Policy-as-code | SKILL.md explicit rules | CI enforcement belongs to the project |
+| Observability | — | no event schema, dashboard, or rollback alerts(deferred) |
+| Experiment OS | `experiment` keomaendeu, `templates/experiment-brief.md` | no result store or decision-rule automation |
+| Content pipeline | — | content lint·provenance none(domain-specific, outside core) |
+| Replay/simulation | — | seed fixed·deterministic test none(domain-specific) |
 
 ## §6. Harness extensions (not in origin)
 
-전 스레드([H1]~[H40], `raw-thread-full.md` 40+40턴) 근거 **0건** — 하네스 오케가 원점 인용 없이 추가한 4개.
-`[O]` 태그. 원점 밖 확장이므로 §0 정의에는 올리지 않는다(internal origin-analysis notes (private orchestrating-project, not in this repo)
-D-15, 기본안 = 유지하되 이 절로 분리).
+whole thread([H1]~[H40], `raw-thread-full.md` 40+40teon) evidence **0geon** — haneseu okega added without origin citation 4gae.
+`[O]` tags. because it is an extension outside the origin §0 do not place it in the definition(internal origin-analysis notes (private orchestrating-project, not in this repo)
+D-15, default plan = keep it but split it into this section).
 
 ### Deterministic vs LLM boundary `[O]`
 
@@ -217,48 +217,48 @@ D-15, 기본안 = 유지하되 이 절로 분리).
 
 `deterministic-by-doc` means the order/contract is fixed in protocol text, not enforced by executable code — unlike open-code-review's code-enforced layers (R0295 turn[8]).
 
-### file:line 의무 `[O]`
+### file:line uimu `[O]`
 
-모든 Fact 에 file:line 로케이터를 의무화한다(`SKILL.md` §Final report, H111 `09e64dd` — open-code-review 의
-"line correction" 패턴 차용). 로케이터 없는 문장은 쓰지 않는다.
+make file:line locators mandatory for every Fact(`SKILL.md` §Final report, H111 `09e64dd` — open-code-review ui
+"line correction" pattern borrowed). do not write sentences without locators.
 
-### UNMEASURED 3분화 `[O]`
+### UNMEASURED 3bunhwa `[O]`
 
-측정 실패를 environment(환경 문제) / censored(표본 편향) / corrupted(데이터 손상) 3가지로 나눠 기록한다
-(`SKILL.md` §Evidence-first protocol, H106 `7b92c30`). 뭉뚱그린 "측정 못함" 1개로 합치지 않는다.
+record measurement failure as environment(environment issue) / censored(sample bias) / corrupted(data corruption) 3three categories
+(`SKILL.md` §Evidence-first protocol, H106 `7b92c30`). lumped "unmeasured" 1do not merge into one.
 
-### exit code 기계 대조 `[O]`
+### exit code gigye daejo `[O]`
 
-모든 명령은 exit code + 모델/effort 헤더를 남긴다(`SKILL.md` §Final report, H106). FAIL 은 반드시 비영
-exit 여야 게이트로 작동한다 — "했다" 주장만으로는 PASS 가 아니다.
+every command leaves exit code + model/effort header(`SKILL.md` §Final report, H106). FAIL eun bandeusi non-zero
+exit to work as a gate — "done" claim alone is not PASS ga no.
 
-### 세션 모델 감지 `[O]`
+### session model detection `[O]`
 
-`bin/models.mjs`(`epds models detect [--write]|list|set`, H154) — pstack의 setup-pstack(세션에서 쓸 수
-있는 모델을 스스로 감지해 역할별로 배정)이 EPDS에 없던 진짜 빈 칸이었다는 재검토 결론을 코드로 채움
-(`docs/absorb-pstack.md` item 3). 감지는 공개 CLI 이름(`claude`/`codex`/`cursor-agent`/`agent`(조건부 — 실제 경로가 "cursor"를 포함할 때만,
-다른 도구와 이름이 겹치므로, N2)/`opencode`/`gemini`/`aider`/`ollama`/`lms`, PATH 존재 여부만)과 표준
-프로바이더 env var *이름*만 본다 — 값은 절대
-읽지 않는다(살아있는 자격증명을 메모리에 읽어 들였다가 버리는 동작 자체가 로그·출력으로 새어나갈 위험을
-만들고, 아예 읽지 않으면 그 위험이 원천 차단된다). 특정 프로젝트의 로컬 별칭(예: `gamedev-coder`)은
-하드코딩하지 않는다(EPDS는 이식 가능한 공개 스킬, SKILL.md:24). 역할↔모델 매핑(`roles`)은 감지가 자동으로
-채우지 않고 `epds models set <role> <id>[,<id>...] [--effort <value>]`로 명시 지정한다 — pstack의
-"역할별 배정"은 코드가 아니라 사람/LLM이 채우는 데이터로 남긴다("틀만 넣는다"). `set`은 각 `id`가 현재
-`detected` 목록에 있는지 검증하고(쉼표 목록이면 2개 이상은 배열로 저장), `__proto__`/`constructor`/
-`prototype`을 역할명으로, `env:*` id를 역할 값으로 거부한다(비영 exit — `env:*`는 "쓸 수 있는 키가
-있다"만 증명할 뿐 패널이 실제로 실행할 수 있는 정체성이 아니다). `--effort <value>`는 그 역할의 추론
-노력을 자기보고로 `effort[role]`에 남긴다(값 검증 없음 — EPDS는 특정 프로바이더의 effort 어휘를 강제하지
-않는다). `detect --write`는 매번 `detected`를 통째로 교체하고(예전 머신/세션의 stale 항목이 merge로
-영구 잔류하지 않게), 더 이상 감지되지 않는 id를 가리키던 역할은 경고 출력 후 `null` 처리한다. 결과는
-`epds/models.json`(세션/머신 로컬 상태 — `saveModels()`가 그 자리에서 `epds/.gitignore`(`models.json`
-한 줄)를 함께 쓴다, 대상 프로젝트 루트 `.gitignore`는 건드리지 않는다 — `epds/trusted-sources.json`과
-달리 프로젝트가 커밋해서 공유할 "정본"이 아니다). 첫 소비처: `/verify`가 `roles.critic`/`roles.reviewers`를
-읽어 교차검증 패널을 구성한다(`docs/COMMANDS.md` `/verify` ↳ panel).
+`bin/models.mjs`(`epds models detect [--write]|list|set`, H154) — pstackui setup-pstack(sesyeoneseo usable
+detect available models itself and assign by role)i EPDSe eopsdeon real gapieotdaneun filled the re-review conclusion with code
+(`docs/absorb-pstack.md` item 3). gamjineun public CLI names(`claude`/`codex`/`cursor-agent`/`agent`(conditional — actual path "cursor"reul only when it includes,
+because the name overlaps another tool, N2)/`opencode`/`gemini`/`aider`/`ollama`/`lms`, PATH presence only)gwa standard
+provider env var *name*man bonda — values are never
+read(salaitneun jagyeokjeungmyeongeul memorie ilkeo deulyeotdaga beorineun dongjak jachega rogeu·chulryeokeuro saeeonagal wiheomeul
+mandeulgo, not reading them blocks that risk at the source). local aliases of a specific project(ye: `gamedev-coder`)eun
+do not hardcode(EPDSneun portable public skill, SKILL.md:24). role↔model mapping(`roles`)eun gamjiga jadongeuro
+chaeuji anhgo `epds models set <role> <id>[,<id>...] [--effort <value>]`ro sets explicitly — pstackui
+"yeokhalbyeol baejeong"eun kodeuga anira saram/LLMi chaeuneun deiteoro namginda("put only the frame in"). `set`eun gak `id`ga hyeonjae
+`detected` mokroke itneunji validate(if comma list 2two or more stored as array), `__proto__`/`constructor`/
+`prototype`eul as role name, `env:*` idreul reject as role value(non-zero exit — `env:*`neun "usable itneun kiga
+itda"only proves not an identity a panel can actually run). `--effort <value>`neun geu yeokhalui reasoning
+effort as self-report `effort[role]`e namginda(no value validation — EPDSneun teukjeong providerui effort eohwireul gangjehaji
+anhneunda). `detect --write`neun each time `detected`reul replace entirely(yejeon meosin/sesyeonui stale itemsi mergero
+yeonggu janryuhaji anhge), roles pointing to ids no longer detected are warned then `null` handled. Outcomeneun
+`epds/models.json`(session/machine-local state — `saveModels()`ga geu jarieseo `epds/.gitignore`(`models.json`
+one line)reul writes together, target project root `.gitignore`neun does not touch — `epds/trusted-sources.json`gwa
+unlike a project-committed shared "canonical source"i no). cheot sobicheo: `/verify`ga `roles.critic`/`roles.reviewers`reul
+ilkeo gyochaVerification paeneoleul guseonghanda(`docs/COMMANDS.md` `/verify` ↳ panel).
 
-라우터 자동분류(poteto-mode)는 가져오지 않는다 — WORK-ROUTER 7분류(§Work router)가 이미 동급 기능이고
-`docs/ROLES.md`의 분류→역할 매핑까지 더 갖췄다(재수입=중복, `docs/absorb-pstack.md` item 1).
+router jadongbunryu(poteto-mode)neun gajyeooji anhneunda — WORK-ROUTER 7bunryu(§Work router)ga imi donggeup gineungigo
+`docs/ROLES.md`ui bunryu→yeokhal maepingkkaji deo gatchwotda(jaesuip=duplicate, `docs/absorb-pstack.md` item 1).
 
 ## Scope discipline
 
-EPDS는 의도적으로 작게 시작한다. 프로젝트는 1일차에 모든 커맨드·역할·도구가 필요하지 않다. 관찰된 반복
-간극이나 명확히 증명된 병목이 있을 때만 구성요소를 추가한다.
+EPDSneun uidojeokeuro jakge sijakhanda. peurojekteuneun 1ilchae modeun keomaendeu·yeokhal·doguga pilyohaji anhda. gwanchaldoen banbok
+gangeukina myeonghwakhi jeungmyeongdoen byeongmoki iteul ttaeman guseongyosoreul chugahanda.

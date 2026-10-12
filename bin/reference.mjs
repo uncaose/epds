@@ -39,7 +39,7 @@ function fetchGithubMeta(owner, repo) {
   }
 }
 
-// Only rubric item #6 (유지보수) is decidable from repo metadata alone — the other 9 require
+// Only rubric item #6 (maintainability) is decidable from repo metadata alone — the other 9 require
 // reading README/source, which this deterministic script does not do (left unmeasured).
 function scoreRubric(meta) {
   const rows = [];
@@ -59,8 +59,8 @@ function scoreRubric(meta) {
 }
 
 const RUBRIC_ITEMS = {
-  1: '실제 문제', 2: '산출물 계약', 3: '검증', 4: '도구화', 5: '실패 처리',
-  6: '유지보수', 7: '보안', 8: '이식성', 9: '비용', 10: '제품 연결'
+  1: 'Real problem', 2: 'Artifact contract', 3: 'Verification', 4: 'Tooling', 5: 'Failure handling',
+  6: 'Maintainability', 7: 'Security', 8: 'Portability', 9: 'Cost', 10: 'Product linkage'
 };
 
 function writeMetacard(packageRoot, slug, url, meta) {
@@ -115,7 +115,7 @@ export function runReference(argv, packageRoot) {
   const rubric = scoreRubric(meta);
   const measured = { install: null, installExit: null, run: null, runExit: null, at: null };
   // addCandidate stays false — this script never executes an install/run, so per protocol
-  // (docs/references — "measured.runExit 실측 전 sources add 금지") it can never be true.
+  // (docs/references — "do not add sources before measured.runExit is actually measured") it can never be true.
   const addCandidate = false;
 
   const output = {

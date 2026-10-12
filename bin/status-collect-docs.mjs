@@ -7,6 +7,10 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { hasUnifiedMark } from './unified.mjs';
 
+const STAGE_NAMES = {
+  '\uac1c\uc120': 'Improvement'
+};
+
 export function collectLifecycle(target) {
   const rel = 'docs/lifecycle-status.md';
   const file = path.join(target, rel);
@@ -25,14 +29,14 @@ export function collectLifecycle(target) {
       if (icon === '✅') done += 1;
       else {
         if (icon === '🔄') inProgress += 1; else notStarted += 1;
-        if (firstOpenStage === null) firstOpenStage = cells[1] ?? null; // "# | 단계 | 상태 | ..." -> cells[1]=단계
+        if (firstOpenStage === null) firstOpenStage = STAGE_NAMES[cells[1]] ?? cells[1] ?? null; // "# | Stage | Status | ..." -> cells[1]=Stage
       }
     }
   } catch { /* leave counters at zero */ }
   return { id: 'doc.lifecycle.status', value: { total, done, inProgress, notStarted, firstOpenStage },
     locator: rel, cmd: 'read docs/lifecycle-status.md', exit: 0 };
 }
-// Doc-vs-reality staleness gate (repro3 "정답": doc still shows open stages while HEAD moved on N
+// Doc-vs-reality staleness gate (repro3 "answer": doc still shows open stages while HEAD moved on N
 // commits without the doc being touched — a documentation-sync violation, not a missing-file gap).
 // Threshold overridable per-repo cadence via EPDS_LIFECYCLE_STALE_COMMITS (ponytail calibration knob;
 // no evidence base for one universal number across every repo's commit cadence).

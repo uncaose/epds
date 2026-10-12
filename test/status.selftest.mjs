@@ -57,14 +57,14 @@ if (fs.existsSync(B3)) {
 }
 
 // ---- case 3: repro3 worktree -> lifecycle doc/reality gap detected ----
-// repro3's docs/lifecycle-status.md still marks stage 3(개선) as the first open row while git log
+// repro3's docs/lifecycle-status.md still marks stage 3(Improvement) as the first open row while git log
 // shows commits well past it (e.g. "add headless SIM producer (C1-D5)" = stage 5 work) — the
 // lifecycle-status fact must surface that gap (firstOpenStage stuck early + later rows non-done).
 if (fs.existsSync(REPRO3)) {
   const { output } = runStatus(['--target', REPRO3, '--json']);
   const lifecycle = output.facts.find((f) => f.id === 'doc.lifecycle.status');
   ok('case3 repro3: lifecycle fact present', !!lifecycle);
-  ok('case3 repro3: firstOpenStage stuck at an early stage (개선)', lifecycle && lifecycle.value.firstOpenStage === '개선');
+  ok('case3 repro3: firstOpenStage stuck at an early stage (Improvement)', lifecycle && lifecycle.value.firstOpenStage === 'Improvement');
   ok('case3 repro3: later rows still open (notStarted+inProgress > done)', lifecycle && (lifecycle.value.notStarted + lifecycle.value.inProgress) > lifecycle.value.done);
 } else {
   console.log('  skip case3 repro3 (worktree not present on this machine)');

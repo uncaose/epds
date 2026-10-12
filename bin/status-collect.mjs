@@ -110,9 +110,9 @@ function judgeTargetMatches(val, target) {
 // everything else/output damage). A target's epds/judges.json can override this per judge via a
 // `classify` array of {class, matches:[substr,...]} tried in order — no keyword is hardcoded per-judge.
 const DEFAULT_CLASSIFY = [
-  { class: 'environment', matches: ['--skip-trace', '계약 없음', '미설치', 'env'] },
-  { class: 'censored', matches: ['절단', 'censored'] },
-  { class: 'corrupted', matches: ['파싱'] }
+  { class: 'environment', matches: ['--skip-trace', 'no contract', 'not installed', 'env'] },
+  { class: 'censored', matches: ['truncated', 'censored'] },
+  { class: 'corrupted', matches: ['parse'] }
 ];
 function classifyUnmeasured(detail, table) {
   const rules = Array.isArray(table) && table.length > 0 ? table : DEFAULT_CLASSIFY;
@@ -120,10 +120,10 @@ function classifyUnmeasured(detail, table) {
   for (const rule of rules) {
     if (Array.isArray(rule.matches) && rule.matches.some((m) => text.includes(m))) return rule.class;
   }
-  return 'corrupted'; // no keyword hit -> "그 외 = corrupted" (bands §3), never a silent PASS
+  return 'corrupted'; // no keyword hit -> "everything else = corrupted" (bands §3), never a silent PASS
 }
 // A judge with no applicable config (applies:"never", or absent entirely) generates NO per-row fact —
-// "해당 없음", not UNMEASURED-environment. If NONE of the configured judges are applicable at all, a
+// "not applicable", not UNMEASURED-environment. If NONE of the configured judges are applicable at all, a
 // single judges.unconfigured fact makes the resulting "technical track had 0 evidence" explicit
 // (H125 item5) instead of a silent empty array.
 export function collectJudges(target) {
@@ -142,7 +142,7 @@ export function collectJudges(target) {
     catch { files = []; }
     const relDir = absolute ? `${dir}${path.sep}` : `${path.relative(target, dir)}${path.sep}`;
     if (files.length === 0) {
-      const directionHint = `${judge.cmd || `${judge.id} 실행`} 등으로 ${judge.outputGlob} 생성`;
+      const directionHint = `create ${judge.outputGlob} with ${judge.cmd || `run ${judge.id}`} or equivalent`;
       facts.push({ id: `${judge.id}.missing`, value: { directionHint }, locator: relDir,
         cmd: `glob ${judge.outputGlob}`, exit: 1, track: 'technical' });
       continue;
@@ -212,14 +212,14 @@ export function collectJudges(target) {
     }
     const finalExit = corrupted ? null : (typeof exitVal === 'number' ? exitVal : 0);
     const directionHint = corrupted
-      ? `${judge.id} 산출물 손상 - ${relDir}${newestName} (${exitField} 필드 없음/JSON 파손, 재실행 필요)`
-      : `${judge.cmd || `${judge.id} 재실행`} - exit=${exitVal} 원인 조사`;
+      ? `${judge.id} output is damaged - ${relDir}${newestName} (${exitField} field missing/JSON broken, rerun needed)`
+      : `${judge.cmd || `rerun ${judge.id}`} - investigate cause of exit=${exitVal}`;
     facts.push({ id: `${judge.id}.latest`, value: { file: newestName, exit: exitVal, corrupted, directionHint },
       locator: `${relDir}${newestName}`, cmd: judge.cmd || `read ${judge.outputGlob}`, exit: finalExit, track: 'technical' });
   }
   if (!anyApplicable) {
     facts.push({ id: 'judges.unconfigured',
-      value: { env: true, directionHint: 'epds/judges.json 작성 - technical 트랙 judge 증거 0(judges 미구성)' },
+      value: { env: true, directionHint: 'write epds/judges.json - technical track has 0 judge evidence (judges unconfigured)' },
       locator: 'epds/judges.json', cmd: 'read epds/judges.json', exit: 1, track: 'technical' });
   }
   return facts;

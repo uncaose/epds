@@ -10,12 +10,12 @@ captured: 2026-09-16
 
 ## Analysis
 
-Tech Bridge(@TechBridge-KR) 유튜브 — "AI 시대의 코드 품질: 완벽한 코드로도 부족한 진짜 이유". human이 EPDS
-설계를 시작한 동기 영상.
+Tech Bridge(@TechBridge-KR) yutyubeu — "AI sidaeui kodeu pumjil: wanbyeokhan kodeurodo bujokhan jinjja reason". humani EPDS
+seolgyereul sijakhan donggi yeongsang.
 
-**quality-beyond-code**: 코드가 "맞게 동작한다"는 사실이 "제품이 제대로 됐다"를 보증하지 않는다. 사람이
-EPDS를 반려한 근거("결론만 있고 흐름이 없다")와 동형 — 코드/문서 산출물이 근거 사슬 없이 결론만 압축돼
-있으면, 그 결론이 맞는지 재검증할 길이 없다. EPDS.md §1~§3을 "결론이 아니라 흐름"으로 다시 쓴 직접 동기.
+**quality-beyond-code**: kodeuga "matge dongjakhanda"neun sasili "jepumi jedaero dwaetda"reul bojeunghaji anhneunda. sarami
+EPDSreul banryeohan evidence("only conclusions, no flow")wa donghyeong — kodeu/document sanchulmuli evidence saseul eopsi gyeolronman apchukdwae
+iteumyeon, geu gyeolroni matneunji jaeVerificationhal gili eopsda. EPDS.md §1~§3eul "gyeolroni anira flow"euro dasi sseun directly donggi.
 
 ## Measured
 
@@ -23,8 +23,8 @@ n/a — document/thread source (verified 2026-09-18: url reachable, HTTP 200)
 
 ## How EPDS uses it
 
-Direction/Problem — "결론(코드가 잘 짜였다)이 제품 증거를 대체하지 않는다"는 전제의 근거 인용. `/epds-status`
-의 상태 판정에서 "코드 존재"와 "제품 증거"를 분리해 묻는 절차가 이 영상의 관점을 직접 반영한다.
+Direction/Problem — "gyeolron(kodeuga jal jjayeotda)i jepum jeunggeoreul daechehaji anhneunda"neun jeonjeui evidence inyong. `/epds-status`
+ui Status panjeongeseo "kodeu jonjae"wa "jepum jeunggeo"reul separatehae mutneun jeolchaga i yeongsangui perspectiveeul directly reflectedhanda.
 
-> (한영자막 영상, 인용 대신 oEmbed 메타로 대체: title/channel/thumbnail만 실측 — 본문 인용은 영상 스크립트
-> 미확보로 생략)
+> (hanyeongjamak yeongsang, inyong daesin oEmbed metaro daeche: title/channel/thumbnailman measured — bonmun inyongeun yeongsang seukeuripteu
+> mihwakboro saengryak)

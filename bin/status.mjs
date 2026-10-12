@@ -32,24 +32,25 @@ export function validateQuestions(questions) {
   }
   return { ok: true };
 }
-// 미달 순서(심각→PASS): FAIL 만 실제 결함. UNMEASURED 3분화는 결함이 아니라 계측 공백(bands §3) —
-// corrupted(산출물 손상, 뭘 놓쳤는지도 모름) > censored(관측은 됐으나 사건 미발생) > environment(도구 미배선/UNWIRED, criteria:31).
+// Shortfall order (severe→PASS): only FAIL is an actual defect. The three UNMEASURED classes are
+// measurement gaps, not defects (bands §3): corrupted(output damaged; unknown miss) >
+// censored(observed but event did not happen) > environment(tool unwired/UNWIRED, criteria:31).
 const RANK = { FAIL: 0, 'UNMEASURED-corrupted': 1, 'UNMEASURED-censored': 2, 'UNMEASURED-environment': 3, PASS: 4 };
 // Judge-plugin facts (mqc.*, or whatever a target's epds/judges.json configures) carry their own
 // value.directionHint built from that config's cmd/outputGlob — no per-judge text is hardcoded here
 // (H124 portability). This table only covers the built-in, non-configurable facts.
 const DIRECTION_TABLE = {
   'test.exit': (f) => f.value.env
-    ? `테스트 실행 환경 확인 - ${f.locator} (exit ${f.value.exit}, 명령/의존성 미설치 가능 - 실패 아님)`
-    : `테스트 실패 원인 조사 - ${f.locator} (exit ${f.value.exit})`,
-  'test.counter.sanity': (f) => `테스트 러너 출력 확인 - ${f.locator} (파싱된 fail=${f.value.failCount}, exit=${f.value.testExit} 불일치)`,
-  'sim.endReason.distribution': () => 'sim-dump seed 다양화 - endReason 분포 확보(censored 해소)',
-  'doc.lifecycle.missing': () => 'docs/lifecycle-status.md 작성 - 단계 상태 정본 없음',
-  'doc.lifecycle.stale': (f) => `${f.locator} 갱신 - HEAD 대비 ${f.value.commitsSince}커밋 미갱신 상태로 미완료 단계 존재`,
-  'metrics.missing': () => 'METRICS.md 작성 - 지표·측정일·목표 정의 없음',
+    ? `check test runtime environment - ${f.locator} (exit ${f.value.exit}, command/dependency may be missing - not a failure)`
+    : `investigate test failure cause - ${f.locator} (exit ${f.value.exit})`,
+  'test.counter.sanity': (f) => `check test-runner output - ${f.locator} (parsed fail=${f.value.failCount}, exit=${f.value.testExit} mismatch)`,
+  'sim.endReason.distribution': () => 'vary sim-dump seeds - secure endReason distribution (resolve censored)',
+  'doc.lifecycle.missing': () => 'write docs/lifecycle-status.md - no canonical stage status',
+  'doc.lifecycle.stale': (f) => `update ${f.locator} - incomplete stages exist while stale by ${f.value.commitsSince} commits against HEAD`,
+  'metrics.missing': () => 'write METRICS.md - no metrics, measurement date, or targets defined',
   'metrics.status': (f) => (f.value.corrupted
-    ? `METRICS.md 형식 확인 - ${f.locator} (측정일/표 파싱 실패)`
-    : `목표 미달 지표 개선 - ${f.value.failing.join(', ')}`)
+    ? `check METRICS.md format - ${f.locator} (measurement date/table parse failed)`
+    : `improve metrics below target - ${f.value.failing.join(', ')}`)
 };
 // Shared FAIL>corrupted>censored>environment>PASS classification for one track's facts. A track with
 // zero facts (nothing configured/applicable) is UNMEASURED-environment, never a silent PASS — absence
@@ -86,7 +87,7 @@ function buildPosition(facts, state) {
   const prodRank = RANK[state.state.product.verdict];
   let weakerIsProduct = prodRank < techRank;
   // tie-break: when ranks tie, prefer whichever track actually has an evidence fact — a real
-  // nextAction beats "판정 불가" when e.g. technical has nothing configured at all (self-apply).
+  // nextAction beats "cannot judge" when e.g. technical has nothing configured at all (self-apply).
   if (prodRank === techRank && !state.technicalFailFact && state.productFailFact) weakerIsProduct = true;
   const track = weakerIsProduct ? 'product' : 'technical';
   const item = weakerIsProduct ? state.productFailFact : state.technicalFailFact;
@@ -98,7 +99,7 @@ function buildPosition(facts, state) {
 function buildOutcome(target) {
   const rel = 'PRODUCT.md';
   const productMd = path.join(target, rel);
-  if (!fs.existsSync(productMd)) return { goal: null, locator: null, gap: 'PRODUCT.md 없음 - 최종 결과물 미정의' };
+  if (!fs.existsSync(productMd)) return { goal: null, locator: null, gap: 'PRODUCT.md missing - final outcome undefined' };
   try {
     const lines = fs.readFileSync(productMd, 'utf8').split(/\r?\n/);
     const goalLine = lines.map((l) => l.trim().match(/^Goal:\s*(.+)$/)).find(Boolean);
@@ -107,40 +108,40 @@ function buildOutcome(target) {
     const next = headingAt !== -1 ? lines.slice(headingAt + 1).find((l) => l.trim().length > 0) : null;
     if (next) return { goal: next.trim(), locator: rel, gap: null };
   } catch { /* fall through */ }
-  return { goal: null, locator: rel, gap: 'PRODUCT.md 에 "Goal: ..." 줄/"## Goal" 헤딩 없음 - 목표 미정의' };
+  return { goal: null, locator: rel, gap: 'PRODUCT.md has no "Goal: ..." line/"## Goal" heading - goal undefined' };
 }
 function buildDirection(weakestFact) {
-  if (!weakestFact) return { nextAction: '판정 불가 - 트랙 사실 없음', evidence: [], smallest: false };
+  if (!weakestFact) return { nextAction: 'cannot judge - no track facts', evidence: [], smallest: false };
   // a judge-plugin fact carries its own directionHint (built from that target's epds/judges.json
   // cmd/outputGlob) — that always wins over the built-in table, since the table has no entry for it.
   const hint = weakestFact.value && weakestFact.value.directionHint;
   const build = DIRECTION_TABLE[weakestFact.id];
-  const nextAction = hint || (build ? build(weakestFact) : `${weakestFact.id} 결함 해소`);
+  const nextAction = hint || (build ? build(weakestFact) : `resolve ${weakestFact.id} defect`);
   return { nextAction, evidence: [weakestFact.id], smallest: true };
 }
 function buildQuestions(outcome, position) {
   const candidates = [];
   if (outcome.goal === null) {
     candidates.push({
-      id: 'Q1', ask: "이 제품의 '다 됐다'는 무엇으로 판정하나?", ownerOnly: true, source: 'grilling:frontier',
-      sharpens: { state: 'product 트랙 증거원 지정', position: null, outcome: 'goal 채움(null 해소)', direction: null }
+      id: 'Q1', ask: "What decides that this product is 'done'?", ownerOnly: true, source: 'grilling:frontier',
+      sharpens: { state: 'assign product track evidence source', position: null, outcome: 'fill goal (resolve null)', direction: null }
     });
   }
   candidates.push({
     id: `Q${candidates.length + 1}`,
-    ask: `${position.weakest.item ?? position.stage} 이(가) ${position.weakest.track} 트랙 최약점이다 — 이 이유를 무엇으로 해소할 것인가?`,
+    ask: `${position.weakest.item ?? position.stage} is the weakest point in the ${position.weakest.track} track - what will resolve this reason?`,
     ownerOnly: true, source: 'weakest-gate',
-    sharpens: { state: `${position.weakest.track} 트랙 재검증`, position: 'Verify 단계 재확인', outcome: null, direction: 'nextAction 대상 확정' }
+    sharpens: { state: `recheck ${position.weakest.track} track`, position: 'reconfirm Verify stage', outcome: null, direction: 'confirm nextAction target' }
   });
   candidates.push({
     id: `Q${candidates.length + 1}`,
-    ask: '지금의 다음 액션이 가장 작은 유효 개선인가, 다른 더 급한 결함이 있는가?',
+    ask: 'Is the current next action the smallest effective improvement, or is another defect more urgent?',
     ownerOnly: true, source: 'grilling:frontier',
-    sharpens: { state: null, position: 'stage 재확인', outcome: null, direction: 'nextAction 교체 가능' }
+    sharpens: { state: null, position: 'reconfirm stage', outcome: null, direction: 'nextAction may change' }
   });
   return candidates.slice(0, 5);
 }
-// keep milliseconds (WAL "status = 스냅샷+이력" needs per-run granularity, not per-second).
+// keep milliseconds (WAL "status = snapshot+history" needs per-run granularity, not per-second).
 function isoCompact(iso) { return iso.replace(/[-:]/g, '').replace(/\.(\d+)Z$/, '$1Z'); }
 // repoId/snapshotDir — snapshots live OUTSIDE target under EPDS_HOME (default ~/.epds), keyed by
 // the target's resolved-path hash (same shape as the harness's lib-lock-home.sh lock_repo_id), so

@@ -48,8 +48,8 @@ auto-guessed, so no project-specific alias is hardcoded into a portable public s
 validates the id against the current `detected` list and rejects `__proto__`/`constructor`/
 `prototype` role names; `detect --write` replaces `detected` wholesale each run instead of merging
 in stale entries. `/verify` now reads `roles.critic`/`roles.reviewers` to build its review panel
-(see adversarial-review-panel below) — the first real consumer. See `docs/EPDS.md` §6 "세션 모델
-감지".
+(see adversarial-review-panel below) — the first real consumer. See `docs/EPDS.md` §6 "sesyeon model
+gamji".
 
 **n-parallel-comparison** (Built (partial)): `arena`/`swarm` run N independent attempts and let a
 human pick the best (`README.md:97,118-119,171,173`, corrected from a prior mis-citation of
@@ -83,7 +83,7 @@ duplicate, not add.
 **principle-independent-files** (Built): pstack's 23 design principles are each their own small
 file (`README.md:196-225`). EPDS's 8 scope/safety rules were one list in `SKILL.md`; first
 pass logged this as "not yet warranted" (only 8 rules, no observed edit-friction). This pass split
-them into `docs/policies/*.md` (one file per rule, `SKILL.md` now a 1문장+링크 list) — the
+them into `docs/policies/*.md` (one file per rule, `SKILL.md` now a 1munjang+ringkeu list) — the
 independent-file unit itself is the point (narrower diff per edit, per-rule linkability from other
 docs), not a rule count threshold. `docs/LAYOUT.md` "agent/policies/\*.md" row updated to match.
 
@@ -91,7 +91,7 @@ docs), not a rule count threshold. `docs/LAYOUT.md` "agent/policies/\*.md" row u
 convergence point 22 of 23 playbooks end at, giving predictable output shape (`README.md:77`).
 EPDS's `SKILL.md` §Final report already played this role for *all 14* commands as a documented
 5-block contract. This pass adds `templates/pr-landing.md` — the same convergence idea applied one
-level down, at the commit/PR shape (small ordered commits, 프로젝트 관례 우선 없으면 Conventional
+level down, at the commit/PR shape (small ordered commits, peurojekteu gwanrye useon eopseumyeon Conventional
 Commits title, briefing-style body), referenced from `/build` in `docs/COMMANDS.md`.
 
 **encode-lessons-in-structure** (Reinforced, extended): pstack's `reflect` turns a finished task's

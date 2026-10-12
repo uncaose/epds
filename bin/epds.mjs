@@ -72,7 +72,7 @@ Examples:
 The installer installs only the EPDS skill package. It does not modify
 AGENTS.md, CLAUDE.md, product code, CI, deployments, secrets, or any
 other target-project files. After installation, open a project in Claude
-Code and say: "EPDS 설정해줘."
+Code and say: "Set up EPDS."
 `);
 }
 
@@ -209,7 +209,7 @@ async function setup() {
   console.log(`Location: ${target}`);
   console.log('\nNext steps:');
   console.log('  1. Open the target project with Claude Code.');
-  console.log('  2. Say: EPDS 설정해줘.');
+  console.log('  2. Say: Set up EPDS.');
   console.log('  3. EPDS will diagnose first, propose a plan, and wait for approval before modifying the project.');
 }
 

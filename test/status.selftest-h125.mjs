@@ -28,13 +28,13 @@ function withMqcJudge(dir) {
   withMqcJudge(dir);
   fs.mkdirSync(path.join(dir, 'journal', 'measurements'), { recursive: true });
   fs.writeFileSync(path.join(dir, 'journal', 'measurements', 'x.latest.json'), JSON.stringify({ exit: 1,
-    results: [{ id: 'A1', verdict: 'deficient', judge: 'machine', detail: '해시불일치=1' },
-      { id: 'D1', verdict: 'unmeasured', judge: 'machine', detail: '전표본 endReason=maxDropsReached 절단' }],
+    results: [{ id: 'A1', verdict: 'deficient', judge: 'machine', detail: 'hash mismatch=1' },
+      { id: 'D1', verdict: 'unmeasured', judge: 'machine', detail: 'all samples endReason=maxDropsReached truncated' }],
     counts: { deficient: 1, unmeasured: 1 } }));
   const { output } = runStatus(['--target', dir, '--snapshot-dir', freshTmp(), '--json']);
   const a1 = output.facts.find((f) => f.id === 'judge.A1');
   const d1 = output.facts.find((f) => f.id === 'judge.D1');
-  ok('case19 (H125 item1) judge.A1 FAIL(deficient) + judge.D1 censored-classified("절단") + mqc.counts fact',
+  ok('case19 (H125 item1) judge.A1 FAIL(deficient) + judge.D1 censored-classified("truncated") + mqc.counts fact',
     !!(a1 && a1.value.verdict === 'deficient' && a1.exit === 1 && d1 && d1.value.class === 'censored' && d1.value.censored === true
       && output.facts.some((f) => f.id === 'mqc.counts')));
 }

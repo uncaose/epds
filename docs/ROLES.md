@@ -1,42 +1,42 @@
-# EPDS Roles — 단계별 핵심 질문·역할·산출물
+# EPDS Roles — Stagebyeol haeksim jilmun·roles/artifacts
 
-출처: [agency-agents](references/agency-agents.md) 역할 카탈로그(언제·산출물·우선순위) +
-human 제공 표6(단계별 역할·산출물), 두 표를 병합. EPDS는 이 표를 "역할을 고정 배정"이 아니라 "이 단계에서
-이 질문에 답할 때 참고할 관점"으로 쓴다 — 프로젝트에 전담 인력/에이전트가 없으면 오너가 직접 그 질문에
-답한다.
+source: [agency-agents](references/agency-agents.md) yeokhal katalrogeu(eonje·sanchulmul·useonsunwi) +
+human provided by human pyo6(roles/artifacts by stage), du pyoreul byeonghap. EPDSneun i pyoreul "yeokhaleul fixed baejeong"i anira "i Stageeseo
+i jilmune answerhal ttae seehal perspective"euro sseunda — peurojekteue jeondam inryeok/eijeonteuga eopseumyeon oneoga directly geu jilmune
+answerhanda.
 
-## 단계 → 질문 → 역할 → 산출물
+## Stage → jilmun → yeokhal → sanchulmul
 
-| 단계 | 핵심 질문 | 참고 역할(도메인 예시) | 산출물 | 우선순위 |
+| Stage | haeksim jilmun | see yeokhal(domein yesi) | sanchulmul | useonsunwi |
 |---|---|---|---|---|
-| 발견(Direction/Problem) | 이 기능 없이도 해결 가능한 실제 문제인가 | 제품 기획, 사용자 리서치 | 문제 정의, JTBD, 가설, 대안 | 매우 높음 |
-| 판단(Hypothesis) | 지금 만들 가치가 있는가 | 제품 기획, 현실 점검(Reality Checker) | 우선순위, 범위, 성공/중단 기준 | 매우 높음 |
-| 실험(Experiment) | 가장 싸고 빠른 검증은 | 실험 추적, 사용자 리서치 | 실험 브리프, 이벤트, 인터뷰 계획 | 높음 |
-| 설계(Spec) | 핵심 사용자 흐름을 깨지 않는가 | UX, 플랫폼 구현(도메인 예시: 모바일/음성) | 플로우, 폴백, 비목표 | 높음 |
-| 구현(Build) | 가장 작은 안전한 변경은 | 구현 담당, 최소변경 원칙 담당 | 구현 계획, 변경 목록 | 높음 |
-| 보호(Build/Verify) | 개인정보·키·녹음·동기화가 안전한가 | 프라이버시/보안 담당 | 데이터 흐름, 금지 저장소, 검사 항목 | 높음(민감 데이터 다루는 프로젝트) |
-| 검증(Verify) | 사용자가 끝까지 흐름을 완주하는가 | 테스트 자동화 | E2E/회귀/성능 | 매우 높음 |
-| 출하(Release) | 실제 배포 환경을 통과했는가 | 현실 점검(독립 판정) | GO / CONDITIONAL GO / NO-GO | 매우 높음 |
-| 학습(Observe/Retro) | 무엇이 실제로 효과 있었나 | 실험 추적, 제품 기획 | 지표 요약, 다음 결정 | 높음 |
-| 성장(Growth, 선택) | 유입·전환을 어떻게 늘리나 | 콘텐츠/획득 담당 | 랜딩/메시지, 콘텐츠 실험, 획득 지표 | 나중(공개 베타 이후) |
+| balgyeon(Direction/Problem) | i gineung eopsido haegyeol ganeunghan Real probleminga | jepum gihoek, sayongja riseochi | problem definition, JTBD, gaseol, daean | very high |
+| pandan(Hypothesis) | jigeum mandeul gachiga itneunga | jepum gihoek, hyeonsil jeomgeom(Reality Checker) | useonsunwi, scope, seonggong/jungdan gijun | very high |
+| silheom(Experiment) | gajang ssago ppareun Verificationeun | silheom chujeok, sayongja riseochi | silheom beuripeu, ibenteu, inteobyu gyehoek | high |
+| seolgye(Spec) | haeksim sayongja floweul kkaeji anhneunga | UX, peulraetpom guhyeon(domein yesi: mobail/eumseong) | peulrou, polbaek, non-goals | high |
+| guhyeon(Build) | gajang jakeun anjeonhan byeongyeongeun | guhyeon damdang, choesobyeongyeong wonchik damdang | guhyeon gyehoek, byeongyeong mokrok | high |
+| boho(Build/Verify) | gaeinjeongbo·ki·nokeum·donggihwaga anjeonhanga | peuraibeosi/Security damdang | deiteo flow, geumji jeojangso, geomsa items | high(mingam deiteo daruneun peurojekteu) |
+| Verification(Verify) | users kkeutkkaji floweul wanjuhaneunga | teseuteu jadonghwa | E2E/hoegwi/seongneung | very high |
+| chulha(Release) | silje baepo hwangyeongeul tonggwahaetneunga | hyeonsil jeomgeom(dokrip panjeong) | GO / CONDITIONAL GO / NO-GO | very high |
+| hakseup(Observe/Retro) | mueoti siljero hyogwa iteotna | silheom chujeok, jepum gihoek | jipyo summary, next gyeoljeong | high |
+| seongjang(Growth, seontaek) | yuip·jeonhwaneul eotteotge neulrina | content/hoekdeuk damdang | raending/mesiji, content silheom, hoekdeuk jipyo | najung(public beta ihu) |
 
-## 역할을 "언제 호출하는가" — persona-catalog 패턴
+## yeokhaleul "eonje hochulhaneunga" — persona-catalog pattern
 
-[agency-agents](references/agency-agents.md)의 리드: 역할을 부르는 것 자체가 산출물 계약이 되게 한다.
-EPDS에서 이는 `WORK-ROUTER.md`의 작업 분류와 짝을 이룬다 — 분류가 STRATEGIC/SENSITIVE면 위 표에서
-"판단"·"보호" 행의 질문에 먼저 답해야 BUILD로 넘어간다.
+[agency-agents](references/agency-agents.md)ui rideu: yeokhaleul bureuneun geot jachega Artifact contracti doege handa.
+EPDSeseo ineun `WORK-ROUTER.md`ui work classificationwa jjakeul irunda — bunryuga STRATEGIC/SENSITIVEmyeon wi pyoeseo
+"pandan"·"boho" haengui jilmune meonjeo answerhaeya BUILDro neomeoganda.
 
-| WORK-ROUTER 분류 | 먼저 답해야 할 표의 행 |
+| WORK-ROUTER bunryu | meonjeo answerhaeya hal pyoui haeng |
 |---|---|
-| TRIVIAL | 없음(바로 구현+테스트) |
-| FEATURE | 설계(비목표 확인) |
-| EXPLORATORY | 발견(구현 금지, 문제 정의부터) |
-| STRATEGIC | 판단(오너 승인 전 구현 금지) |
-| SENSITIVE | 보호(위험 검토+오너 승인) |
-| RELEASE | 출하(독립 GO/NO-GO) |
-| GROWTH | 성장(측정 가능한 실험 먼저) |
+| TRIVIAL | none(baro guhyeon+teseuteu) |
+| FEATURE | seolgye(non-goals checked) |
+| EXPLORATORY | balgyeon(guhyeon geumji, problem definitionbuteo) |
+| STRATEGIC | pandan(oneo approval jeon guhyeon geumji) |
+| SENSITIVE | boho(wiheom review+oneo approval) |
+| RELEASE | chulha(dokrip GO/NO-GO) |
+| GROWTH | seongjang(cheukjeong ganeunghan silheom meonjeo) |
 
-## 도메인 예시 주의
+## domein yesi juui
 
-위 "참고 역할" 열의 구체 이름(모바일/음성/콘텐츠 등)은 예시다. EPDS는 특정 플랫폼·산업에 종속되지 않는다
-— 프로젝트마다 PRODUCT.md에 자기 도메인의 구체 역할 이름을 채워 넣는다.
+wi "see yeokhal" yeolui guche name(mobail/eumseong/content deung)eun yesida. EPDSneun teukjeong peulraetpom·saneope typessokdoeji anhneunda
+— peurojekteumada PRODUCT.mde jagi domeinui guche yeokhal nameeul chaewo neotneunda.

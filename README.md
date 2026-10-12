@@ -2,39 +2,37 @@
 
 > **Evidence-First Product Delivery System**
 >
-> AI 코딩 에이전트가 아이디어, 진행 중인 서비스, 프로그램, 게임, 콘텐츠 자동화 프로젝트를 **증거 기반으로 방향부터 회고까지** 진행하도록 돕는 범용 Skill입니다.
+> A general skill that helps AI coding agents to conduct idea, ongoing service, program, game, and content automation projects from direction to reflection **based on evidence**.
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 [![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org/)
 
-## 설치
+## Installation
 
 ```bash
 npx skills add uncaose/epds -a claude-code
 ```
 
-자세한 옵션과 검증 절차는 [docs/INSTALL.md](docs/INSTALL.md) 참고.
+For more detailed options and verification procedures, please refer to [docs/INSTALL.md](docs/INSTALL.md).
 
-## 무엇을 해결하나
+## What does it solve?
 
-AI 코딩 도구는 몇 초 안에 많은 코드를 만들 수 있습니다. 하지만 실제 제품 개발에서 가장 비싼 실패는 보통 “코드를 늦게 썼다”가 아니라 다음과 같습니다.
+AI coding tools can produce a lot of code in a few seconds. However, the most expensive failures in product development are usually not "writing code late," but the following.
 
-- 실제 사용자가 원하지 않는 기능을 빠르게 만들었다.
-- 사용자·사업·운영 제약을 확인하기 전에 구현 범위를 넓혔다.
-- 테스트를 통과한 코드를 배포했지만, 실제 사용자는 핵심 행동을 완료하지 못했다.
-- 기능이 늘어날수록 개인정보, 비용, 성능, 지원 부담, 기술 부채가 함께 늘었다.
-- 기획, 구현, QA, 배포, 회고가 분리되어 이전 실패가 다음 작업에 반영되지 않았다.
-- AI에게 무엇을 물어야 할지, 어떤 역할/스킬을 언제 호출해야 할지 사용자가 매번 직접 판단해야 했다.
+- Created a feature that real users didn't want quickly.
+- Expanded the scope of implementation before checking user, business, and operational constraints.
+- The code passed the test and was deployed, but the real users did not complete the core actions.
+- As the number of features increased, personal information, cost, performance, support burden, and technical debt increased.
+- Planning, implementation, QA, distribution, and reflection were separated, and previous failures were not reflected in the next task.
+- Users had to decide what to ask the AI, what role/skill to call, and when to call it.
 
-EPDS는 “더 많은 에이전트”나 “더 긴 프롬프트”가 목적이 아닙니다. 먼저 현재 프로젝트가 어느 단계에 있는지 파악하고, **다음 의사결정에 필요한 증거가 무엇인지** 찾도록 AI의 행동 순서를 고정합니다.
+EPDS is not about "more agents" or "longer prompts". It first establishes where the current project is, and fixes the AI's action sequence to find out **what evidence is needed for the next decision**.
 
-**[H1] 요구 4요소 체크** — human 원문("어떤 장애/문제를 어떻게 정의하고 어떤 사유를 거쳐 선택된 해결방법을
-어떻게 적용하려는 과정까지 체계적이고 구조적으로 설명")이 요구한 4가지가 이 README에 있는지:
+**[H1] Four Required Elements Check** — Does this README contain the four things requested by the human original text ("Define what obstacle/problem, by what reasoning, and explain systematically and structurally through the process of applying the selected solution")?
 
-- [x] **문제** — 위 목록(실제 사용자가 원하지 않는 기능, 테스트 통과했지만 미완료된 사용자 행동 등 6항목)
-- [x] **사유** — "더 많은 에이전트/더 긴 프롬프트가 목적이 아니다" 문단, 왜 증거 우선순위인지
-- [x] **해결방법 적용 과정** — [docs/EPDS.md](docs/EPDS.md) §0(정의) + §1~§5(도구·패턴·구조 검토 과정)
-- [x] **설치·사용법** — 위 [설치](#설치) 절 + [docs/INSTALL.md](docs/INSTALL.md)
+- [x] **Problem** — The above list (6 items, including features that actual users do not want, and user behaviors that are incomplete but have passed the test)
+- [x] **Rationale** — "More agents/longer prompts are not the goal" paragraph, why evidence prioritized
+- [x] **solution application process** — [docs/EPDS.md](docs/EPDS.md) §0(definition) + §1~§5(tool, pattern, and structure review process)
+- [x] **Installation and Usage** — Above [Installation](#installation) section + [docs/INSTALL.md](docs/INSTALL.md)
 
-어떻게 여기에 도달했나(살펴본 도구·버린 패턴·근거) → [docs/EPDS.md](docs/EPDS.md)
-
+How I got here (tools looked at, patterns discarded, rationale) → [docs/EPDS.md](docs/EPDS.md)
