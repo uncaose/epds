@@ -46,11 +46,14 @@ async function step(page, s) {
   else if ('press' in s) await page.keyboard.press(s.press);
   else if ('reload' in s) await page.reload();
   else if ('wait' in s) await page.waitForTimeout(s.wait);
+  else if ('advance' in s) await page.clock.runFor(s.advance); // simulated time: timers fire, Date moves (25-min timer, day rollover)
+  else if ('viewport' in s) await page.setViewportSize({ width: s.viewport[0], height: s.viewport[1] });
   else throw new Error(`unknown step ${JSON.stringify(s)}`);
 }
 async function expectOne(page, errs, e) {
   if ('text' in e) { const t = await page.evaluate(() => document.body.innerText); return [t.includes(e.text), `text "${e.text}"`]; }
   if ('count' in e) { const n = await page.locator(e.count).count(); return [n === e.eq, `count(${e.count}) = ${n}, want ${e.eq}`]; }
+  if ('noOverflow' in e) { const o = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth); return [o <= 0, `noOverflow: page is ${o}px wider than the window`]; }
   if ('consoleErrors' in e) return [errs.length === e.consoleErrors, `consoleErrors = ${errs.length}, want ${e.consoleErrors}${errs[0] ? ` (${errs[0].slice(0, 80)})` : ''}`];
   throw new Error(`unknown expect ${JSON.stringify(e)}`);
 }
@@ -58,6 +61,7 @@ async function expectOne(page, errs, e) {
 let failed = 0;
 for (const c of checks) {
   const ctx = await browser.newContext(); const page = await ctx.newPage(); const errs = [];
+  await page.clock.install(); // time flows normally until a step says {"advance":ms}
   page.on('pageerror', (e) => errs.push(String(e.message)));
   page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
   let msg = '';

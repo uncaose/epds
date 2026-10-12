@@ -16,5 +16,10 @@ const vb = run(fx('ok.html'), fx('checks.json'), '--verbose');
 ok('--verbose lists PASS lines', vb.status === 0 && /PASS add a note/.test(vb.stdout));
 const bad = run(fx('bad.html'), fx('checks.json'));
 ok('bad fixture -> exit 1, FAIL lines', bad.status === 1 && /FAIL add a note/.test(bad.stdout) && /FAIL no console errors/.test(bad.stdout));
+// v6 additions: {"advance":ms} simulated clock, {"viewport":[w,h]} step, {"noOverflow":true} expect (adopted from replica-test/replica-build edge states).
+const tm = run(fx('time.html'), fx('checks-new.json'));
+ok('advance flips a 10-minute timer, no early flip, small page fits a phone', tm.status === 0 && tm.stdout.trim() === '3/3 checks passed');
+const wd = run(fx('wide.html'), fx('checks-new.json'));
+ok('wide page -> noOverflow check FAILs, others reported', wd.status === 1 && /FAIL fits a phone screen -- noOverflow/.test(wd.stdout));
 console.log(fail ? `FAIL (${fail} failures)` : 'PASS (0 failures)');
 process.exit(fail ? 1 : 0);

@@ -1,0 +1,5 @@
+{"checks":[
+ {"name":"timer flips after 10 simulated minutes","steps":[{"advance":600000}],"expect":[{"text":"break"}]},
+ {"name":"no flip before the time","steps":[{"advance":1000}],"expect":[{"text":"work"}]},
+ {"name":"fits a phone screen","steps":[{"viewport":[390,844]}],"expect":[{"noOverflow":true}]}
+]}
