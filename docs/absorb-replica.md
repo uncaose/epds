@@ -36,6 +36,16 @@ Same as `docs/absorb-pstack.md`: **Built**, **Built (partial)**, **Reinforced** 
 | 10 | `replica-launch` | Landing page, pricing from the original's public page, store-listing linter (limits, copycat rule, `avoid` names). | `/release`, GROWTH route | Launch planning: yes at process level | **Rejected** as tooling (store limits are not EPDS scope); "no fake proof" already covered by evidence policy |
 | 11 | `replica-deploy` | Preflight gate (tests green, must-haves done, rebrand sweep clean, listing linted), production services, DNS, monitoring; the user buys and signs in, Claude never pastes live keys. | `/release`, approval and irreversible-action policies | Preflight and "nothing goes live without the user's go": yes | **Reinforced**; the rebrand-sweep gate is **Rejected** (Replica-specific) |
 
+## Added review: two official Anthropic plugins (same lens)
+
+Read from the local plugin cache (read only, nothing installed or enabled): `feature-dev` (commands/feature-dev.md,
+three agents) and `code-review` (commands/code-review.md).
+
+| # | Source | What it does | EPDS counterpart | Verdict |
+|---|---|---|---|---|
+| 12 | `feature-dev` (7 phases: Discovery, Exploration, Clarifying Questions, Architecture, Implementation, Review, Summary) | Phase 3 is marked "do not skip": list every underspecified point (edge cases, error handling, scope boundaries, integration, performance) and **wait for the user's answers before designing**; "whatever you think is best" still needs an explicit confirmation. Phase 1 restates the understanding and confirms it. Phase 4 compares 2-3 architectures and asks which one. | SKILL.md steps 1-3 (take stock, questions never block, core loop + checks), `templates/arena.md` (N-way comparison), `/verify` panel | **Reinforced; blocking half Rejected.** Waiting for answers is the right move when a human is reachable and the opposite of what EPDS needs for a one-line request with nobody to answer (step 2 already says: ask only what a reachable human can answer, otherwise write the question with the default chosen under Assumptions). The non-blocking half (restate the understanding, list the underspecified points) is what step 3 now does with the core-loop line plus recorded assumptions. The v6 wording was written from Replica before this plugin was read; the overlap is convergence, not derivation. No further EPDS change |
+| 13 | `code-review` (score every candidate issue 0-100 with a fixed rubric, keep only 80+; explicit false-positive list: pre-existing, linter-catchable, nitpicks, unchanged lines) | Precision filter for pull-request review, run by separate scoring agents. | `/verify` panel, `docs/policies/` (`negative-rule-suppression` pattern is already logged in `docs/references/open-code-review.md`) | **Reinforced; Rejected as a new step.** It targets noisy PR comments, not requester intent, and is tied to `gh pr comment`. Upgrade lead only: if the `/verify` panel ever returns noisy findings, adopt the 0-100 rubric with an 80 cut there (not done now: no demonstrated bottleneck) |
+
 ## What changed in EPDS
 
 - `SKILL.md` step 3: name the core loop in one line, record the chosen reading as an assumption, write the core-loop
