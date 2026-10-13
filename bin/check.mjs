@@ -92,5 +92,6 @@ for (const c of checks) {
   await ctx.close();
 }
 await browser.close();
+if (failed) console.log('Note: each check starts in a fresh page with empty storage; put dependent steps in one check.');
 console.log(`${checks.length - failed}/${checks.length} checks passed`);
 process.exit(failed ? 1 : 0);

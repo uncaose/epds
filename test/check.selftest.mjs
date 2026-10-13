@@ -16,6 +16,7 @@ const vb = run(fx('ok.html'), fx('checks.json'), '--verbose');
 ok('--verbose lists PASS lines', vb.status === 0 && /PASS add a note/.test(vb.stdout));
 const bad = run(fx('bad.html'), fx('checks.json'));
 ok('bad fixture -> exit 1, FAIL lines', bad.status === 1 && /FAIL add a note/.test(bad.stdout) && /FAIL no console errors/.test(bad.stdout));
+ok('failing run ends with the fresh-page hint; passing run does not', /each check starts in a fresh page with empty storage; put dependent steps in one check/.test(bad.stdout) && !/fresh page/.test(good.stdout));
 // v6 additions: {"advance":ms} simulated clock, {"viewport":[w,h]} step, {"noOverflow":true} expect (adopted from replica-test/replica-build edge states).
 const tm = run(fx('time.html'), fx('checks-new.json'));
 ok('advance flips a 10-minute timer, no early flip, small page fits a phone', tm.status === 0 && tm.stdout.trim() === '3/3 checks passed');

@@ -1,0 +1,7 @@
+{
+  "hooks": {
+    "Stop": [
+      { "hooks": [ { "type": "command", "command": "node \"$(git rev-parse --show-toplevel)/.agents/skills/epds/adapters/claude-code/stop-gate.mjs\"", "timeout": 120 } ] }
+    ]
+  }
+}
