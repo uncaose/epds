@@ -95,7 +95,7 @@ other five (docs/absorb-pstack.md cross-check "plain-language-reexplain": pstack
 final answer; here it's a mandatory field instead of a separate command, since the cost of one line
 is lower than the cost of a 15th command).
 
-A report handed to another agent may be only the `[Acceptance]` table plus the one-line `[Plain language]`; the other blocks appear only for what changed.
+By default, a report handed to another agent is only the `[Acceptance]` table plus the one-line `[Plain language]`; the other blocks appear only for what changed.
 
 Every executed command shown in a report must carry its exit code — no row may omit it, and a raw output pipe that discards it does not excuse the omission. The report header must record the executing model's alias and its reasoning effort (`reasoning_effort`, when the runtime exposes one) so results can be reproduced — this is always a self-report obligation on the executing agent, never optional. If `epds models detect --write` has been run for this session, `epds/models.json` `detected`/`roles`/`effort` is supplementary corroborating information to cite alongside the self-report (`effort`, when set via `epds models set <role> <id> --effort <value>`, is itself a self-report typed in ahead of time for a role, not a measurement — it only proves which tools/keys were reachable and which effort value was configured for a role, not which one actually executed this task or at what effort); it never replaces the self-report.
 
