@@ -91,6 +91,24 @@ Machine checks follow the same direction: v8 cut axe serious+critical findings p
 | Qwen3.8-27B | `LIFECYCLE.md` 6, bash/other 3 (of 9 with a write) |
 With bare prompts every model that produced something wrote `index.html` first.
 
+## Ceiling cell: glm-5.3 (R0386, n=1)
+Does the premium sibling of `glm-5.3-flash` buy more? 12 runs (glm-5.3 x {bare, v8} x K1-K6, n=1), same opencode 1.19 image, prompts and blind R0383 judge as above; flash rows are the n=2 cells from the table above. Method difference: the shared proxy silently rewrites `glm-5.3` to another model, so a private proxy copy with that rewrite emptied was used; all 175 upstream requests carried `effort=medium` and `model=glm-5.3`. Verdict: the premium buys no visible quality (pre-declared H-ceiling, needs +0.15 intent: **not supported**; H-cost >= 5x per intent point: supported, 8.5x; H-life 5 of 6: supported).
+
+| model | arm | runs | intent | function | turns | tokens in/out/reasoning | total s | first deliverable s | LIFECYCLE | est. $/run | $ per intent point |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| glm-5.3-flash (n=2) | bare | 12 | 0.611 | 36/46 | 13.2 | 193k/7.7k/1.1k | 150/125 | 45/47 | 0/12 | $0.033 | $0.055 |
+| glm-5.3-flash (n=2) | v8 | 12 | 0.625 | 36/46 | 20.1 | 324k/6.3k/2.6k | 199/174 | 69/62 | 10/12 | $0.053 | $0.085 |
+| glm-5.3 (n=1) | bare | 6 | 0.556 | 20/23 | 15.8 | 488k/13.8k/12.0k | 730/664 | 266/250 | 0/6 | $0.797 | $1.435 |
+| glm-5.3 (n=1) | v8 | 6 | 0.583 | 18/23 | 9.8 | 211k/13.3k/15.0k | 854/825 | 539/343 | 5/6 | $0.420 | $0.720 |
+
+Cost is an upper bound: all input tokens (cache reads included) at the input price, output plus reasoning at the output price. Intent steps are 1/6 per run, so differences under about 0.15 are noise.
+
+Limits of this cell: n = 1 per task; the K2 v8 run produced no deliverable (4 turns, reasoning only) and scores 0, so there is no K2 v8 app; the K3 v8 run ended with SIGTERM at 1150 s (cause unknown) but had a deliverable and `LIFECYCLE.md`, kept as observed; the K4 bare run hit the 1800 s cap with a deliverable present from 175 s; 2 of 175 upstream requests returned 502; one build-judge family (sonnet). Usability was not judged for this cell.
+
+Run 1 of every glm-5.3 cell after the generic action (type "Test", Enter, clock +1 day); empty cell = no deliverable. The PNG is the original (about 0.8 MB).
+
+![glm-5.3 ceiling cell, after one generic action](contact-sheet-ceiling.png)
+
 ## Images
 Contact sheets of run #1 of every cell (5 models x {bare, v8} x K1-K6, phone width, simulated clock 2026-10-13 12:00); empty cells are runs without a deliverable. Both original PNGs (about 1.2 MB each, no compression).
 

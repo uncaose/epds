@@ -1,4 +1,4 @@
-<!-- source: README.md sha256:dfeff8001180 -->
+<!-- source: README.md sha256:a837cf2c4c24 -->
 [English](../../README.md) · [한국어](../ko/README.md) · [简体中文](../zh-CN/README.md) · [日本語](../ja/README.md) · [Tiếng Việt](../vi/README.md) · [ไทย](../th/README.md) · Bahasa Melayu · [Bahasa Indonesia](../id/README.md)
 
 # EPDS
@@ -47,7 +47,7 @@ Pengesahan terkini (butiran, gesaan dan data: [results/README.md](../../results/
 - EPDS v8 berbanding ejen kosong, 7 model x 6 permintaan aplikasi satu baris, 144 larian yang dinilai: jurang niat antara haiku dan sonnet mengecil (0.167 -> 0.014) dan sonnet tidak menurun, tetapi fungsi haiku berkurang 2 daripada 46 item; keputusan PARTIAL (arah sahaja, n = 2 setiap tugasan).
 - Kebolehgunaan aplikasi tersebut (2 penilai buta + semakan mesin): v8 menaikkan purata skor model keluarga Claude sebanyak 1.0 hingga 1.5 daripada 20 dan mengurangkan kecacatan kebolehcapaian yang serius dengan ketara.
 - Tanpa get hujung giliran (model tempatan), kemahiran itu tidak mengubah tingkah laku dan skor niat menurun.
-- Model lemah pada opencode 1.19 (penilai kebolehgunaan yang sama seperti di atas): v8 menaikkan skor purata sebanyak 1.5 hingga 2.0 daripada 20 bagi gpt-6-luna, deepseek-v4-flash dan glm-5.3-flash yang mengikuti skill tanpa get, dan hanya 0.25 bagi gamedev-coder tempatan yang melangkau langkah kitar hayat; model 27B tempatan hanya menghasilkan 4 aplikasi dalam 22 larian.
+- Model lemah pada opencode 1.19 (penilai kebolehgunaan yang sama seperti di atas): v8 menaikkan skor purata sebanyak 1.5 hingga 2.0 daripada 20 bagi gpt-6-luna, deepseek-v4-flash dan glm-5.3-flash yang mengikuti skill tanpa get, dan hanya 0.25 bagi gamedev-coder tempatan yang melangkau langkah kitar hayat; model 27B tempatan hanya menghasilkan 4 aplikasi dalam 22 larian. Sel siling glm-5.3 premium (n=1) setanding dengan glm-5.3-flash pada skor niat (0.583 berbanding 0.625) tetapi kos bagi setiap mata niat kira-kira 8.5 kali ganda.
 
 ![Skrin pertama bagi kesemua 144 aplikasi](../../results/2026-10-13-v8-gate/contact-sheet-first.png)
 
