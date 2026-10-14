@@ -4,6 +4,7 @@ Every verification run of EPDS gets its own folder here, with the method, the ex
 
 | date | folder | what was measured | verdict |
 |---|---|---|---|
+| 2026-10-15 | [2026-10-15-weak-opencode](2026-10-15-weak-opencode/RESULTS.md) | EPDS v8 on weak models (local gamedev-coder, local 27B, luna, two Go flash models) under opencode 1.19, with usability of their apps (R0384, R0385 stage 2) | PARTIAL |
 | 2026-10-14 | [2026-10-14-usability](2026-10-14-usability/RESULTS.md) | usability of the 144 v8 gate apps, two blind LLM judges plus machine checks (R0385) | PASS (stage 1) |
 | 2026-10-13 | [2026-10-13-v8-gate](2026-10-13-v8-gate/RESULTS.md) | EPDS v8 against bare, 7 models x 6 one-line requests, 144 judged runs (R0383) | PARTIAL |
 

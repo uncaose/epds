@@ -46,7 +46,10 @@ Latest verification (details, prompts and data: [results/README.md](results/READ
 - EPDS v8 against a bare agent, 7 models x 6 one-line app requests, 144 judged runs: the haiku-versus-sonnet intent gap shrank (0.167 -> 0.014) and sonnet did not drop, but haiku function fell by 2 of 46 items; verdict PARTIAL (direction only, n = 2 per task).
 - Usability of those apps (two blind judges plus machine checks): v8 raised the mean score for Claude-family models by 1.0 to 1.5 of 20 and cut serious accessibility defects sharply.
 - Without an end-of-turn gate (the local model) the skill did not change behaviour and intent fell.
+- Weak models under opencode 1.19 (usability judges as above): v8 raised the mean score by 1.5 to 2.0 of 20 for gpt-6-luna, deepseek-v4-flash and glm-5.3-flash, which follow the skill without a gate, and by only 0.25 for the local gamedev-coder, which skips the lifecycle steps; the local 27B model delivered 4 apps in 22 runs.
 
 ![All 144 apps, first screen of each](results/2026-10-13-v8-gate/contact-sheet-first.png)
 
 ![Usability judging overview: first screen and after one action](results/2026-10-14-usability/contact-sheet.png)
+
+![Weak-model apps, first screen of each](results/2026-10-15-weak-opencode/contact-sheet-first.png)

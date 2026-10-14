@@ -1,4 +1,4 @@
-<!-- source: README.md sha256:617bfd45dfbf -->
+<!-- source: README.md sha256:dfeff8001180 -->
 [English](../../README.md) · [한국어](../ko/README.md) · [简体中文](../zh-CN/README.md) · [日本語](../ja/README.md) · Tiếng Việt · [ไทย](../th/README.md) · [Bahasa Melayu](../ms/README.md) · [Bahasa Indonesia](../id/README.md)
 
 # EPDS
@@ -47,7 +47,10 @@ Kiểm chứng mới nhất (chi tiết, prompt và dữ liệu: [results/README
 - EPDS v8 so với tác nhân trần, 7 mô hình x 6 yêu cầu ứng dụng một dòng, 144 lần chạy đã chấm: khoảng cách ý định giữa haiku và sonnet thu hẹp (0,167 -> 0,014) và sonnet không giảm, nhưng điểm chức năng của haiku giảm 2 trên 46 mục; kết luận PARTIAL (chỉ xem xu hướng, n = 2 cho mỗi tác vụ).
 - Khả năng sử dụng của các ứng dụng đó (2 người chấm mù + kiểm tra máy): v8 nâng điểm trung bình của các mô hình họ Claude thêm 1,0 đến 1,5 trên 20 và giảm mạnh lỗi trợ năng nghiêm trọng.
 - Với mô hình cục bộ không có cổng cuối lượt, kỹ năng không thay đổi hành vi và điểm ý định giảm.
+- Mô hình yếu trên opencode 1.19 (cùng các bộ chấm khả năng sử dụng ở trên): v8 nâng điểm trung bình thêm 1,5 đến 2,0 trên 20 cho gpt-6-luna, deepseek-v4-flash và glm-5.3-flash (những mô hình làm theo skill mà không cần cổng chặn), nhưng chỉ thêm 0,25 cho gamedev-coder cục bộ vốn bỏ qua các bước vòng đời; mô hình 27B cục bộ chỉ giao 4 ứng dụng trong 22 lần chạy.
 
 ![Màn hình đầu của cả 144 ứng dụng](../../results/2026-10-13-v8-gate/contact-sheet-first.png)
 
 ![Tổng quan chấm khả năng sử dụng: màn hình đầu và sau một thao tác](../../results/2026-10-14-usability/contact-sheet.png)
+
+![Màn hình đầu của các ứng dụng từ mô hình yếu](../../results/2026-10-15-weak-opencode/contact-sheet-first.png)

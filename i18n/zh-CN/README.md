@@ -1,4 +1,4 @@
-<!-- source: README.md sha256:617bfd45dfbf -->
+<!-- source: README.md sha256:dfeff8001180 -->
 [English](../../README.md) · [한국어](../ko/README.md) · 简体中文 · [日本語](../ja/README.md) · [Tiếng Việt](../vi/README.md) · [ไทย](../th/README.md) · [Bahasa Melayu](../ms/README.md) · [Bahasa Indonesia](../id/README.md)
 
 # EPDS
@@ -47,7 +47,10 @@ EPDS 并不是关于“更多代理”或“更长提示词”。它首先确定
 - EPDS v8 对比裸代理，7 个模型 x 6 个一句话应用需求，共 144 次已评判运行：haiku 与 sonnet 的意图差距缩小（0.167 -> 0.014），sonnet 没有下降，但 haiku 的功能分数在 46 项中少了 2 项；结论为 PARTIAL（仅看方向，每个任务 n = 2）。
 - 这些应用的可用性（2 位盲评评判者 + 机器检查）：v8 使 Claude 系列模型的平均分提高了 1.0 到 1.5（满分 20），并大幅减少了严重的无障碍缺陷。
 - 在没有回合结束闸门的本地模型上，该技能没有改变其行为，意图得分反而下降。
+- opencode 1.19 下的弱模型（评判者同上）：在没有关卡的情况下也遵循技能的 gpt-6-luna、deepseek-v4-flash 和 glm-5.3-flash，v8 使平均分在满分 20 中提高了 1.5 至 2.0；跳过生命周期步骤的本地 gamedev-coder 仅提高 0.25。本地 27B 模型在 22 次运行中只交付了 4 个应用。
 
 ![全部 144 个应用的首屏](../../results/2026-10-13-v8-gate/contact-sheet-first.png)
 
 ![可用性评判概览：首屏与一次操作之后](../../results/2026-10-14-usability/contact-sheet.png)
+
+![弱模型应用的首屏](../../results/2026-10-15-weak-opencode/contact-sheet-first.png)

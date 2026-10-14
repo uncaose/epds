@@ -1,9 +1,10 @@
 # EPDS measurement history
 
-Earlier measurements, newest first, copied from each internal report (no image exists for these unless stated). Latest detail: [2026-10-14 usability](2026-10-14-usability/RESULTS.md), [2026-10-13 v8 gate](2026-10-13-v8-gate/RESULTS.md).
+Earlier measurements, newest first, copied from each internal report (no image exists for these unless stated). Latest detail: [2026-10-15 weak models](2026-10-15-weak-opencode/RESULTS.md), [2026-10-14 usability](2026-10-14-usability/RESULTS.md), [2026-10-13 v8 gate](2026-10-13-v8-gate/RESULTS.md).
 
 | date | internal ref | EPDS version | models | n | main result | image |
 |---|---|---|---|---|---|---|
+| 2026-10-15 | R0384 | v8 (skill only, no gate) on opencode 1.19.0 | gamedev-coder, Qwen3.8-27B, gpt-6-luna, deepseek-v4-flash, glm-5.3-flash | 118 runs executed of 120 (5 models x 2 arms x 6 tasks x 2) | PARTIAL: local gamedev-coder LIFECYCLE 1/12 (1.18.35: 0/12), runtime version not the cause; luna wrote it in 11/12 runs then deleted it; deepseek-v4-flash 12/12, glm-5.3-flash 10/12; usability v8 minus bare +0.25 (gamedev-coder), +1.54 (luna), +2.04 (deepseek-v4-flash), +1.54 (glm-5.3-flash) of 20; 27B delivered 4 apps in 22 runs | [contact sheet](2026-10-15-weak-opencode/contact-sheet-first.png) |
 | 2026-10-13 | R0382 | v7 (`2d3e28e`) | haiku, sonnet, local | 48 runs (3 models x 2 arms x 4 tasks x 2) | FAIL: sonnet-haiku intent gap 0.062 -> 0.104 (did not shrink); intent haiku 0.708 -> 0.833, sonnet 0.771 -> 0.938, local 0.708 -> 0.604; haiku function 29/32 -> 31/32 | no image |
 | 2026-10-13 | R0381 | v5 (`64aaa30`) vs v6 (`a2b8b44`) | haiku | 16 runs (4 tasks x 2 x 2 arms) | PARTIAL: intent median 0.67 -> 0.75; function 21/22 -> 19/22 and median cost x1.52 (limit x1.20) failed two of three pass lines | no image |
 | 2026-10-12 | R0375 | v4 (`faa73f4`) | sonnet, haiku | 80 runs (10 DeepSWE tasks x 2 models x 2 arms x 2) | not proven: f2p pair difference -0.001 (Wilcoxon p 0.59); passes sonnet 10 -> 13 of 20, haiku 9 -> 11 of 20 (direction only); effective input -47k | no image |

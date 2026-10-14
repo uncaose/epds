@@ -1,4 +1,4 @@
-<!-- source: README.md sha256:617bfd45dfbf -->
+<!-- source: README.md sha256:dfeff8001180 -->
 [English](../../README.md) · 한국어 · [简体中文](../zh-CN/README.md) · [日本語](../ja/README.md) · [Tiếng Việt](../vi/README.md) · [ไทย](../th/README.md) · [Bahasa Melayu](../ms/README.md) · [Bahasa Indonesia](../id/README.md)
 
 # EPDS
@@ -47,7 +47,10 @@ EPDS는 "더 많은 에이전트"나 "더 긴 프롬프트"에 관한 것이 아
 - EPDS v8 대 맨몸 에이전트, 7개 모델 x 한 줄 앱 요청 6개, 판정된 144회 실행: haiku와 sonnet의 의도 격차가 줄었고(0.167 -> 0.014) sonnet은 떨어지지 않았지만, haiku의 기능 점수는 46항목 중 2항목 낮아졌습니다. 판정은 PARTIAL (방향만 확인, 과제당 n = 2).
 - 해당 앱들의 사용성(블라인드 판정자 2명 + 기계 검사): v8은 Claude 계열 모델의 평균 점수를 20점 만점에 1.0~1.5점 올렸고 심각한 접근성 결함을 크게 줄였습니다.
 - 턴 종료 게이트가 없는 로컬 모델에서는 스킬이 동작을 바꾸지 못했고 의도 점수가 떨어졌습니다.
+- opencode 1.19의 약한 모델(위와 같은 사용성 판정자): 게이트 없이도 스킬을 따르는 gpt-6-luna, deepseek-v4-flash, glm-5.3-flash는 v8로 평균 점수가 20점 만점에 1.5~2.0점 올랐고, 생명주기 단계를 건너뛰는 로컬 gamedev-coder는 0.25점만 올랐습니다. 로컬 27B 모델은 22회 실행에서 앱 4개만 내놓았습니다.
 
 ![모든 144개 앱의 첫 화면](../../results/2026-10-13-v8-gate/contact-sheet-first.png)
 
 ![사용성 판정 개요: 첫 화면과 한 번의 동작 후](../../results/2026-10-14-usability/contact-sheet.png)
+
+![약한 모델 앱의 첫 화면](../../results/2026-10-15-weak-opencode/contact-sheet-first.png)
