@@ -28,7 +28,7 @@ ok('third block still blocks', JSON.parse(r3.stdout).decision === 'block');
 const r4 = stop(work, 's1');
 ok('4th stop in the same session passes ({}), and is logged', r4.status === 0 && r4.stdout.trim() === '{}' && /cap/.test(fs.readFileSync(path.join(state, 'gate.log'), 'utf8')));
 
-const ex = tpl.split(/^## Example.*$/m)[1] || '';
+const ex = (tpl.split(/^## Example.*$/m)[1] || '').replace(/\.json/g, ''); // other-tool rows: the json re-run is covered by lifecycle.selftest
 fs.writeFileSync(path.join(work, 'LIFECYCLE.md'), ex);
 const r5 = stop(work, 's2');
 ok('filled LIFECYCLE.md (check exit 0) -> pass {}', r5.status === 0 && r5.stdout.trim() === '{}');

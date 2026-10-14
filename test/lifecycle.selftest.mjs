@@ -30,7 +30,29 @@ const tpl = run(path.join(root, 'templates', 'LIFECYCLE.md'));
 ok('the unfilled template itself fails (copy and fill it)', tpl.status === 1);
 const tx = fs.readFileSync(path.join(root, 'templates', 'LIFECYCLE.md'), 'utf8');
 const ex = (tx.split(/^## Example.*$/m)[1] || '');
-fs.writeFileSync(path.join(dir, 'ex.md'), ex);
-ok('the filled example in the template passes', run(path.join(dir, 'ex.md')).status === 0);
+// v9: rows are re-run, not just read.
+const fx = (n) => path.join(root, 'test', 'fixtures', n);
+const probe = spawnSync('node', [path.join(root, 'bin', 'check.mjs'), fx('ok.html'), fx('checks.json')], { encoding: 'utf8' });
+const browser = probe.status !== 2; // playwright/chromium present?
+const sub = path.join(dir, 'work'); fs.mkdirSync(sub);
+for (const f of ['ok.html', 'bad.html', 'checks.json']) fs.copyFileSync(fx(f), path.join(sub, f));
+const wr = (n, body) => { const p = path.join(sub, n); fs.writeFileSync(p, `# Lifecycle\n\n${H}${body}`); return p; };
+const four = good.split('\n').slice(0, 4).join('\n') + '\n';
+const nz = run(wr('nz.md', four + R('mistake', 'delete or undo', 'delete removes', 'undo is offered', 'tool x -> exit 1')));
+ok('a row whose recorded exit code is not 0 -> exit 1 naming the row', nz.status === 1 && /FAIL mistake/.test(nz.stdout));
+const miss = run(wr('miss.md', four + R('mistake', 'delete or undo', 'delete removes', 'undo is offered', '`check.mjs nope.json` -> exit 0')));
+ok('referenced json missing -> exit 1', miss.status === 1 && /FAIL mistake/.test(miss.stdout) && /nope\.json/.test(miss.stdout));
+const nr = run(wr('nr.md', four + R('mistake', 'delete or undo', 'delete removes', 'undo is offered', 'other-tool run -> exit 0')));
+ok('a row that cannot be re-run passes but is counted', nr.status === 0 && /5 rows not re-run/.test(nr.stdout));
+if (browser) {
+  const liar = run(wr('liar.md', four + R('mistake', 'delete or undo', 'delete removes', 'undo is offered', '`check.mjs bad.html checks.json` -> exit 0')));
+  ok('table says exit 0 but the re-run fails -> exit 1', liar.status === 1 && /FAIL mistake/.test(liar.stdout) && /re-run exit 1/.test(liar.stdout));
+  const real = run(wr('real.md', four + R('mistake', 'delete or undo', 'delete removes', 'undo is offered', '`check.mjs ok.html checks.json` -> exit 0')));
+  ok('table says exit 0 and the re-run passes -> exit 0, only the 4 other-tool rows not re-run', real.status === 0 && /4 rows not re-run/.test(real.stdout));
+  for (let i = 1; i <= 5; i += 1) fs.copyFileSync(fx('checks.json'), path.join(sub, `c${i}.json`));
+  fs.copyFileSync(fx('ok.html'), path.join(sub, 'index.html'));
+  fs.writeFileSync(path.join(sub, 'ex.md'), ex);
+  ok('the filled example in the template passes (bare json command uses index.html)', run(path.join(sub, 'ex.md')).status === 0);
+} else console.log('  SKIP re-run cases (playwright/chromium missing)');
 console.log(fail ? `FAIL (${fail} failures)` : 'PASS (0 failures)');
 process.exit(fail ? 1 : 0);

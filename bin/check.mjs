@@ -5,26 +5,41 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { spawnSync } from 'node:child_process';
 
 const argv = process.argv.slice(2);
 const verbose = argv.includes('--verbose');
 const [htmlArg, checksArg] = argv.filter((a) => a !== '--verbose');
 
-// LIFECYCLE.md mode (no browser): every table row needs all 5 cells filled, no <placeholder>, and an exit code in the last cell.
+// LIFECYCLE.md mode: every table row needs all 5 cells filled, no <placeholder>, and an exit code in the last cell.
+// v9: the exit code must be 0, and a `check.mjs [<html>] <checks>.json` command is re-run here (rows are re-run, not just read); other commands are counted as "not re-run".
 if (htmlArg && htmlArg.endsWith('.md') && !checksArg) {
   const text = fs.readFileSync(htmlArg, 'utf8').split(/^## Example.*$/m)[0];
   const rows = text.split('\n').filter((l) => l.trim().startsWith('|') && !/^\|[\s:|-]+\|$/.test(l.trim())).slice(1) // slice(1) = header
     .map((l) => l.trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim()));
-  const bad = [];
+  const bad = []; let notRerun = 0;
+  const dir = path.dirname(path.resolve(htmlArg));
   rows.forEach((c, i) => {
     const who = c[0] || `row ${i + 1}`;
     if (c.length !== 5 || c.some((x) => !x)) bad.push(`FAIL ${who} -- empty cell (all 5 columns must be filled)`);
     else if (c.some((x) => /<[^>]*>/.test(x))) bad.push(`FAIL ${who} -- unfilled <placeholder>`);
     else if (!/exit(\s*code)?\s*[=:]?\s*\d+/i.test(c[4])) bad.push(`FAIL ${who} -- "how executed" has no exit code`);
+    else if (Number(/exit(?:\s*code)?\s*[=:]?\s*(\d+)/i.exec(c[4])[1]) !== 0) bad.push(`FAIL ${who} -- recorded exit code is not 0`);
+    else {
+      const m = /check\.mjs\s+(?:([^\s`]+\.html?)\s+)?([^\s`]+\.json)/.exec(c[4]);
+      if (!m) { notRerun += 1; return; }
+      const jf = path.resolve(dir, m[2]);
+      if (!fs.existsSync(jf)) { bad.push(`FAIL ${who} -- ${m[2]} does not exist`); return; }
+      let html = m[1] && path.resolve(dir, m[1]);
+      if (!html) { const h = JSON.parse(fs.readFileSync(jf, 'utf8')).html; html = path.resolve(dir, h || 'index.html'); } // bare form: "html" in the json, else index.html
+      if (!fs.existsSync(html)) { notRerun += 1; return; }
+      const r = spawnSync(process.execPath, [fileURLToPath(import.meta.url), html, jf], { encoding: 'utf8' });
+      if (r.status !== 0) bad.push(`FAIL ${who} -- re-run exit ${r.status}: ${(r.stdout + r.stderr).trim().split('\n')[0].slice(0, 120)}`);
+    }
   });
   if (rows.length < 4) bad.push(`FAIL table -- ${rows.length} rows, need at least 4 (first visit, event, end, after end)`);
-  console.log([...bad, `${rows.length - bad.filter((b) => !b.startsWith('FAIL table')).length}/${rows.length} lifecycle rows complete`].join('\n'));
+  console.log([...bad, `${rows.length - bad.filter((b) => !b.startsWith('FAIL table')).length}/${rows.length} lifecycle rows complete, ${notRerun} rows not re-run`].join('\n'));
   process.exit(bad.length ? 1 : 0);
 }
 if (!htmlArg || !checksArg) { console.error('usage: node bin/check.mjs <html> <checks.json> [--verbose]'); process.exit(2); }

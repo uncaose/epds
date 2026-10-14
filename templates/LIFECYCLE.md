@@ -1,6 +1,6 @@
 # LIFECYCLE
 
-Pick the one thing the request is really about. Walk it through its whole life, one row per state or event: first visit (empty) -> each event -> end -> after the end (return visit, next cycle) -> a mistake and the way back. Fill every cell. Delete this paragraph and the Example section when done. Gate: `node <skill dir>/bin/check.mjs LIFECYCLE.md` (exit 1 while any cell is empty or has no exit code).
+Pick the one thing the request is really about. Walk it through its whole life, one row per state or event: first visit (empty) -> each event -> end -> after the end (return visit, next cycle) -> a mistake and the way back. Fill every cell. Delete this paragraph and the Example section when done. Gate: `node <skill dir>/bin/check.mjs LIFECYCLE.md` (exit 1 while any cell is empty, has no exit code, or records a non-zero one). Rows are re-run, not just read: a `check.mjs [<html>] <checks>.json` command is executed again by the gate (a missing json or a failing re-run fails the row); rows it cannot re-run are counted as "N rows not re-run".
 
 | state | what the user sees and can do | works check | common-sense usability & detail check | how executed (command + exit code) |
 |---|---|---|---|---|
