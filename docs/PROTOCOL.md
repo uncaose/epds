@@ -58,7 +58,7 @@ An `EXPLORATORY` "how does X work" request's discovery step is a file/call-path 
 Each rule below is one sentence — the rule itself, not a summary — followed by a link to its own
 file under `docs/policies/` (docs/absorb-pstack.md item 2, docs/LAYOUT.md). Read `docs/policies/`
 for the full rule text, its rationale, and cross-references; this index exists so the rule can be
-scanned without opening thirteen files, not to replace them.
+scanned without opening fourteen files, not to replace them.
 
 - Do not implement strategic, exploratory, or sensitive work before the user approves the decision and scope. [Approval before implementation](docs/policies/approval-before-implementation.md)
 - Do not expand scope with unrelated refactors, dependency replacement, redesign, or speculative features. Propose those separately. [Scope discipline](docs/policies/scope-discipline.md)
@@ -73,6 +73,7 @@ scanned without opening thirteen files, not to replace them.
 - If two or more fixes built on the same premise fail the same gate, stop patching and re-examine the underlying premise before the next attempt. [Attack the premise after repeated failure](docs/policies/premise-review-after-repeated-failure.md)
 - Write and evaluate tests against observable behavior, not internal implementation details that can change without changing behavior. [Test behavior, not implementation](docs/policies/test-behavior-not-implementation.md)
 - Evidence about declared inputs (lockfiles, manifests, version strings) is not evidence about the artifact that runs; verify and record the resolved path or fingerprint of what was actually built and executed. [Verify the artifact that actually runs](docs/policies/verify-resolved-artifact.md)
+- Hand off and report with the lifecycle table (at most 5 rows, each linked to a check that was run) plus one evidence line per check (command, exit code, commit or file hash); collect review findings into one pass, and do not restate history in prose. [Lean handoff and report](docs/policies/lean-handoff.md)
 
 ## Final report
 
@@ -93,6 +94,8 @@ a substitute for any block — it exists so a non-technical reader gets the gist
 other five (docs/absorb-pstack.md cross-check "plain-language-reexplain": pstack's `bro` restates the
 final answer; here it's a mandatory field instead of a separate command, since the cost of one line
 is lower than the cost of a 15th command).
+
+A report handed to another agent may be only the `[Acceptance]` table plus the one-line `[Plain language]`; the other blocks appear only for what changed.
 
 Every executed command shown in a report must carry its exit code — no row may omit it, and a raw output pipe that discards it does not excuse the omission. The report header must record the executing model's alias and its reasoning effort (`reasoning_effort`, when the runtime exposes one) so results can be reproduced — this is always a self-report obligation on the executing agent, never optional. If `epds models detect --write` has been run for this session, `epds/models.json` `detected`/`roles`/`effort` is supplementary corroborating information to cite alongside the self-report (`effort`, when set via `epds models set <role> <id> --effort <value>`, is itself a self-report typed in ahead of time for a role, not a measurement — it only proves which tools/keys were reachable and which effort value was configured for a role, not which one actually executed this task or at what effort); it never replaces the self-report.
 

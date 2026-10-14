@@ -25,8 +25,9 @@ Every build request, however short, runs this loop. Do not stop short of step 7.
 
 Classify the request: `TRIVIAL` (one file, one feature, or a one-line request for a single small app) / `FEATURE` / `EXPLORATORY` / `STRATEGIC` / `SENSITIVE` / `RELEASE` / `GROWTH`.
 If it is TRIVIAL, use only this path: the LIFECYCLE.md rows (one check per transition), at most 2 fix rounds, and the short report `[Acceptance] N of M checks executed and passed (exit codes)` + `[Plain language] one line, no jargon`.
+For work that already has acceptance criteria or tests (including delegated subtasks), write LIFECYCLE.md with at most 5 rows, link each row's last cell to that existing check command and its exit code, and do not build a new checker.
 
 ## Details (read only when needed)
 
-- Command routing, evidence-first protocol, work router, 13 safety rules, full Final report format: [docs/PROTOCOL.md](docs/PROTOCOL.md)
+- Command routing, evidence-first protocol, work router, 14 safety rules, full Final report format: [docs/PROTOCOL.md](docs/PROTOCOL.md)
 - Commands: [docs/COMMANDS.md](docs/COMMANDS.md)
