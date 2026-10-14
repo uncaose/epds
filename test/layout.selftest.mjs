@@ -29,14 +29,15 @@ const REQUIRED_POLICIES = [
   'test-first.md',
   'root-cause-not-symptom.md',
   'premise-review-after-repeated-failure.md',
-  'test-behavior-not-implementation.md'
+  'test-behavior-not-implementation.md',
+  'verify-resolved-artifact.md'
 ];
 
 // ---- case 1: every docs/policies/<slug>.md link SKILL.md makes actually exists on disk ----
 {
   const skillMd = fs.readFileSync(path.join(root, 'docs', 'PROTOCOL.md'), 'utf8'); // v3: index moved from SKILL.md
   const linked = [...skillMd.matchAll(/\]\((docs\/policies\/[a-z0-9-]+\.md)\)/g)].map((m) => m[1]);
-  ok('case1 SKILL.md links at least 12 policy files', linked.length >= 12);
+  ok('case1 SKILL.md links at least 13 policy files', linked.length >= 13);
   for (const rel of linked) {
     ok(`case1 linked file exists: ${rel}`, fs.existsSync(path.join(root, rel)));
   }

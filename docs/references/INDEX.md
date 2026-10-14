@@ -10,6 +10,7 @@ external store (e.g. `~/Projects/research/_archive/sources/R0123-slug.md`), not 
 
 | Pattern | Files |
 |---|---|
+| resolved-artifact-provenance, cache-invalidation-boundary | native-artifact-integrity-case.md |
 | evidence-before-assumption | example-evidence-first-delivery.md |
 | gated-state-model | example-evidence-first-delivery.md |
 | quality-beyond-code | tech-bridge-ai-code-quality.md |
@@ -37,7 +38,7 @@ external store (e.g. `~/Projects/research/_archive/sources/R0123-slug.md`), not 
 
 | Perspective | Files |
 |---|---|
-| self (worked example) | example-evidence-first-delivery.md, argo-internal.md |
+| self (worked example) | example-evidence-first-delivery.md, argo-internal.md, native-artifact-integrity-case.md |
 | evidence | tech-bridge-ai-code-quality.md |
 | product | tech-bridge-ai-code-quality.md, gstack.md, agency-agents.md, public-apis.md |
 | delivery | gstack.md, superpowers.md, ouroboros.md, agency-agents-app-v0-3-0.md, ai-job-search.md, open-code-review.md, awesome-harness-engineering.md, mattpocock-skills-grilling.md, node-js-releases.md, public-apis.md, scrapling.md, free-for-dev.md, cursor-pstack.md |

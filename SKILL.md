@@ -28,5 +28,5 @@ If it is TRIVIAL, use only this path: the LIFECYCLE.md rows (one check per trans
 
 ## Details (read only when needed)
 
-- Command routing, evidence-first protocol, work router, 12 safety rules, full Final report format: [docs/PROTOCOL.md](docs/PROTOCOL.md)
+- Command routing, evidence-first protocol, work router, 13 safety rules, full Final report format: [docs/PROTOCOL.md](docs/PROTOCOL.md)
 - Commands: [docs/COMMANDS.md](docs/COMMANDS.md)

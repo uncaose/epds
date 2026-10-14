@@ -58,7 +58,7 @@ An `EXPLORATORY` "how does X work" request's discovery step is a file/call-path 
 Each rule below is one sentence — the rule itself, not a summary — followed by a link to its own
 file under `docs/policies/` (docs/absorb-pstack.md item 2, docs/LAYOUT.md). Read `docs/policies/`
 for the full rule text, its rationale, and cross-references; this index exists so the rule can be
-scanned without opening twelve files, not to replace them.
+scanned without opening thirteen files, not to replace them.
 
 - Do not implement strategic, exploratory, or sensitive work before the user approves the decision and scope. [Approval before implementation](docs/policies/approval-before-implementation.md)
 - Do not expand scope with unrelated refactors, dependency replacement, redesign, or speculative features. Propose those separately. [Scope discipline](docs/policies/scope-discipline.md)
@@ -72,6 +72,7 @@ scanned without opening twelve files, not to replace them.
 - Trace a reported symptom to its root cause before patching — check every caller of the code you are about to touch. [Fix root causes, not symptoms](docs/policies/root-cause-not-symptom.md)
 - If two or more fixes built on the same premise fail the same gate, stop patching and re-examine the underlying premise before the next attempt. [Attack the premise after repeated failure](docs/policies/premise-review-after-repeated-failure.md)
 - Write and evaluate tests against observable behavior, not internal implementation details that can change without changing behavior. [Test behavior, not implementation](docs/policies/test-behavior-not-implementation.md)
+- Evidence about declared inputs (lockfiles, manifests, version strings) is not evidence about the artifact that runs; verify and record the resolved path or fingerprint of what was actually built and executed. [Verify the artifact that actually runs](docs/policies/verify-resolved-artifact.md)
 
 ## Final report
 
