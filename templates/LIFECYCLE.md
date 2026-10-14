@@ -10,6 +10,8 @@ Pick the one thing the request is really about. Walk it through its whole life, 
 | after the end | <...> | <...> | <...> | <...> |
 | mistake / undo | <...> | <...> | <...> | <...> |
 
+A "stays after reopening" row covers state changes too (an item completed, deleted, or skipped), not only saved data. When a request says to show each or every X, check that all of them are visible at the same time, not one selected.
+
 The detail-check cell answers: would an ordinary person using this state find it obvious what to do, see the result of each action, and find every value, label and message correct and tidy? Is there a way back from a dead end or a wrong entry?
 
 ## Example (delete this section) - a flashcard quiz

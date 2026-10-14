@@ -34,7 +34,7 @@ Before asking questions or recommending a direction, investigate in this order w
 3. Current code, test results, CI, deployment state, metrics, support issues, user research, retrospectives.
 
    Report a gate that returns UNMEASURED as `environment` (a dependency is missing — install it and rerun; only the rerun counts as evidence), `censored` (a log exists but the tested event never occurred — the sample is truncated, not a pass), or `corrupted` (the artifact exists but cannot be read). A bare "UNMEASURED" without one of these three is incomplete.
-4. Trusted public sources only when internal evidence lacks a material fact. Prefer official docs, official policies, original repositories, standards, release notes. Trusted public sources list = `epds/trusted-sources.json` (if present, search and cite it first; if absent, fall back to the general rule above).
+4. Trusted public sources only when internal evidence lacks a material fact. Prefer official docs, official policies, original repositories, standards, release notes. When a row accepts a value from the user, confirm the full set of valid values for that field from a public source first. Trusted public sources list = `epds/trusted-sources.json` (if present, search and cite it first; if absent, fall back to the general rule above).
 5. Separate facts, interpretation, assumptions, and owner decisions.
 
    When a simulation, replay, or drop-log artifact exists, record its end-reason (or termination-cause) distribution as one Facts line. If a single value accounts for 100% of the sample, mark every verdict built on it as a "censored sample", not a clean pass.
@@ -84,6 +84,7 @@ At the end of any EPDS task, report:
 [Evidence used] Facts / Interpretation / Assumptions / External research
 [Work completed] Changed / Not changed
 [Verification] Tests/tools run / Results / Unverified items
+  Security: <runtime security hook result | scanner diff command + exit code | none available>
 [Acceptance] N of M acceptance checks executed and passed (list each check with its exit code); Assumptions made in place of unanswered questions
 [Risks and next step] Remaining risks / Recommended next action / PROJECT-STATE update needed
 [Plain language] One line, no jargon: what happened and what it means for the reader

@@ -29,5 +29,5 @@ For work that already has acceptance criteria or tests (including delegated subt
 
 ## Details (read only when needed)
 
-- Command routing, evidence-first protocol, work router, 14 safety rules, full Final report format: [docs/PROTOCOL.md](docs/PROTOCOL.md)
+- Command routing, evidence-first protocol, work router, 14 safety rules, full Final report format (its [Verification] block ends with one `Security:` line: runtime hook result, else an existing scanner/linter diff run with its exit code, else `none available`): [docs/PROTOCOL.md](docs/PROTOCOL.md)
 - Commands: [docs/COMMANDS.md](docs/COMMANDS.md)

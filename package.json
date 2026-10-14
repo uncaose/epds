@@ -33,7 +33,7 @@
     "setup": "node ./bin/epds.mjs setup",
     "uninstall": "node ./bin/epds.mjs uninstall",
     "check": "node ./bin/epds.mjs check",
-    "test": "node test/status.selftest.mjs && node test/status.selftest-h125.mjs && node test/models.selftest.mjs && node test/sources.selftest.mjs && node test/layout.selftest.mjs && node test/completion.selftest.mjs && node test/unified.selftest.mjs && node test/check.selftest.mjs && node test/lifecycle.selftest.mjs && node test/stop-gate.selftest.mjs && node test/english.selftest.mjs && node test/i18n.selftest.mjs && node test/results.selftest.mjs && node test/opencode-idle.selftest.mjs"
+    "test": "node test/status.selftest.mjs && node test/status.selftest-h125.mjs && node test/models.selftest.mjs && node test/sources.selftest.mjs && node test/layout.selftest.mjs && node test/completion.selftest.mjs && node test/unified.selftest.mjs && node test/check.selftest.mjs && node test/lifecycle.selftest.mjs && node test/stop-gate.selftest.mjs && node test/english.selftest.mjs && node test/i18n.selftest.mjs && node test/results.selftest.mjs && node test/opencode-idle.selftest.mjs && node test/v9-phrases.selftest.mjs"
   },
   "keywords": [
     "claude-code",
