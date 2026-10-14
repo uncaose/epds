@@ -6,6 +6,6 @@ The stop is blocked until `LIFECYCLE.md` exists in the working folder and `node 
 |---|---|---|
 | Claude Code | Stop hook | merge `claude-code/settings.snippet.json` into `.claude/settings.json` |
 | Codex | Stop hook (`.codex/hooks.json`; review it once with `/hooks`) | copy `codex/hooks.json` to `<repo>/.codex/hooks.json` |
-| opencode | none: its documented plugin events (`session.idle`) cannot block or continue a session | no gate; do not replace it with instruction text |
+| opencode | plugin on `session.idle`: cannot block, so it re-prompts the same session (`client.session.promptAsync`, same check, cap 3) | copy `opencode/epds-gate.js` to `<repo>/.opencode/plugins/` and set `EPDS_DIR` to the epds skill dir; needs a session that outlives idle (TUI or `opencode serve`): one-shot `opencode run` exits at the first idle |
 
 Docs: https://code.claude.com/docs/en/hooks · https://learn.chatgpt.com/docs/hooks · https://opencode.ai/docs/plugins/
