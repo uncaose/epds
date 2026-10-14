@@ -1,4 +1,4 @@
-<!-- source: README.md sha256:fa2eede0c980 -->
+<!-- source: README.md sha256:617bfd45dfbf -->
 [English](../../README.md) · [한국어](../ko/README.md) · [简体中文](../zh-CN/README.md) · 日本語 · [Tiếng Việt](../vi/README.md) · [ไทย](../th/README.md) · [Bahasa Melayu](../ms/README.md) · [Bahasa Indonesia](../id/README.md)
 
 # EPDS
@@ -39,3 +39,15 @@ EPDS は「エージェントを増やす」ことや「プロンプトを長く
 - [x] **Installation and Usage** — 上記の [Installation](#installation) セクション + [docs/INSTALL.md](docs/INSTALL.md)
 
 ここに至った経緯（確認したツール、採用しなかったパターン、根拠） → [docs/EPDS.md](../../docs/EPDS.md)
+
+## 結果
+
+最新の検証（詳細、プロンプト、データ：[results/README.md](../../results/README.md)）：
+
+- EPDS v8 と素のエージェントの比較、7 モデル x 一行のアプリ依頼 6 件、判定済み 144 回の実行：haiku と sonnet の意図ギャップは縮小し（0.167 -> 0.014）、sonnet は低下しませんでしたが、haiku の機能は 46 項目中 2 項目減りました。判定は PARTIAL（方向のみ、タスクごとに n = 2）。
+- これらのアプリのユーザビリティ（ブラインド判定者 2 名 + 機械チェック）：v8 は Claude 系モデルの平均を 20 点満点で 1.0 から 1.5 点上げ、重大なアクセシビリティ欠陥を大きく減らしました。
+- ターン終了ゲートのないローカルモデルでは、スキルは挙動を変えず、意図スコアは下がりました。
+
+![144 個すべてのアプリの最初の画面](../../results/2026-10-13-v8-gate/contact-sheet-first.png)
+
+![ユーザビリティ判定の概要：最初の画面と 1 回の操作後](../../results/2026-10-14-usability/contact-sheet.png)

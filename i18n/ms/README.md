@@ -1,4 +1,4 @@
-<!-- source: README.md sha256:fa2eede0c980 -->
+<!-- source: README.md sha256:617bfd45dfbf -->
 [English](../../README.md) · [한국어](../ko/README.md) · [简体中文](../zh-CN/README.md) · [日本語](../ja/README.md) · [Tiếng Việt](../vi/README.md) · [ไทย](../th/README.md) · Bahasa Melayu · [Bahasa Indonesia](../id/README.md)
 
 # EPDS
@@ -39,3 +39,15 @@ EPDS bukan tentang "lebih banyak ejen" atau "prompt yang lebih panjang". Ia mula
 - [x] **Pemasangan dan Penggunaan** — Bahagian [Pemasangan](#pemasangan) di atas + [docs/INSTALL.md](docs/INSTALL.md)
 
 Bagaimana saya sampai ke sini (alat yang dilihat, corak yang diketepikan, rasional) → [docs/EPDS.md](../../docs/EPDS.md)
+
+## Keputusan
+
+Pengesahan terkini (butiran, gesaan dan data: [results/README.md](../../results/README.md)):
+
+- EPDS v8 berbanding ejen kosong, 7 model x 6 permintaan aplikasi satu baris, 144 larian yang dinilai: jurang niat antara haiku dan sonnet mengecil (0.167 -> 0.014) dan sonnet tidak menurun, tetapi fungsi haiku berkurang 2 daripada 46 item; keputusan PARTIAL (arah sahaja, n = 2 setiap tugasan).
+- Kebolehgunaan aplikasi tersebut (2 penilai buta + semakan mesin): v8 menaikkan purata skor model keluarga Claude sebanyak 1.0 hingga 1.5 daripada 20 dan mengurangkan kecacatan kebolehcapaian yang serius dengan ketara.
+- Tanpa get hujung giliran (model tempatan), kemahiran itu tidak mengubah tingkah laku dan skor niat menurun.
+
+![Skrin pertama bagi kesemua 144 aplikasi](../../results/2026-10-13-v8-gate/contact-sheet-first.png)
+
+![Gambaran penilaian kebolehgunaan: skrin pertama dan selepas satu tindakan](../../results/2026-10-14-usability/contact-sheet.png)

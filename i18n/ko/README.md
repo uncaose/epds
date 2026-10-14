@@ -1,4 +1,4 @@
-<!-- source: README.md sha256:fa2eede0c980 -->
+<!-- source: README.md sha256:617bfd45dfbf -->
 [English](../../README.md) · 한국어 · [简体中文](../zh-CN/README.md) · [日本語](../ja/README.md) · [Tiếng Việt](../vi/README.md) · [ไทย](../th/README.md) · [Bahasa Melayu](../ms/README.md) · [Bahasa Indonesia](../id/README.md)
 
 # EPDS
@@ -39,3 +39,15 @@ EPDS는 "더 많은 에이전트"나 "더 긴 프롬프트"에 관한 것이 아
 - [x] **설치와 사용법** — 위 [설치](#설치) 섹션 + [docs/INSTALL.md](docs/INSTALL.md)
 
 여기까지 도달한 과정(검토한 도구, 버린 패턴, 근거) → [docs/EPDS.md](../../docs/EPDS.md)
+
+## 결과
+
+최신 검증 (자세한 내용, 프롬프트, 데이터: [results/README.md](../../results/README.md)):
+
+- EPDS v8 대 맨몸 에이전트, 7개 모델 x 한 줄 앱 요청 6개, 판정된 144회 실행: haiku와 sonnet의 의도 격차가 줄었고(0.167 -> 0.014) sonnet은 떨어지지 않았지만, haiku의 기능 점수는 46항목 중 2항목 낮아졌습니다. 판정은 PARTIAL (방향만 확인, 과제당 n = 2).
+- 해당 앱들의 사용성(블라인드 판정자 2명 + 기계 검사): v8은 Claude 계열 모델의 평균 점수를 20점 만점에 1.0~1.5점 올렸고 심각한 접근성 결함을 크게 줄였습니다.
+- 턴 종료 게이트가 없는 로컬 모델에서는 스킬이 동작을 바꾸지 못했고 의도 점수가 떨어졌습니다.
+
+![모든 144개 앱의 첫 화면](../../results/2026-10-13-v8-gate/contact-sheet-first.png)
+
+![사용성 판정 개요: 첫 화면과 한 번의 동작 후](../../results/2026-10-14-usability/contact-sheet.png)
