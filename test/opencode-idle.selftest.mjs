@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // test/opencode-idle.selftest.mjs — adapters/opencode/epds-gate.js: session.idle re-prompt (opencode has no blocking stop hook).
 // Fake client + events: missing LIFECYCLE.md -> 1 re-prompt; failing check -> reason carried; cap 3; passing check -> none.
+process.env.EPDS_LEVEL = 'high'; // v10: this test covers the high-level gate
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // test/lifecycle.selftest.mjs — LIFECYCLE.md gate: `node bin/check.mjs LIFECYCLE.md` exits 1 when a row has an empty cell
 // (esp. the detail-check column), an unfilled <placeholder>, or a "how executed" cell without an exit code. No browser needed.
+process.env.EPDS_LEVEL = 'high'; // v10: this test covers the high-level gate
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';

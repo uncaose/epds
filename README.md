@@ -17,6 +17,12 @@ npx skills add uncaose/epds -a claude-code
 
 For more detailed options and verification procedures, please refer to [docs/INSTALL.md](docs/INSTALL.md).
 
+## Levels
+
+- `low`: 3 to 7 observable checks before building, then build; no execution loop, table or gate.
+- `medium` (default): `low` plus a 5-row LIFECYCLE table before building (last column optional); no execution loop or gate.
+- `high`: everything: execute every row, up to 5 fix rounds, `checks.json`, and the Stop gate. Choose by wording, `epds/level` (one line) or `EPDS_LEVEL`.
+
 ## What does it solve?
 
 AI coding tools can produce a lot of code in a few seconds. However, the most expensive failures in product development are usually not "writing code late," but the following.

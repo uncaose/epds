@@ -7,6 +7,7 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { epdsLevel } from './level.mjs';
 
 const argv = process.argv.slice(2);
 const verbose = argv.includes('--verbose');
@@ -15,6 +16,8 @@ const [htmlArg, checksArg] = argv.filter((a) => a !== '--verbose');
 // LIFECYCLE.md mode: every table row needs all 5 cells filled, no <placeholder>, and an exit code in the last cell.
 // v9: the exit code must be 0, and a `check.mjs [<html>] <checks>.json` command is re-run here (rows are re-run, not just read); other commands are counted as "not re-run".
 if (htmlArg && htmlArg.endsWith('.md') && !checksArg) {
+  const lv = epdsLevel(); // v10: only high records evidence and gates
+  if (lv !== 'high') { console.log(`EPDS level: ${lv} - LIFECYCLE gate off (set EPDS_LEVEL=high or epds/level to enable)`); process.exit(0); }
   const text = fs.readFileSync(htmlArg, 'utf8').split(/^## Example.*$/m)[0];
   const rows = text.split('\n').filter((l) => l.trim().startsWith('|') && !/^\|[\s:|-]+\|$/.test(l.trim())).slice(1) // slice(1) = header
     .map((l) => l.trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim()));

@@ -2,6 +2,7 @@
 // test/stop-gate.selftest.mjs — adapters/claude-code/stop-gate.mjs: end-of-turn gate shared by Claude Code and Codex Stop hooks.
 // Blocks (JSON {"decision":"block","reason"}) while LIFECYCLE.md is missing or `check.mjs LIFECYCLE.md` exits non-zero;
 // passes silently-with-{} when it exits 0; after 3 blocks in one session the 4th stop passes and is logged.
+process.env.EPDS_LEVEL = 'high'; // v10: this test covers the high-level gate
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';

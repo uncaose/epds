@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { epdsLevel } from '../../bin/level.mjs';
 
 const CAP = 3;
 let input = {};
@@ -17,6 +18,8 @@ fs.mkdirSync(state, { recursive: true });
 const counter = path.join(state, `${sid}.count`);
 const log = (o) => fs.appendFileSync(path.join(state, 'gate.log'), JSON.stringify({ t: new Date().toISOString(), sid, cwd, ...o }) + '\n');
 
+const level = epdsLevel(cwd);
+if (level !== 'high') { log({ result: 'pass', level }); console.log(JSON.stringify({ systemMessage: `EPDS level: ${level} (gate off)` })); process.exit(0); }
 let reason = '';
 if (!fs.existsSync(path.join(cwd, 'LIFECYCLE.md'))) {
   reason = 'LIFECYCLE.md is missing in the working folder. Copy the template (templates/LIFECYCLE.md in the epds skill), fill every row, and run `node <epds skill dir>/bin/check.mjs LIFECYCLE.md` until it exits 0 before finishing.';

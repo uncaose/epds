@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+// test/levels.selftest.mjs — v10 levels low|medium|high: default medium; only high gates; wording present.
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+const root = path.join(path.dirname(new URL(import.meta.url).pathname), '..');
+let fail = 0;
+const ok = (l, c) => { console.log(`  ${c ? 'ok  ' : 'FAIL'} ${l}`); if (!c) fail += 1; };
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'epds-lv-'));
+const env = (lv) => { const e = { ...process.env, EPDS_GATE_STATE: path.join(tmp, 'state') }; delete e.EPDS_LEVEL; if (lv) e.EPDS_LEVEL = lv; return e; };
+const mkdir = (lvFile) => { const d = fs.mkdtempSync(path.join(tmp, 'w-')); if (lvFile) { fs.mkdirSync(path.join(d, 'epds')); fs.writeFileSync(path.join(d, 'epds', 'level'), lvFile); } return d; };
+const { epdsLevel } = await import(path.join(root, 'bin', 'level.mjs'));
+ok('default (no env, no file) = medium', epdsLevel(mkdir(), {}) === 'medium');
+ok('epds/level file = low', epdsLevel(mkdir('low\n'), {}) === 'low');
+ok('EPDS_LEVEL env beats the file', epdsLevel(mkdir('low'), { EPDS_LEVEL: 'high' }) === 'high');
+ok('invalid value falls back to medium', epdsLevel(mkdir('turbo'), {}) === 'medium');
+const gate = path.join(root, 'adapters', 'claude-code', 'stop-gate.mjs');
+const stop = (cwd, lv, sid) => spawnSync('node', [gate], { input: JSON.stringify({ session_id: sid, cwd }), encoding: 'utf8', env: env(lv) });
+for (const lv of ['low', 'medium']) {
+  const r = stop(mkdir(), lv, 'g' + lv);
+  ok(`stop gate at ${lv}: no LIFECYCLE.md -> exit 0, no block, level named`, r.status === 0 && !/"decision"/.test(r.stdout) && r.stdout.includes(lv));
+}
+ok('stop gate at high: no LIFECYCLE.md -> block', JSON.parse(stop(mkdir(), 'high', 'gh').stdout).decision === 'block');
+ok('stop gate default (no level) = medium -> no block', !/"decision"/.test(stop(mkdir(), '', 'gd').stdout));
+const chk = (cwd, lv) => spawnSync('node', [path.join(root, 'bin', 'check.mjs'), path.join(root, 'templates', 'LIFECYCLE.md')], { cwd, encoding: 'utf8', env: env(lv) });
+const cm = chk(mkdir(), 'medium');
+ok('check.mjs LIFECYCLE.md at medium -> exit 0 naming the level', cm.status === 0 && /medium/.test(cm.stdout));
+ok('check.mjs LIFECYCLE.md at high -> exit 1 (unfilled template)', chk(mkdir(), 'high').status === 1);
+const { EpdsGate } = await import(path.join(root, 'adapters', 'opencode', 'epds-gate.js'));
+process.env.EPDS_GATE_STATE = path.join(tmp, 'state2');
+delete process.env.EPDS_LEVEL;
+const calls = [];
+const h = await EpdsGate({ client: { session: { promptAsync: async (o) => calls.push(o) } }, directory: mkdir() });
+await h.event({ event: { type: 'session.idle', properties: { sessionID: 'o1' } } });
+ok('opencode gate default medium: no re-prompt', calls.length === 0);
+const skill = fs.readFileSync(path.join(root, 'SKILL.md'), 'utf8');
+ok('SKILL.md <= 40 lines', skill.split('\n').length <= 40);
+ok('SKILL.md names the three levels and the default', /## Level/.test(skill) && /low/.test(skill) && /`medium` \(default\)/.test(skill) && /high/.test(skill) && /epds\/level/.test(skill));
+const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
+ok('README usage section lists the levels', /## Levels/.test(readme) && /`low`/.test(readme) && /`medium`/.test(readme) && /`high`/.test(readme));
+console.log(fail ? `FAIL (${fail} failures)` : 'PASS (0 failures)');
+process.exit(fail ? 1 : 0);
