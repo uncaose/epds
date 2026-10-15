@@ -59,5 +59,5 @@ Both models together: intent bare 0.750 / A 0.840 / B 0.882 / C 0.792; usability
 ## Limits
 - Machine load average rose from 2.61 to 10.1 during the runs, so the seconds columns may be inflated; tokens, cost and turns are not affected.
 - Cell C's low intent is driven by haiku (0.694); the cause was not diagnosed.
-- In every C run (24 of 24) the gate's lifecycle check ended at exit 1, so the gate never passed.
+- Correction: an earlier draft said the gate never passed in cell C. That came from a post-run re-check without the browser library on the module path (exit 2, "playwright not found"); with it, the checks pass (6 of 6 in the control run) and the in-run gate logs record pass.
 - Small single-file apps only; this does not generalize to work inside a real repository.
