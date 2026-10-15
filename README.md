@@ -47,6 +47,9 @@ Latest verification (details, prompts and data: [results/README.md](results/READ
 - Usability of those apps (two blind judges plus machine checks): v8 raised the mean score for Claude-family models by 1.0 to 1.5 of 20 and cut serious accessibility defects sharply.
 - Without an end-of-turn gate (the local model) the skill did not change behaviour and intent fell.
 - Weak models under opencode 1.19 (usability judges as above): v8 raised the mean score by 1.5 to 2.0 of 20 for gpt-6-luna, deepseek-v4-flash and glm-5.3-flash, which follow the skill without a gate, and by only 0.25 for the local gamedev-coder, which skips the lifecycle steps; the local 27B model delivered 4 apps in 22 runs. The premium glm-5.3 ceiling cell (n=1) matched glm-5.3-flash on intent (0.583 vs 0.625) at about 8.5x the cost per intent point.
+- Where the gain comes from (v9.1, haiku and sonnet, 96 runs): writing 3 to 7 observable checks before building gave most of it (intent +0.09, usability +0.8 of 20 over bare); the lifecycle table added a little more; the execution, fix loop and gate added usability but no intent at about 3x the time.
+
+![Gain-source cells after one action](results/2026-10-15-gain-source/contact-sheet-after.png)
 
 ![All 144 apps, first screen of each](results/2026-10-13-v8-gate/contact-sheet-first.png)
 
