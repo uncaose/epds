@@ -4,6 +4,7 @@ Every verification run of EPDS gets its own folder here, with the method, the ex
 
 | date | folder | what was measured | verdict |
 |---|---|---|---|
+| 2026-10-16 | [2026-10-16-ui-principle-proper](2026-10-16-ui-principle-proper/RESULTS.md) | the same usability line re-tested with CDN libraries allowed and a checker on the PATH, 96 runs, plus the haiku high-level intent drop diagnosed (R0390) | keep current |
 | 2026-10-15 | [2026-10-15-ui-principle](2026-10-15-ui-principle/RESULTS.md) | one general usability line added to the medium level vs the high level, 24 runs plus re-judging (R0389) | keep current |
 | 2026-10-15 | [2026-10-15-gain-source](2026-10-15-gain-source/RESULTS.md) | where the gain comes from: bare vs checks before writing vs + lifecycle table vs v9.1 full with gate, haiku and sonnet, 96 runs (R0388) | PARTIAL |
 | 2026-10-15 | [2026-10-15-weak-opencode](2026-10-15-weak-opencode/RESULTS.md) | EPDS v8 on weak models (local gamedev-coder, local 27B, luna, two Go flash models) under opencode 1.19, with usability of their apps, plus a glm-5.3 ceiling cell (R0384, R0385 stage 2, R0386) | PARTIAL |
