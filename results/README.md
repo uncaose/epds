@@ -4,6 +4,7 @@ Every verification run of EPDS gets its own folder here, with the method, the ex
 
 | date | folder | what was measured | verdict |
 |---|---|---|---|
+| 2026-10-17 | [2026-10-17-local-audit-lines](2026-10-17-local-audit-lines/RESULTS.md) | local gamedev-coder: three observable checks vs a design audit (Codex) with 0, 1 or 3 lines, 48 runs (R0398) | no firm effect |
 | 2026-10-17 | [2026-10-17-usability-prompt-gate](2026-10-17-usability-prompt-gate/RESULTS.md) | making the usability line stick: observable checks in the prompt vs a machine Stop gate, sonnet, 48 runs (R0396) | prompt enough (direction only) |
 | 2026-10-16 | [2026-10-16-effort-low](2026-10-16-effort-low/RESULTS.md) | reasoning effort low vs medium, bare and medium level, haiku and sonnet, 48 new runs against 96 (R0393) | low enough, direction only |
 | 2026-10-16 | [2026-10-16-limits-resolved](2026-10-16-limits-resolved/RESULTS.md) | the same line with the open limits closed: n doubled to 48 per cell, a Codex third usability lane and second intent lane, judge agreement, bootstrap CIs (R0391) | keep current |
