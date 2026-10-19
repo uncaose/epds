@@ -15,6 +15,8 @@ Every verification run of EPDS gets its own folder here, with the method, the ex
 | 2026-10-14 | [2026-10-14-usability](2026-10-14-usability/RESULTS.md) | usability of the 144 v8 gate apps, two blind LLM judges plus machine checks (R0385) | PASS (stage 1) |
 | 2026-10-13 | [2026-10-13-v8-gate](2026-10-13-v8-gate/RESULTS.md) | EPDS v8 against bare, 7 models x 6 one-line requests, 144 judged runs (R0383) | PARTIAL |
 
+The medium level carries the three usability items (44 px, 4.5:1 contrast, `bin/a11y-check.mjs` before finishing) measured in the 2026-10-17 usability-prompt-gate row above.
+
 Earlier measurements (v2 to v7, tables only): [HISTORY.md](HISTORY.md).
 
 ## Update rules

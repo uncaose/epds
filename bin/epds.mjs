@@ -179,6 +179,7 @@ async function setup() {
   await copyTemplates(target);
   await mkdir(join(target, 'bin'), { recursive: true });
   await copyFile(join(packageRoot, 'bin', 'check.mjs'), join(target, 'bin', 'check.mjs')); // web acceptance checker (SKILL.md step 5)
+  await copyFile(join(packageRoot, 'bin', 'a11y-check.mjs'), join(target, 'bin', 'a11y-check.mjs')); // accessibility checker (SKILL.md step 3, medium)
   if (await isDirectory(sourceDocs)) {
     await mkdir(join(target, 'docs'), { recursive: true });
     for (const entry of await readdir(sourceDocs, { withFileTypes: true })) {

@@ -10,6 +10,7 @@ const checks = [
   ['docs/PROTOCOL.md', 'full set of valid values'],
   ['templates/LIFECYCLE.md', 'completed, deleted, or skipped'],
   ['templates/LIFECYCLE.md', 'visible at the same time'],
+  ['SKILL.md', 'bin/a11y-check.mjs index.html'],
 ];
 const bad = checks.filter(([f, s]) => !rd(f).includes(s));
 if (bad.length) { console.error('FAIL missing:\n' + bad.map(([f, s]) => `${f}: ${s}`).join('\n')); process.exit(1); }
