@@ -37,6 +37,8 @@ ok('opencode gate default medium: no re-prompt', calls.length === 0);
 const skill = fs.readFileSync(path.join(root, 'SKILL.md'), 'utf8');
 ok('SKILL.md <= 40 lines', skill.split('\n').length <= 40);
 ok('SKILL.md names the three levels and the default', /## Level/.test(skill) && /low/.test(skill) && /`medium` \(default\)/.test(skill) && /high/.test(skill) && /epds\/level/.test(skill));
+const med = skill.split('\n').find((l) => l.includes('If the request is vague')) || '';
+ok('SKILL.md medium names plan-audit; low line does not', /plan-audit\.md/.test(med) && !/plan-audit/.test(skill.split('\n').find((l) => l.includes('- `low`')) || '') && fs.existsSync(path.join(root, 'templates', 'plan-audit.md')));
 const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
 ok('README usage section lists the levels', /## Levels/.test(readme) && /`low`/.test(readme) && /`medium`/.test(readme) && /`high`/.test(readme));
 console.log(fail ? `FAIL (${fail} failures)` : 'PASS (0 failures)');
