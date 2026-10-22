@@ -25,4 +25,7 @@ Fulfil = mean of two browser-driving judge lanes. BCUR costs 4.5x B and takes 4.
 
 ## Modes
 - `auto` (default): revise once for blocking findings; `interview`: ask only product-meaning blocking findings (max 3), then revise; `off`: skip plan-audit. Set by `epds/audit-mode` or env `EPDS_AUDIT`.
+- In a first trial the strict interview filter (blocking + quotes the request + product meaning) asked 0 questions, because the auditor saw only the brief and quoted brief lines.
+- Revised: interview now passes the request to the auditor as `REQUEST:` and asks owner-only policy questions, with a one-line consequence per option; the auto prompt is unchanged.
+- End-to-end re-test of the revised filter not done yet.
 - Interview effect is not measured (needs a simulated answerer); auto is the measured flow; off equals the pre-a75aa2e behavior.

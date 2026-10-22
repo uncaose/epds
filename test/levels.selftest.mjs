@@ -47,6 +47,8 @@ const med = skill.split('\n').find((l) => l.includes('If the request is vague'))
 ok('SKILL.md medium names plan-audit; low line does not', /plan-audit\.md/.test(med) && !/plan-audit/.test(skill.split('\n').find((l) => l.includes('- `low`')) || '') && fs.existsSync(path.join(root, 'templates', 'plan-audit.md')));
 ok('SKILL medium names audit-mode and EPDS_AUDIT; low does not', /audit-mode/.test(med) && /EPDS_AUDIT/.test(med) && !/audit-mode|EPDS_AUDIT/.test(skill.split('\n').find((l) => l.includes('- `low`')) || ''));
 const pa = fs.readFileSync(path.join(root, 'templates', 'plan-audit.md'), 'utf8');
+ok('interview gives the auditor REQUEST and asks owner-only policy', /REQUEST:/.test(pa) && /only the owner knows/.test(pa));
+ok('section 2 audit prompt (auto) is unchanged: no REQUEST', !/REQUEST/.test(pa.split('\n').filter((l) => l.startsWith('>')).join('\n')));
 ok('plan-audit template has interview and default kept', /interview/.test(pa) && /default kept/.test(pa));
 const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
 ok('README usage section lists the levels', /## Levels/.test(readme) && /`low`/.test(readme) && /`medium`/.test(readme) && /`high`/.test(readme));
