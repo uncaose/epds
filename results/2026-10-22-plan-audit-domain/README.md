@@ -22,3 +22,7 @@ Fulfil = mean of two browser-driving judge lanes. BCUR costs 4.5x B and takes 4.
 - The BG gap is one task: T3 (meeting room), where the revise step added a backend the file-opened page could not reach. G derailed on T3.
 - n 11-12 per cell; per-task n 1-2. 2 of 36 runs were not run (cost guard).
 - The audit failed 11 of 11 plans, so the effect is the bundle plan + revise, not the audit verdict itself.
+
+## Modes
+- `auto` (default): revise once for blocking findings; `interview`: ask only product-meaning blocking findings (max 3), then revise; `off`: skip plan-audit. Set by `epds/audit-mode` or env `EPDS_AUDIT`.
+- Interview effect is not measured (needs a simulated answerer); auto is the measured flow; off equals the pre-a75aa2e behavior.

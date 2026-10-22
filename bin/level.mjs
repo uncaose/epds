@@ -7,3 +7,9 @@ export function epdsLevel(cwd = process.cwd(), env = process.env) {
   if (!v) { try { v = fs.readFileSync(path.join(cwd, 'epds', 'level'), 'utf8').split('\n')[0].trim().toLowerCase(); } catch {} }
   return LEVELS.includes(v) ? v : 'medium';
 }
+export const AUDIT_MODES = ['auto', 'interview', 'off'];
+export function auditMode(cwd = process.cwd(), env = process.env) {
+  let v = String(env.EPDS_AUDIT || '').trim().toLowerCase();
+  if (!v) { try { v = fs.readFileSync(path.join(cwd, 'epds', 'audit-mode'), 'utf8').split('\n')[0].trim().toLowerCase(); } catch {} }
+  return AUDIT_MODES.includes(v) ? v : 'auto';
+}

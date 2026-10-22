@@ -16,3 +16,9 @@ Give the auditor this prompt followed by `audited_sha: <sha256 of BRIEF.md>` and
 
 ## 3. Revise once
 Revise BRIEF.md in place so each blocking finding is resolved (add or sharpen REQ, Acceptance, RED, failure-mode lines). Ignore optional findings. Do not audit again. Then build from BRIEF.md.
+
+## Modes (`epds/audit-mode` first line; env `EPDS_AUDIT` wins; default `auto`; invalid value = `auto`)
+- `auto`: revise once for blocking findings, as in section 3.
+- `off`: skip this whole step (write no audit, build from the request); same as before plan-audit existed.
+- `interview`: ask the human only about findings that are `blocking`, whose `quote:` cites the Goal (request) text, and whose answer is a product meaning (purpose, scope, UX, or a value or rule only the owner knows). At most 3 questions. Each question = finding title + the quoted request text + 2 options + a default (what `auto` would have chosen). Ask all questions in one message and take the answers in one reply. Resolve every other finding by the `auto` rule (revise once). Then record in BRIEF.md one `Decisions:` line per question marked `answered` or `default kept (not answered)`; an unanswered default is never treated as consent.
+- No reachable human (non-interactive run, no reply): `interview` behaves as `auto`; list each question and the default chosen under `Assumptions` in the Final report.

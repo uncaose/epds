@@ -10,11 +10,17 @@ const ok = (l, c) => { console.log(`  ${c ? 'ok  ' : 'FAIL'} ${l}`); if (!c) fai
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'epds-lv-'));
 const env = (lv) => { const e = { ...process.env, EPDS_GATE_STATE: path.join(tmp, 'state') }; delete e.EPDS_LEVEL; if (lv) e.EPDS_LEVEL = lv; return e; };
 const mkdir = (lvFile) => { const d = fs.mkdtempSync(path.join(tmp, 'w-')); if (lvFile) { fs.mkdirSync(path.join(d, 'epds')); fs.writeFileSync(path.join(d, 'epds', 'level'), lvFile); } return d; };
-const { epdsLevel } = await import(path.join(root, 'bin', 'level.mjs'));
+const { epdsLevel, auditMode } = await import(path.join(root, 'bin', 'level.mjs'));
 ok('default (no env, no file) = medium', epdsLevel(mkdir(), {}) === 'medium');
 ok('epds/level file = low', epdsLevel(mkdir('low\n'), {}) === 'low');
 ok('EPDS_LEVEL env beats the file', epdsLevel(mkdir('low'), { EPDS_LEVEL: 'high' }) === 'high');
 ok('invalid value falls back to medium', epdsLevel(mkdir('turbo'), {}) === 'medium');
+const mkAudit = (v) => { const d = fs.mkdtempSync(path.join(tmp, 'a-')); if (v !== undefined) { fs.mkdirSync(path.join(d, 'epds')); fs.writeFileSync(path.join(d, 'epds', 'audit-mode'), v); } return d; };
+ok('audit mode default = auto', auditMode(mkAudit(), {}) === 'auto');
+ok('audit-mode file = interview', auditMode(mkAudit('interview\n'), {}) === 'interview');
+ok('audit-mode file = off', auditMode(mkAudit('off'), {}) === 'off');
+ok('EPDS_AUDIT env beats the file', auditMode(mkAudit('off'), { EPDS_AUDIT: 'interview' }) === 'interview');
+ok('invalid audit mode = auto', auditMode(mkAudit('turbo'), {}) === 'auto');
 const gate = path.join(root, 'adapters', 'claude-code', 'stop-gate.mjs');
 const stop = (cwd, lv, sid) => spawnSync('node', [gate], { input: JSON.stringify({ session_id: sid, cwd }), encoding: 'utf8', env: env(lv) });
 for (const lv of ['low', 'medium']) {
@@ -39,6 +45,9 @@ ok('SKILL.md <= 40 lines', skill.split('\n').length <= 40);
 ok('SKILL.md names the three levels and the default', /## Level/.test(skill) && /low/.test(skill) && /`medium` \(default\)/.test(skill) && /high/.test(skill) && /epds\/level/.test(skill));
 const med = skill.split('\n').find((l) => l.includes('If the request is vague')) || '';
 ok('SKILL.md medium names plan-audit; low line does not', /plan-audit\.md/.test(med) && !/plan-audit/.test(skill.split('\n').find((l) => l.includes('- `low`')) || '') && fs.existsSync(path.join(root, 'templates', 'plan-audit.md')));
+ok('SKILL medium names audit-mode and EPDS_AUDIT; low does not', /audit-mode/.test(med) && /EPDS_AUDIT/.test(med) && !/audit-mode|EPDS_AUDIT/.test(skill.split('\n').find((l) => l.includes('- `low`')) || ''));
+const pa = fs.readFileSync(path.join(root, 'templates', 'plan-audit.md'), 'utf8');
+ok('plan-audit template has interview and default kept', /interview/.test(pa) && /default kept/.test(pa));
 const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
 ok('README usage section lists the levels', /## Levels/.test(readme) && /`low`/.test(readme) && /`medium`/.test(readme) && /`high`/.test(readme));
 console.log(fail ? `FAIL (${fail} failures)` : 'PASS (0 failures)');

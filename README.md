@@ -21,7 +21,7 @@ For more detailed options and verification procedures, please refer to [docs/INS
 
 - `low`: 3 to 7 observable checks before building, then build; no execution loop, table or gate.
 - `medium` (default): `low` plus a 5-row LIFECYCLE table before building (last column optional); no execution loop or gate.
-- `high`: everything: execute every row, up to 5 fix rounds, `checks.json`, and the Stop gate. Choose by wording, `epds/level` (one line) or `EPDS_LEVEL`.
+- `high`: everything: execute every row, up to 5 fix rounds, `checks.json`, and the Stop gate. Choose by wording, `epds/level` (one line) or `EPDS_LEVEL`. Plan-audit handling at `medium`: `epds/audit-mode` (one line: `auto` default, `interview`, `off`) or `EPDS_AUDIT`.
 
 ## What does it solve?
 
