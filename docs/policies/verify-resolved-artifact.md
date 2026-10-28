@@ -6,4 +6,13 @@ Evidence about declared inputs (lockfiles, manifests, version strings) is not ev
 
 **Applies to tools too**: a test tool that auto-updates (browser, driver, SDK, CLI, packager) can drift away from its paired tool between runs, and a bare "is it installed" check misses that. Pin the matched pair once per version and bind its path, version, and archive SHA-256 to the candidate's evidence; a mismatch is a test-toolchain incident, not a product failure. This is guidance to follow and record; EPDS does not enforce it automatically.
 
+**Freeze the whole qualified-input contract**: the verification meaning is set by more than one file. A single external config (for example `toolchain.json`) vanished mid-run and produced environment failures that looked like product failures. Treat every input that defines what a check means as one candidate-lifecycle-immutable contract: dependency/lock/config graph, real tool and runtime identity, target/profile/build defines, OS/device/browser matrix, commands and options, fixtures and certificates, thresholds/timeouts/retries, deploy snapshot, and helpers and external receipts.
+- Ordinary files: copy atomically into a candidate-only durable area at start and record source, mode, and full SHA-256; every lane reads only the copy.
+- Large installs that are impractical to copy: lifecycle protection plus a rehash at every gate. If no automatic reclaimer honors the protection, mark it `manual protection only`.
+- A partial or focused check is valid only when its scope differs and the contract hash is identical to the full run. A missing, altered, or unverifiable input makes the result `INVALID` or an environment/verifier failure; never use it as a product verdict or toward GO.
+- Retention runs from the first focused check until independent GO, publication, and fresh-download verification end.
+- Secrets stay in the private copy; public evidence carries only safe identifiers and hashes.
+
+Attach this to the existing lifecycle table (at most 5 rows): freeze at the first row, verify the contract hash before each gate row, compare the same hash at GO and at publication/re-download, and record a missing or altered input as an environment/verifier failure in the failure row. Do not add a new checker, Stop hook, or repeated review; whether it caught anything, and at what cost, is judged at the next maintenance or retro. Source: a downstream project's release-verification incident.
+
 Referenced from: `SKILL.md` § Scope and safety rules — see `docs/policies/README.md` for why these are separate files.
