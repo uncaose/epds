@@ -1,17 +1,16 @@
-# EPDS Tests — 4layergwa baechi
+# EPDS Tests — The 4 layers and their placement
 
-source: human provided by human pyo5(tests 4layer). "teseuteureul tonggwahan kodeureul baepohaetjiman silje sayongjaneun haeksim haengdongeul wanryohaji
-motdone"(README "What It Solves")neun silpaeneun kodeu layer teseuteumaneuroneun an japhinda — 4layeri gakgak dareun jilmune
-answerhanda.
+Source: table 5 provided by the human (4 test layers). The failure "we deployed code that passed the tests, but real users could not complete the core
+action" (README "What It Solves") is not caught by code-layer tests alone — each of the 4 layers answers a different question.
 
-## 4layer
+## 4 layers
 
-| layer | jilmun | yesi(domein yesi) | `templates/`·`tests/` baechi |
+| Layer | Question | Example (domain example) | `templates/` · `tests/` placement |
 |---|---|---|---|
-| kodeu | hamsuga matge dongjakhaneunga | haeksim gyesan rojik, seontaek/rauting algorijeum | `tests/unit/` — eoneobyeol standard teseuteu reoneo, CIeseo hangsang run |
-| gyeyak | deiteo hyeongsiki yuhyohanga | seoljeong/content pail seukima, AI eunganswer JSON seukima | `tests/contract/` + `tools/verify_*`(seukima Verificationgi), silpae si bildeu jungdan |
-| gyeongheom | users haeksim floweul wanjuhaneunga | onboding→haeksim gineung→wanryokkaji E2E | `tests/e2e/`(beuraujeo/dibaiseu jadonghwa), `templates/experiment-brief.md`ga flow definitionreul fixed |
-| Outcome | jepum yaksoki jikyeojineunga | opeurain dongjak, gaeinjeongbo mijeojang, seongneung yesan, uijonseong not installed si polbaek | `tests/promise/` ttoneun `evals/`(sudong chekeuriseuteu → ganeunghamyeon jadonghwa), `gate-report.md`ga tonggwa evidencereul namgim |
+| Code | Does the function behave correctly? | Core calculation logic, selection/routing algorithms | `tests/unit/` — the standard test runner for each language, always run in CI |
+| Contract | Is the data format valid? | Schemas for config/content files, schema for AI response JSON | `tests/contract/` + `tools/verify_*` (schema validator), build stops on failure |
+| Experience | Does the user complete the core flow? | Onboarding → core feature → completion, E2E | `tests/e2e/` (browser/device automation), `templates/experiment-brief.md` pins the flow definition |
+| Outcome | Is the product promise kept? | Offline behavior, no personal data stored, performance budget, fallback when a dependency is not installed | `tests/promise/` or `evals/` (manual checklist → automate where possible), `gate-report.md` records the evidence for passing |
 
 ### Do not report when (negative-rule suppression)
 
@@ -24,23 +23,23 @@ answerhanda.
 
 Adopt a suppression rule only after verifying on real samples that it does not hide a real defect (open-code-review principle 4, R0295 turn[6]). Never suppress data-loss, permission, or payment-path findings regardless of confidence (principle 5). Record every suppression on `templates/gate-report.md`'s "Suppressed" line.
 
-## layereul geonneottwimyeon saenggineun il
+## What happens when you skip a layer
 
-kodeu layerman iteumyeon: keompail/danwi teseuteuneun chorokinde seoljeong paili kkaejyeo baepoga silpaehanda(gyeyak layer bujae).
-gyeyak layerkkajiman iteumyeon: seukimaneun yuhyohande users 3beonjjae hwamyeoneseo makhyeo floweul wanju mot handa(gyeongheom layer
-bujae). gyeongheom layerkkajiman iteumyeon: floweun wanjudoeneunde opeuraineseo keuraesihageona gaeinjeongboga rogeue namneunda
-(Outcome layer bujae) — READMEui "teseuteureul tonggwahan kodeureul baepohaetjiman..." silpaega jeonghwakhi i majimak gangeukida.
+With only the code layer: compile and unit tests are green, but a broken config file makes the deployment fail (no contract layer).
+With only up to the contract layer: the schema is valid, but the user gets stuck on the third screen and cannot complete the flow (no experience
+layer). With only up to the experience layer: the flow completes, but the app crashes offline or personal data lands in the log
+(no outcome layer) — the README's "we deployed code that passed the tests..." failure is exactly this last gap.
 
-## verify keomaendeuwaui gwangye
+## Relation to the verify command
 
-`verify` keomaendeu(SKILL.md routing table)neun 4layer jeonbueseo "dokrip pumjil jeunggeo"reul moeunda — guhyeonhan saramgwa gateun
-sesyeoni anin perspectiveeseo(saengsanja≠Verificationja). `templates/gate-report.md`ga 4layer gakgakui tonggwa/mitonggwawa evidence pail
-gyeongroreul girokhaneun gyeyakida.
+The `verify` command (SKILL.md routing table) collects "independent quality evidence" across all 4 layers — from a perspective other than the
+session that implemented it (producer ≠ verifier). `templates/gate-report.md` is the contract that records, for each of the 4 layers, pass/fail and the path of the evidence
+file.
 
 When verify fans out across multiple reviewers, each reviewer's intermediate reasoning/scratchpad stays local — only concluded findings are shared (context isolation, R0295 turn[12]).
 
-## choeso sijak
+## Minimum start
 
-sae peurojekteuneun 4layereul han beone da gatchul pilyoga eopsda(Scope discipline, `EPDS.md` §5). kodeu layereun geoui hangsang
-day 1buteo; gyeyak layereun deiteo paili saenggineun sunganbuteo; gyeongheom layereun haeksim flowi hwakjeongdoeneun sunganbuteo; Outcome
-layereun silje baepo jeon choeso 1gae(gajang wiheomhan yaksok hana)buteo sijakhanda.
+A new project does not need to have all 4 layers at once (Scope discipline, `EPDS.md` §5). The code layer is almost always needed from
+day 1; the contract layer from the moment data files appear; the experience layer from the moment the core flow is settled; the outcome
+layer starts with at least 1 item (the single riskiest promise) before the real release.

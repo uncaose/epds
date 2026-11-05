@@ -10,31 +10,30 @@ captured: 2026-09-16
 
 ## Analysis
 
-obra/superpowers — TDD·debugging·collaboration·gyehoek·kodeuribyu·Verificationeul skillro seupgwanhwahaneun peureimwokeu. i sesyeonedo Claude
-Code peulreogeuineuro rodeudwae itda(local cache v6.3.0 measured).
+obra/superpowers — a framework that turns TDD, debugging, collaboration, planning, code review and verification into habits through skills. It is also loaded in this session as a Claude
+Code plugin (local cache v6.3.0 measured).
 
-**skill-habit-framework**: methodroneul documentga anira teurigeohyeong skill(`test-driven-development`,
-`systematic-debugging`, `verification-before-completion`)ro paekijinghae mae jakeopmada jadong sanggisikinda.
-rideu: EPDSui evidence-first peurotokoldo "ilkeodumyeon joteun geul"i anira mae myeongryeong front ende gangjedoeneun jeolchayeoya handa.
+**skill-habit-framework**: packages methodology not as documents but as trigger-type skills (`test-driven-development`,
+`systematic-debugging`, `verification-before-completion`) that remind automatically on every task.
+Lead: EPDS's evidence-first protocol too must be a procedure enforced at the front of every command, not "a good article to have read".
 
-**tdd-first**: guhyeon jeone silpaehaneun teseuteureul meonjeo sseunda — `docs/TESTS.md` "layer: kodeu"ga i patternui choeso
-yoso.
+**tdd-first**: write the failing test before implementing — `docs/TESTS.md` "Layer: Code" is the minimum
+element of this pattern.
 
 ## Measured
 
-`verification-before-completion/SKILL.md`(local peulreogeuin cache
+`verification-before-completion/SKILL.md` (local plugin cache
 `~/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/verification-before-completion/SKILL.md`,
-2026-09-18 checked) structure: frontmatter(name/description) → "Iron Law"(`NO COMPLETION CLAIMS WITHOUT
-FRESH VERIFICATION EVIDENCE`) → 5Stage Gate Function(IDENTIFY→RUN→READ→VERIFY→claim) → Common
-Failures pyo(7haeng: tests/linter/build/bug-fix/regression/agent/requirements byeol "mueoti jeunggeoro
-chungbunhanga") → Red Flags → Rationalization Prevention pyo → Key Patterns(✅/❌ daebi) → When To Apply.
-pailman checked, skill jache run(teurigeo)eun i CLI gyeokri hwangyeongeseo jaehyeon bulga.
+checked 2026-09-18) structure: frontmatter(name/description) → "Iron Law"(`NO COMPLETION CLAIMS WITHOUT
+FRESH VERIFICATION EVIDENCE`) → 5-step Gate Function(IDENTIFY→RUN→READ→VERIFY→claim) → Common
+Failures table (7 rows: "what counts as sufficient evidence" per tests/linter/build/bug-fix/regression/agent/requirements) → Red Flags → Rationalization Prevention table → Key Patterns(✅/❌ contrast) → When To Apply.
+Only the file was checked; running the skill itself (the trigger) cannot be reproduced in this CLI-isolated environment.
 
 ## How EPDS uses it
 
-Build/Verify — "saeop pandaneun ppajigo run gyuyulman itda"neun EPDS pyo1ui gyeonggoreul `docs/TESTS.md` 4layergwa daejohaneun
-gijun. Common Failures pyoui "jeunggeo vs bulchungbun" ibunbeopi EPDS `evidence-first` peurotokol(exit code·rogeu·silmul
-checked eopsi "dwaetda" jujang geumji)ui directly donghyeong.
+Build/Verify — the yardstick for contrasting the EPDS table 1 warning "business judgment is missing and only execution discipline is there" with the `docs/TESTS.md` 4 layers.
+The Common Failures table's "evidence vs insufficient" dichotomy is directly isomorphic to the EPDS `evidence-first` protocol (no claiming "done" without
+exit codes, logs or checking the real artifact).
 
 > "An agentic skills framework & software development methodology that works." — repo
 > description(gh api measured 2026-09-16, stars 287306; remeasured 2026-09-18: stars 288320).

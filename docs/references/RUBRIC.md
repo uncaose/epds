@@ -1,37 +1,36 @@
 # Reference Evaluation Rubric — `/epds-reference` 10 items
 
-source: human provided by human pyo7("ai-job-searchcheoreom wanseongdo nopeun jeojangsoreul chata nokyeora"ui evaluation gijun). `/epds-reference
-<URL>` (`adapters/claude-code/commands/epds-reference.md`)i oebu jeojangso·dogu·peureimwokeureul bunseokhal ttae i
-rubeurikeuro chaejeomhago, choetypes chucheon(Adopt/Adapt/Observe/Reject)ui evidencero gak itemsui joteun/warning signalreul citedda.
-
+source: table 7 provided by the human (the evaluation criteria of "find a highly complete repository like ai-job-search and absorb it"). When `/epds-reference
+<URL>` (`adapters/claude-code/commands/epds-reference.md`) analyzes an external repository, tool or framework, it scores with this
+rubric and cites each item's good/warning signals as the evidence for the final recommendation (Adopt/Adapt/Observe/Reject).
 ## 10 items
 
-| # | evaluation item | check question | good signal | warning signal |
+| # | Evaluation item | Check question | Good signal | Warning signal |
 |---|---|---|---|---|
-| 1 | Real problem | eotteon banbok eopmu/riseukeureul haegyeolhana | sayong sarye·mokpyo sayongja seonmyeong | "AI tim"man itgo sanchulmul bulmyeong |
-| 2 | Artifact contract | Outcomega eotteon pail·seukima·tempeulriteuro namna | YAML/JSON/MD/kodeu gyeyak | chaeting chulryeokman |
-| 3 | Verification | AI Outcomereul mueoteuro panjeonghana | lint·test·E2E·keompail·eval·CI | "AI reviewed it" |
-| 4 | Tooling | banbok Verificationeul kodeuro haetna | tools/scripts/CLI/CI | peurompeuteueman "checkedhara" |
-| 5 | Failure handling | meomchum·jaesido·polbaeki definitiondwaetna | oryu mesiji, hoegwi, rolbaek | seonggong gyeongro demoman |
-| 6 | Maintainability | byeongyeong iryeok·giyeoga geonganghanga | rilriseu·isyu·teseuteu·document gaengsin | oraedoen document·kkaejin yeje |
-| 7 | Security | bimil·gaeinjeongbo·oebu ipryeok cheori | choeso gwonhan, `.env.example`, seukaen, jeongchaek | kireul paile, oebu peurompeuteu sinroe |
-| 8 | Portability | teukjeong model/IDE eopsi haeksimi saengjonhana | dogu jungrip document·CLI·teseuteu | teukjeong chaeting UI typessok |
-| 9 | Cost | hochul·API·unyeong Costi tongjedoena | cache·yesan·polbaek·local run | mujehan hochul gajeong |
-| 10 | Product linkage | sayongja gachi/saeop jipyoga Improvementdoena | seonggong jipyo·sinario | gaebalja saengsanseong jujangman |
+| 1 | Real problem | Which repeated task/risk does it solve? | Clear use case and target user | Only an "AI team", artifacts unclear |
+| 2 | Artifact contract | What file, schema or template does the result end up as? | YAML/JSON/MD/code contract | Chat output only |
+| 3 | Verification | What judges the AI's result? | lint, test, E2E, compile, eval, CI | "The AI reviewed it" |
+| 4 | Tooling | Is the repeated verification done in code? | tools/scripts/CLI/CI | Only "please check" in the prompt |
+| 5 | Failure handling | Are stops, retries and fallbacks defined? | Error messages, regression, rollback | Only a happy-path demo |
+| 6 | Maintainability | Are the change history and contributions healthy? | Releases, issues, tests, docs kept up to date | Stale docs, broken examples |
+| 7 | Security | Handling of secrets, personal data and external input | Least privilege, `.env.example`, scanning, policy | Keys in files, trusting external prompts |
+| 8 | Portability | Does the core survive without a specific model/IDE? | Tool-neutral docs, CLI, tests | Tied to a specific chat UI |
+| 9 | Cost | Are call, API and operating costs controlled? | Cache, budget, fallback, local run | Assumes unlimited calls |
+| 10 | Product linkage | Do user value and business metrics improve? | Success metrics, scenarios | Only developer-productivity claims |
 
-## wiring
+## Wiring
 
-`adapters/claude-code/commands/epds-reference.md` step 4("Report the recommendation")neun i 10 items jung
-warning signalga checkeddoen itemseul mark, Adopt/Adapt/Observe/Reject pandaneul geu itemse evidencehae sseunda — evidence eopsneun
-deunggeupman itneun bogoneun banryeo target(§0 wonchikgwa dongil: gyeolronman itgo flowi eopsneun sanchulmul geumji).
+Step 4 ("Report the recommendation") of `adapters/claude-code/commands/epds-reference.md` names which of these 10 items
+had a warning signal confirmed, and writes the Adopt/Adapt/Observe/Reject judgment on the basis of those items — a report with only a grade and no
+evidence is rejected (same as the §0 principle: no artifacts with only conclusions and no flow).
 
-## scoring examples(this 8gae source, summary)
+## Scoring examples (these 8 sources, summary)
 
-| source | strong items | weak/unconfirmed items |
+| Source | Strong items | Weak/unconfirmed items |
 |---|---|---|
-| [gstack](gstack.md) | 1(Real problem), 6(Maintainability: 890 open issues=hwalbal) | 9(Cost: myeongryeong dasu, chogi flow mugeoum) |
-| [superpowers](superpowers.md) | 3(Verification: TDD/debugging skill naejang), 8(Portability: 6gae reontaim jiwon) | 10(Product linkage: enjinieoring run pumjil hanjeong) |
-| [ouroboros](ouroboros.md) | 4(Tooling: CLI+MCP), 2(gyeyak: acceptance spec) | 9(Cost: meolti LLM provider, yesan unconfirmed), 7(Security: PostHog telremeteuri opt-out unconfirmed — R0229) |
-| [ai-job-search](ai-job-search.md) | 2,3,4,7(README pyo3 jeonche) | 6(seuta su daebi silsayong hwaldong miVerification) |
+| [gstack](gstack.md) | 1(Real problem), 6(Maintainability: 890 open issues = active) | 9(Cost: many commands, heavy initial flow) |
+| [superpowers](superpowers.md) | 3(Verification: TDD/debugging skills built in), 8(Portability: 6 runtimes supported) | 10(Product linkage: limited to engineering execution quality) |
+| [ouroboros](ouroboros.md) | 4(Tooling: CLI+MCP), 2(Contract: acceptance spec) | 9(Cost: multiple LLM providers, budget unconfirmed), 7(Security: PostHog telemetry opt-out unconfirmed — R0229) |
+| [ai-job-search](ai-job-search.md) | 2,3,4,7(all of README table 3) | 6(real-use activity relative to star count unverified) |
 
-gak sourceui full evidenceneun `docs/references/<slug>.md` see.
+The full evidence for each source: see `docs/references/<slug>.md`.

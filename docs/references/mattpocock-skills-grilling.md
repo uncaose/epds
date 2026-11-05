@@ -19,7 +19,7 @@ the owner; done when the frontier is empty.
 vs `scripts/drill.sh`+`templates/drill-catalog.md` (DQ-nnn catalog), 3+1: grilling (1)
 **reshapes each round**, (2) **dispatches sub-agents for facts**, (3) gives a **recommended
 answer** — drill.sh has none of the 3 (static catalog, no fact-finding, no recommendation).
-+1 (drill.sh only): **persistent write-back** — `ingest` writes into `req.md` je1jo with a
++1 (drill.sh only): **persistent write-back** — `ingest` writes into `req.md` Article 1 with a
 receipt; grilling stays ephemeral until confirmed.
 
 ## Measured
@@ -37,15 +37,15 @@ head-to-head (deferred — needs a real ambiguous artifact, not this measurement
 
 ## How EPDS uses it
 
-> "naega wonhangeon hyeonjae Status wichi geurigo naagal directioneul gyeoljeonghagi wihaeseo gijon jaryoga itdamyeon bunseokeul haeseo state, position, next direction, geurigo geu oe nameojireul gyeoljeonghagi wihaeseoida. jaryoga eopsdamyeon gyeolguk gyeoljeongeul wihaeseo what do you wantreul gyeoljeonghagi wihaeseo ida." — human, 2026-09-18
-> "2cha jilmuni no. gyeolguk choetypes Outcomemuleul wihaeseo next seutepeul gyeoljeongjitneunde jilmunui directione ttaraseo jeonche geurimi dalrajilsu itda. jeonche geurimi dalrajineun reasonneun geu gyeoljeong ttaemune hyeonjae wichiwa Statusga dalrajimyeon next seutepdo dalrajige ttaemunida." — human, 2026-09-18 (jeongjeong)
+> "What I wanted was this: to decide the current state, position and the direction to move in, analyze the existing material if there is any, and use it to decide the state, position, next direction, and everything else. If there is no material, then in the end it is to decide what it is that you want, for the sake of the decision." — human, 2026-09-18
+> "It is not a second-order question. In the end we decide the next step for the sake of the final outcome, and depending on the direction of the question the whole picture can change. The whole picture changes because that decision changes the current position and state, and when those change the next step changes too." — human, 2026-09-18 (correction)
 
 Loop: (1) evidence exists → analyze into state/position/direction; no evidence → grill
 owner for "what you want" (grilling pattern). (2) owner question = **progressive
 sharpening**, not a single decision — each answer makes state/position/direction sharper.
 (3) re-compose the whole picture from the sharper state. (4) derive next step. Reuse = `scripts/drill.sh`(A11).
-> "Status, wichi, choetypes Outcomemulro ganeun directioni gyesok byeonhal su itda." — human, 2026-09-18
-> "hanbeonui jilmuneuro wanseongdoeneun ge anira Status, wichi, the final outcome and that directioni jeomjeom deo guchehwa doegi ttaemunida." — human, 2026-09-18
+> "The state, the position, and the direction toward the final outcome can keep changing." — human, 2026-09-18
+> "It is not completed by a single question; the state, the position, the final outcome and its direction become more and more concrete." — human, 2026-09-18
 timini/drill-me: not registered — FSRS tutor, opposite direction (R0298).
 
 Stars re-measured 2026-09-18: 264922 (card registration 2026-09-18 same-day: 264753).

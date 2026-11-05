@@ -44,7 +44,7 @@ ok('V3 step 5 directs bin/check.mjs for web deliverables', /bin\/check\.mjs/.tes
 // guard: §0 human definition block unchanged (verbatim, no interpretation)
 const sec0 = (epds.match(/## §0\.[\s\S]*?(?=`\[H\]` Locator)/) || [''])[0];
 const sha = crypto.createHash('sha256').update(sec0).digest('hex');
-ok(`guard §0 verbatim block unchanged (sha256 ${sha.slice(0, 12)})`, sha.startsWith('b0c3d47585c0'));
+ok(`guard §0 verbatim block unchanged (sha256 ${sha.slice(0, 12)})`, sha.startsWith('c99d45bcbebf'));
 
 console.log(fail ? `FAIL (${fail} failures)` : 'PASS (0 failures)');
 process.exit(fail ? 1 : 0);

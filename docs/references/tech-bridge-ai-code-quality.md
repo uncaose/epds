@@ -10,12 +10,12 @@ captured: 2026-09-16
 
 ## Analysis
 
-Tech Bridge(@TechBridge-KR) yutyubeu — "AI sidaeui kodeu pumjil: wanbyeokhan kodeurodo bujokhan jinjja reason". humani EPDS
-seolgyereul sijakhan donggi yeongsang.
+Tech Bridge(@TechBridge-KR) YouTube — "Code quality in the AI era: the real reason even perfect code is not enough". The video that motivated the human to start the EPDS
+design.
 
-**quality-beyond-code**: kodeuga "matge dongjakhanda"neun sasili "jepumi jedaero dwaetda"reul bojeunghaji anhneunda. sarami
-EPDSreul banryeohan evidence("only conclusions, no flow")wa donghyeong — kodeu/document sanchulmuli evidence saseul eopsi gyeolronman apchukdwae
-iteumyeon, geu gyeolroni matneunji jaeVerificationhal gili eopsda. EPDS.md §1~§3eul "gyeolroni anira flow"euro dasi sseun directly donggi.
+**quality-beyond-code**: the fact that code "works correctly" does not guarantee that "the product is right". It is isomorphic to the ground on which the human
+rejected EPDS ("only conclusions, no flow") — if code/document artifacts are compressed into conclusions without an evidence chain,
+there is no way to re-verify whether the conclusion is right. This is the direct motive for rewriting EPDS.md §1~§3 as "flow, not conclusions".
 
 ## Measured
 
@@ -23,8 +23,8 @@ n/a — document/thread source (verified 2026-09-18: url reachable, HTTP 200)
 
 ## How EPDS uses it
 
-Direction/Problem — "gyeolron(kodeuga jal jjayeotda)i jepum jeunggeoreul daechehaji anhneunda"neun jeonjeui evidence inyong. `/epds-status`
-ui Status panjeongeseo "kodeu jonjae"wa "jepum jeunggeo"reul separatehae mutneun jeolchaga i yeongsangui perspectiveeul directly reflectedhanda.
+Direction/Problem — "conclusion (the code is well written) does not replace product evidence" — a citation as ground for this premise. The procedure in `/epds-status`
+state judgment that asks about "code exists" and "product evidence" separately directly reflects this video's perspective.
 
-> (hanyeongjamak yeongsang, inyong daesin oEmbed metaro daeche: title/channel/thumbnailman measured — bonmun inyongeun yeongsang seukeuripteu
-> mihwakboro saengryak)
+> (Korean-English subtitled video; replaced the quote with oEmbed metadata: only title/channel/thumbnail were measured — body quotes omitted because the video script
+> was not obtained)

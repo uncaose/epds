@@ -144,8 +144,8 @@
       "id": "tech-bridge-ai",
       "url": "https://youtu.be/3JDqfWGKoiY",
       "kind": "article",
-      "name": "Tech Bridge — AI sidaeui kodeu pumjil",
-      "purpose": "humani EPDS seolgye chaksu donggiro provided by yutyubeu yeongsang — 'wanbyeokhan kodeurodo jepumi bujokhan reason'(kodeu jeonghwakseonggwa jepum jeunggeoneun byeolgae)",
+      "name": "Tech Bridge — Code quality in the AI era",
+      "purpose": "YouTube video the human provided as the motivation for starting the EPDS design — 'why even perfect code is not enough for a product' (code correctness and product evidence are separate)",
       "perspectives": [
         "evidence",
         "product"
@@ -166,7 +166,7 @@
         "activity": "YouTube video, channel Tech Bridge (@TechBridge-KR), oEmbed measured 2026-09-16"
       },
       "added": "2026-09-16",
-      "note": "human provided by human EPDS flow source 1(yutyubeu)",
+      "note": "human-provided EPDS flow source 1 (YouTube)",
       "origin": "human-chat"
     },
     {
@@ -174,7 +174,7 @@
       "url": "https://github.com/garrytan/gstack",
       "kind": "skill",
       "name": "gstack",
-      "purpose": "role-based product development sprint(CEO·dijain·DX·enjinieoring·QA·Security·baeporeul one sunseoro yeongyeol) — EPDS pyo1 dogubigyoeseo fit 'very high'",
+      "purpose": "role-based product development sprint (CEO, design, DX, engineering, QA, security and deployment chained into one sequence) — fit 'very high' in the EPDS table 1 tool comparison",
       "perspectives": [
         "product",
         "delivery",
@@ -190,15 +190,15 @@
       ],
       "evidence_grade": "community",
       "meta": {
-        "install": "Claude Code marketplace add ttoneun .claude/commands boksa(README gijun)",
-        "invoke": "/office-hours, /plan-ceo-review, /autoplan deung 23gae keomaendeu",
+        "install": "Claude Code marketplace add, or copy to .claude/commands (per README)",
+        "invoke": "/office-hours, /plan-ceo-review, /autoplan and 23 other commands",
         "license": "MIT",
-        "last_release": "pushed_at 2026-09-16(tagsrilriseu none, jisok push)",
+        "last_release": "pushed_at 2026-09-16 (no tagged releases, continuous push)",
         "activity": "gh api measured 2026-09-16: stars 133269, open_issues 890; remeasured 2026-09-18: stars 133523, open_issues 905, pushed_at 2026-09-18",
-        "verified": "2026-09-18: git clone --depth 1 exit 0, LICENSE=MIT silmul checked, 54gae SKILL.md direkteori(at registration 23gae daebi seongjang) — docs/references/gstack.md"
+        "verified": "2026-09-18: git clone --depth 1 exit 0, LICENSE=MIT confirmed on the real file, 54 SKILL.md directories (grown from 23 at registration) — docs/references/gstack.md"
       },
       "added": "2026-09-16",
-      "note": "human provided by human EPDS flow source 2 — pyo1 perspective bigyo dogu",
+      "note": "human-provided EPDS flow source 2 — perspective comparison tool for table 1",
       "origin": "human-chat"
     },
     {
@@ -206,7 +206,7 @@
       "url": "https://github.com/obra/superpowers",
       "kind": "skill",
       "name": "Superpowers",
-      "purpose": "development methodology(TDD·debugging·collaboration)eul skill that habituates peureimwokeu — EPDS pyo1 fit high, i sesyeone rodeudoen Claude Code peulreogeuin(cache checked)",
+      "purpose": "skill framework that turns development methodology (TDD, debugging, collaboration) into habits — EPDS table 1 fit high, Claude Code plugin loaded in this session (cache checked)",
       "perspectives": [
         "delivery",
         "agent-ops"
@@ -221,15 +221,15 @@
       ],
       "evidence_grade": "community",
       "meta": {
-        "install": "Claude Code peulreogeuin maketpeulreiseu(claude-plugins-official) install",
-        "invoke": "skillmyeong directly hochul ye: superpowers:test-driven-development",
+        "install": "install from the Claude Code plugin marketplace (claude-plugins-official)",
+        "invoke": "call the skill by name directly, e.g. superpowers:test-driven-development",
         "license": "MIT",
-        "last_release": "v6.3.0(local cache measured), pushed_at 2026-09-14",
+        "last_release": "v6.3.0 (local cache measured), pushed_at 2026-09-14",
         "activity": "gh api measured 2026-09-16: stars 287306, author Jesse Vincent(obra); remeasured 2026-09-18: stars 288320, pushed_at 2026-09-18",
-        "verified": "2026-09-18: verification-before-completion/SKILL.md structure checked(Iron Law/Gate Function/Common Failures pyo) — docs/references/superpowers.md"
+        "verified": "2026-09-18: verification-before-completion/SKILL.md structure checked (Iron Law/Gate Function/Common Failures table) — docs/references/superpowers.md"
       },
       "added": "2026-09-16",
-      "note": "human provided by human EPDS flow source 3 — i sesyeone rodeudoen Claude Code peulreogeuin",
+      "note": "human-provided EPDS flow source 3 — Claude Code plugin loaded in this session",
       "origin": "human-chat"
     },
     {
@@ -237,7 +237,7 @@
       "url": "https://github.com/Q00/ouroboros",
       "kind": "tool",
       "name": "Ouroboros",
-      "purpose": "spec-execute-evaluate-memory eijeonteu OS — Ambiguity Gate(≤0.2 geiteu)·Evolve rupeu. EPDS pyo1 fit \"conditionally high\"(unyeong bokjapdo riseukeu). seonhaengjosa=R0229",
+      "purpose": "spec-execute-evaluate-memory agent OS — Ambiguity Gate (<=0.2 gate) and Evolve loop. EPDS table 1 fit \"conditionally high\" (operating complexity risk). Prior survey=R0229",
       "perspectives": [
         "agent-ops",
         "delivery"
@@ -253,15 +253,15 @@
       ],
       "evidence_grade": "community",
       "meta": {
-        "install": "PyPI `ouroboros-ai`(R0229 gijun)",
-        "invoke": "CLI `ooo`(Typer+Textual TUI, 13gae reontaim eodaepteo)",
+        "install": "PyPI `ouroboros-ai` (per R0229)",
+        "invoke": "CLI `ooo` (Typer+Textual TUI, 13 runtime adapters)",
         "license": "MIT",
-        "last_release": "R0229 gijun v0.51.17(2026-08-28), hwalbalhi maeil rilriseu",
-        "activity": "gh api measured 2026-09-16: stars 5933, pushed_at 2026-09-15, archived=false — sangse=~/Projects/research/R0229-ouroboros-agent-os-survey; remeasured 2026-09-18: stars 6020, pushed_at 2026-09-15",
-        "verified": "2026-09-18: ooo --version=0.51.17(gijon install). `ooo qa` run exit 1 yangjjok baekendeu(codex=kwoteo sojin Sep 21 riset, gemini=local seoljeonge jonjaehaji anhneun model claude-opus-5 sangsok) — silsayong QA panjeong mihoekdeuk, baekendeuneun codexro wonbok. docs/references/ouroboros.md"
+        "last_release": "v0.51.17 per R0229 (2026-08-28), actively released daily",
+        "activity": "gh api measured 2026-09-16: stars 5933, pushed_at 2026-09-15, archived=false — details=~/Projects/research/R0229-ouroboros-agent-os-survey; remeasured 2026-09-18: stars 6020, pushed_at 2026-09-15",
+        "verified": "2026-09-18: ooo --version=0.51.17 (existing install). `ooo qa` run exit 1 on both backends (codex=quota exhausted, resets Sep 21; gemini=inherited model claude-opus-5 that does not exist in the local settings) — no real QA verdict obtained, backend restored to codex. docs/references/ouroboros.md"
       },
       "added": "2026-09-16",
-      "note": "human provided by human EPDS flow source 3 — spec-execute-evaluate-memory eijeonteu OS, seonhaengjosa R0229",
+      "note": "human-provided EPDS flow source 3 — spec-execute-evaluate-memory agent OS, prior survey R0229",
       "origin": "human-chat"
     },
     {
@@ -269,7 +269,7 @@
       "url": "https://github.com/msitarzewski/agency-agents",
       "kind": "repo",
       "name": "agency-agents",
-      "purpose": "AI eijeonteu katalrogeu(yeokhalbyeol pereusona+sanchulmul) — EPDS pyo2(Stage·sanchulmul·useonsunwi)ui wonbon jeojangso",
+      "purpose": "AI agent catalog (per-role persona + artifacts) — original repository of EPDS table 2 (stage, artifacts, priority)",
       "perspectives": [
         "product",
         "agent-ops"
@@ -284,15 +284,15 @@
       ],
       "evidence_grade": "community",
       "meta": {
-        "install": "katalrogeu keulron ttoneun agency-agents-app aep gyeongyu install(README gijun)",
-        "invoke": "yeokhalbyeol makeudaun pereusona paileul dogubyeol wichie install",
+        "install": "clone the catalog, or install via the agency-agents-app app (per README)",
+        "invoke": "install the per-role markdown persona files at each tool's location",
         "license": "MIT",
-        "last_release": "pushed_at 2026-09-12(tagsrilriseu none, jisok push)",
+        "last_release": "pushed_at 2026-09-12 (no tagged releases, continuous push)",
         "activity": "gh api measured 2026-09-16: stars 152679; remeasured 2026-09-18: stars 153256, open_issues 149, pushed_at 2026-09-12",
         "verified": "2026-09-18: n/a — document source, url reachable HTTP 200 (docs/references/agency-agents.md)"
       },
       "added": "2026-09-16",
-      "note": "human provided by human EPDS flow source 4",
+      "note": "human-provided EPDS flow source 4",
       "origin": "human-chat"
     },
     {
@@ -300,7 +300,7 @@
       "url": "https://github.com/msitarzewski/agency-agents-app/releases/tag/v0.3.0",
       "kind": "repo",
       "name": "agency-agents-app v0.3.0",
-      "purpose": "agency-agents katalrogeu install/chujeok neitibeu aep — v0.3.0 = Runbooks(sinario tim wonkeulrik baepo) doip. EPDS pyo2 sanchulmului baepo jadonghwa see",
+      "purpose": "native app that installs and tracks the agency-agents catalog — v0.3.0 = introduces Runbooks (one-click deployment of a scenario team). Reference for deployment automation of EPDS table 2 artifacts",
       "perspectives": [
         "agent-ops",
         "delivery"
@@ -314,15 +314,15 @@
       ],
       "evidence_grade": "community",
       "meta": {
-        "install": "macOS(.dmg seomyeong/noteoraijeu), Linux(.deb/.rpm/.AppImage), Windows(.exe, miseomyeong)",
-        "invoke": "aep nae Runbooks → Deploy team…",
+        "install": "macOS (.dmg signed/notarized), Linux (.deb/.rpm/.AppImage), Windows (.exe, unsigned)",
+        "invoke": "in-app Runbooks → Deploy team…",
         "license": "MIT",
         "last_release": "v0.3.0, published_at 2026-07-05T22:59:16Z",
         "activity": "gh api measured 2026-09-16: stars 546, repo pushed_at 2026-09-16; remeasured 2026-09-18: stars 559, open_issues 16, pushed_at 2026-09-16",
         "verified": "2026-09-18: n/a — document source (native app, GUI run not a target), url reachable HTTP 200 (docs/references/agency-agents-app-v0-3-0.md)"
       },
       "added": "2026-09-16",
-      "note": "human provided by human EPDS flow source 5",
+      "note": "human-provided EPDS flow source 5",
       "origin": "human-chat"
     },
     {
@@ -330,7 +330,7 @@
       "url": "https://github.com/MadsLorentzen/ai-job-search",
       "kind": "repo",
       "name": "ai-job-search",
-      "purpose": "templates/tests/tools+.claude ga jeongridoen jeojangso — EPDS pyo3(structure yeokhalbyeol daeeung)ui wonbon, human question 'ige ilbanjeok AI iyong patterninga'ui target",
+      "purpose": "repository with templates/tests/tools+.claude organized — original of EPDS table 3 (structure mapping by role), target of the human's question 'is this a general AI usage pattern'",
       "perspectives": [
         "delivery",
         "agent-ops"
@@ -345,23 +345,23 @@
       ],
       "evidence_grade": "community",
       "meta": {
-        "install": "git clone(fork it and own it), Claude Code giban(README gijun)",
-        "invoke": "/setup /apply /rank /interview deung keomaendeu(EPDS pyo3)",
+        "install": "git clone (fork it and own it), based on Claude Code (per README)",
+        "invoke": "commands such as /setup /apply /rank /interview (EPDS table 3)",
         "license": "MIT",
-        "last_release": "pushed_at 2026-09-16(tagsrilriseu none, jisok push)",
+        "last_release": "pushed_at 2026-09-16 (no tagged releases, continuous push)",
         "activity": "gh api measured 2026-09-16: stars 43033; remeasured 2026-09-18: stars 43214, open_issues 5, pushed_at 2026-09-16",
         "verified": "2026-09-18: n/a — document source, url reachable HTTP 200 (docs/references/ai-job-search.md)"
       },
       "added": "2026-09-16",
-      "note": "human provided by human EPDS flow source 6 — templates/tests/tools+.claude structure chamjo jeojangso",
+      "note": "human-provided EPDS flow source 6 — structure reference repository for templates/tests/tools+.claude",
       "origin": "human-chat"
     },
     {
       "id": "argo",
       "url": null,
       "kind": "thread",
-      "name": "argo(internal haneseu keuru unyeong concepts)",
-      "purpose": "keuru(planning)×haneseu(execution)×human(approval gate) unyeong concepts — public repo·URL none, self-reported saryeroman inyong(docs/references/argo-internal.md). EPDS pyo1 'custom router'(very high long-term) itemsui actual case",
+      "name": "argo (internal harness crew operating concept)",
+      "purpose": "crew (planning) x harness (execution) x human (approval gate) operating concept — no public repo or URL, cited only as a self-reported case (docs/references/argo-internal.md). A real case of the EPDS table 1 'custom-built router' (very high long-term) item",
       "perspectives": [
         "self",
         "agent-ops"
@@ -379,10 +379,10 @@
         "invoke": null,
         "license": null,
         "last_release": null,
-        "activity": "internal harness document, public jeojangso not — URL unconfirmed(beuripeu instructiondaero kind:thread pyogi)"
+        "activity": "internal harness document, not a public repository — URL unconfirmed (marked kind:thread as the brief instructed)"
       },
       "added": "2026-09-16",
-      "note": "internal document, private — human provided by human EPDS flow source 3(argo) — public repo not, URL unconfirmed, internal wiki documentro daeche pyogi",
+      "note": "internal document, private — human-provided EPDS flow source 3 (argo) — not a public repo, URL unconfirmed, marked as an internal wiki document instead",
       "origin": "human-chat"
     },
     {
@@ -422,7 +422,7 @@
       "url": "https://github.com/walkinglabs/awesome-harness-engineering",
       "kind": "list",
       "name": "Awesome Harness Engineering",
-      "purpose": "harness engineering(keontekseuteu·gadeureil·evaluation·reontaim·meoltieijeonteu) jeonbaneul wonchik itge kyureisyeonhan 2cha indekseu — EPDS measured dogu·evidence balgul si 1cha tamsaek jinipjeom. i R#### catalog.md §3eseo imi 5geon(H0/G1/G4/G5/G6) chuchul wanryo",
+      "purpose": "principled 2nd-level index curating harness engineering as a whole (context, guardrails, evaluation, runtime, multi-agent) — first entry point for exploration when digging up measured tools and evidence for EPDS. 5 items (H0/G1/G4/G5/G6) were already extracted in this R#### catalog.md §3",
       "perspectives": [
         "agent-ops",
         "delivery"
@@ -439,15 +439,15 @@
       ],
       "evidence_grade": "community",
       "meta": {
-        "install": "n/a — mokrok jeojangso, install not a target",
-        "invoke": "n/a — itemsbyeol gaebyeol dogu install/runeun gak items URLeseo byeoldo suhaeng",
+        "install": "n/a — list repository, not an install target",
+        "invoke": "n/a — installing/running each tool is done separately at each item's URL",
         "license": "CC0-1.0",
-        "last_release": "pushed_at 2026-08-19 (tagsrilriseu none, jisok push)",
-        "activity": "gh api measured 2026-09-18: stars 4101, forks 356, open_issues 19, watchers 4101; remeasured 2026-09-18(2cha): stars 4101, open_issues 19 — byeondong none(gateun nal cheukjeong)",
-        "verified": "2026-09-18: n/a — kyureisyeon mokrok, install/run not a target (docs/references/awesome-harness-engineering.md)"
+        "last_release": "pushed_at 2026-08-19 (no tagged releases, continuous push)",
+        "activity": "gh api measured 2026-09-18: stars 4101, forks 356, open_issues 19, watchers 4101; remeasured 2026-09-18 (2nd): stars 4101, open_issues 19 — no change (measured on the same day)",
+        "verified": "2026-09-18: n/a — curated list, not an install/run target (docs/references/awesome-harness-engineering.md)"
       },
       "added": "2026-09-18",
-      "note": "human 2026-09-18 instructionro josa — gyeopchim 0/151, singyu 141geon. gaseolbyeol hubo 5geoneun i pail(R0297) §3. EPDS trusted-sources.json silje deungrokeun human checked hu(GATE-HUMAN).",
+      "note": "researched on human instruction 2026-09-18 — overlap 0/151, 141 new. The 5 candidates per hypothesis are in this file (R0297) §3. Actual registration in EPDS trusted-sources.json only after human confirmation (GATE-HUMAN).",
       "origin": "human-url"
     },
     {
@@ -474,8 +474,8 @@
         "invoke": "/grill-me",
         "license": "MIT",
         "last_release": "pushed_at 2026-09-17 (no tagged GitHub release found)",
-        "activity": "gh api repos/mattpocock/skills measured 2026-09-18: stars 264753, forks 22325, open_issues 502, watchers 264753; remeasured 2026-09-18(2cha): stars 264922, open_issues 502, pushed_at 2026-09-18",
-        "verified": "2026-09-18: gh api contents silmul fetch exit 0, skills/productivity/grilling/SKILL.md original obtained — slash command skillira --help/CLI run not a target (docs/references/mattpocock-skills-grilling.md)"
+        "activity": "gh api repos/mattpocock/skills measured 2026-09-18: stars 264753, forks 22325, open_issues 502, watchers 264753; remeasured 2026-09-18 (2nd): stars 264922, open_issues 502, pushed_at 2026-09-18",
+        "verified": "2026-09-18: gh api contents real fetch exit 0, original skills/productivity/grilling/SKILL.md obtained — it is a slash-command skill, so --help/CLI run is not a target (docs/references/mattpocock-skills-grilling.md)"
       },
       "added": "2026-09-18",
       "note": "human 2026-09-18 H117 y — R0298 timini/drill-me detour surfaced this. Registered as owner-question source for EPDS status/direction (not as drill-me replacement).",
@@ -501,15 +501,15 @@
       ],
       "evidence_grade": "community",
       "meta": {
-        "install": "n/a — mokrok jeojangso, install not a target",
-        "invoke": "n/a — itemsbyeol gaebyeol API sayongeun gak itemseseo byeoldo checked",
+        "install": "n/a — list repository, not an install target",
+        "invoke": "n/a — using each item's API is checked separately at each item",
         "license": "MIT",
-        "last_release": "pushed_at 2026-09-17 (tagsrilriseu none, jisok push)",
+        "last_release": "pushed_at 2026-09-17 (no tagged releases, continuous push)",
         "activity": "gh api repos/public-apis/public-apis measured 2026-09-18: stars 481311, license MIT, pushed_at 2026-09-17",
-        "verified": "2026-09-18: n/a — kyureisyeon mokrok, install/run not a target (docs/references/public-apis.md)"
+        "verified": "2026-09-18: n/a — curated list, not an install/run target (docs/references/public-apis.md)"
       },
       "added": "2026-09-18",
-      "note": "human 2026-09-18 H121 y — paking(JIT). geim/haneseu gineungi silje oebu silsigan deiteo API pilyohal ttaeman jaejinip. Source: R0301 (~/Projects/research/R0301-public-apis/catalog.md).",
+      "note": "human 2026-09-18 H121 y — parked (JIT). Re-enter only when a game/harness feature actually needs an external real-time data API. Source: R0301 (~/Projects/research/R0301-public-apis/catalog.md).",
       "origin": "human-url"
     },
     {
@@ -537,10 +537,10 @@
         "license": "BSD-3-Clause",
         "last_release": "pushed_at 2026-09-18 (same day, very active)",
         "activity": "gh api repos/D4Vinci/Scrapling measured 2026-09-18: stars 81981, license BSD-3-Clause, pushed_at 2026-09-18",
-        "verified": "2026-09-19: R0304 DynamicFetcher.fetch exit 0, page.status 200, page.markdown() len 196 (.venv-scrapling, installed 0.4.15) + H122 seumokeu 2geon PASS (docs/references/scrapling.md)"
+        "verified": "2026-09-19: R0304 DynamicFetcher.fetch exit 0, page.status 200, page.markdown() len 196 (.venv-scrapling, installed 0.4.15) + 2 H122 smoke tests PASS (docs/references/scrapling.md)"
       },
       "added": "2026-09-18",
-      "note": "human 2026-09-18 H121 y — haneseu sujip baegwan ② silwiring(imi sayongjung, jeongsik deungrok). Source: R0302 (~/Projects/research/R0302-scrapling-update/catalog.md).",
+      "note": "human 2026-09-18 H121 y — harness collection pipe 2, actually wired (already in use, formally registered). Source: R0302 (~/Projects/research/R0302-scrapling-update/catalog.md).",
       "origin": "human-url"
     },
     {
@@ -563,15 +563,15 @@
       ],
       "evidence_grade": "community",
       "meta": {
-        "install": "n/a — mokrok jeojangso, install not a target",
-        "invoke": "n/a — itemsbyeol gaebyeol seobiseu gaipeun gak itemseseo byeoldo suhaeng",
+        "install": "n/a — list repository, not an install target",
+        "invoke": "n/a — signing up for each service is done separately at each item",
         "license": null,
-        "last_release": "pushed_at 2026-09-17 (tagsrilriseu none, jisok push)",
+        "last_release": "pushed_at 2026-09-17 (no tagged releases, continuous push)",
         "activity": "gh api repos/ripienaar/free-for-dev measured 2026-09-18: stars 137722, license null, pushed_at 2026-09-17",
-        "verified": "2026-09-18: n/a — kyureisyeon mokrok, install/run not a target. LICENSE pail none(licenses API 404) — ringkeu/kategorimyeongman chamjo, content wonmun jaesayong geumji (docs/references/free-for-dev.md)"
+        "verified": "2026-09-18: n/a — curated list, not an install/run target. No LICENSE file (licenses API 404) — reference links/category names only, do not reuse the original content (docs/references/free-for-dev.md)"
       },
       "added": "2026-09-18",
-      "note": "human 2026-09-18 H121 y — paking(JIT). LICENSE pail none — jaesayong jeyak: ringkeu/kategorimyeongman, wonmun content geudaero boksa geumji. Source: R0300 (~/Projects/research/R0300-free-for-dev/catalog.md).",
+      "note": "human 2026-09-18 H121 y — parked (JIT). No LICENSE file — reuse constraint: links/category names only, do not copy the original content as is. Source: R0300 (~/Projects/research/R0300-free-for-dev/catalog.md).",
       "origin": "human-url"
     },
     {
@@ -579,7 +579,7 @@
       "url": "https://github.com/cursor/plugins/tree/main/pstack",
       "kind": "skill",
       "name": "cursor/pstack (poteto stack)",
-      "purpose": "gaein(poteto) Cursor wokeupeulro 47items(24skill+23wonchik) mukeum — H154 jaereview(multiple times, docs/absorb-pstack.md) jeon 47items disposition: session-model-role-mapping(bin/models.mjs)·principle-independent-files(docs/policies/)·n-parallel-comparison(templates/arena.md)·adversarial-review-panel(/verify paeneol)·plain-language-reexplain(Final report pildeu)·standard-exit-convergence/encode-lessons-in-structure(hwakjang) deung dasu Built/Built(partial)/Reinforced, router(poteto-mode) deung EPDS duplicate items·language/style-only itemseun Rejected",
+      "purpose": "individual (poteto) Cursor workflow bundle of 47 items (24 skills + 23 principles) — H154 re-review (multiple times, docs/absorb-pstack.md) disposition of all 47 items: session-model-role-mapping (bin/models.mjs), principle-independent-files (docs/policies/), n-parallel-comparison (templates/arena.md), adversarial-review-panel (/verify panel), plain-language-reexplain (Final report field), standard-exit-convergence/encode-lessons-in-structure (extended) and many others Built/Built(partial)/Reinforced; items duplicating EPDS such as the router (poteto-mode) and language/style-only items Rejected",
       "perspectives": [
         "agent-ops",
         "delivery"
@@ -608,7 +608,7 @@
         "activity": "R0310 catalog: ★8388, actively maintained"
       },
       "added": "2026-09-28",
-      "note": "H154 jaereview(multiple times, latest 4cha) — 47items jeonche item-by-item dispositioneun docs/absorb-pstack.md, summaryeun docs/references/cursor-pstack.md. router(poteto-mode) jadongbunryuneun WORK-ROUTER duplicateira not adopted; kodeu-seutail/eoneo jeonyong items(no-comments, typescript-best-practices deung)eun EPDS outside EPDS scopeeuro not adopted."
+      "note": "H154 re-review (multiple times, latest 4th) — the item-by-item disposition of all 47 items is in docs/absorb-pstack.md, the summary in docs/references/cursor-pstack.md. Router (poteto-mode) auto-classification not adopted since it duplicates WORK-ROUTER; code-style/language-only items (no-comments, typescript-best-practices, etc.) not adopted as outside EPDS scope."
     }
   ]
 }

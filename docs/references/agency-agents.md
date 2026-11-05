@@ -11,23 +11,23 @@ captured: 2026-09-16
 ## Analysis
 
 msitarzewski/agency-agents — Product Manager·UX Researcher·Privacy Engineer·Test Automation
-Engineer deung yeokhalbyeol pereusona katalrogeu(eonje hochul·sanchulmul·useonsunwi myeongsi). `docs/ROLES.md`(pyo2+pyo6 byeonghap)ui
-"Stage → haeksim jilmun → gwonjang yeokhal → sanchulmul → useonsunwi" structureui 1cha wonbon.
+Engineer: a per-role persona catalog (states when to call, artifacts, priority). The primary source of the
+"Stage → key question → recommended role → artifact → priority" structure of `docs/ROLES.md` (table 2 + table 6 merged).
 
-**persona-catalog**: yeokhalmada "eonje hochulhaneunga"wa "bandeusi namgil sanchulmul"eul motbaka, yeokhaleul bureuneun geot jachega
-Artifact contracti doege handa. rideu: EPDSui skill rautingdo "i myeongryeongi eonje teurigeodoeneunga"as well as "what pailro
-namgyeoya wanryoinga"reul myeongsihaeya handa — `docs/ROLES.md`e geudaero reflected.
+**persona-catalog**: each role pins down "when it is called" and "the artifact it must leave behind", so that calling a role is itself an
+artifact contract. Lead: EPDS's skill routing must likewise state not only "when this command triggers" but also "what file must be
+left for it to count as done" — reflected as is in `docs/ROLES.md`.
 
 ## Measured
 
-n/a — document/thread source (verified 2026-09-18: url reachable, HTTP 200). katalrogeu itself makeudaun
-pereusona pail moeumira "install·run" conceptsi none(katalrogeureul keulronhageona `agency-agents-app`euro installhaneun
-geoteun byeoldo items, below `agency-agents-app-v0-3-0.md` chamjo).
+n/a — document/thread source (verified 2026-09-18: url reachable, HTTP 200). The catalog itself is a collection of markdown
+persona files, so it has no "install/run" concept (cloning the catalog or installing it with `agency-agents-app`
+is a separate item, see `agency-agents-app-v0-3-0.md` below).
 
 ## How EPDS uses it
 
-Direction/Spec/Build — `docs/ROLES.md`ui pyo structure 1cha wonbon. EPDSga yeokhaleul hochulhal ttae sanchulmuleul hamkke
-motbakneun seolgye(hochul=gyeyak)ga i katalrogeuui pereusona pail hyeongsikeul geudaero ttareunda.
+Direction/Spec/Build — the primary source of the table structure of `docs/ROLES.md`. EPDS's design of pinning the artifact together
+when it calls a role (call = contract) follows this catalog's persona file format as is.
 
 > "A complete AI agency at your fingertips ... Each agent is a specialized expert with personality,
 > processes, and proven deliverables." — repo description(gh api measured 2026-09-16, stars 152679;
