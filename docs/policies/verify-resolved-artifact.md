@@ -8,10 +8,17 @@ Evidence about declared inputs (lockfiles, manifests, version strings) is not ev
 
 **Freeze the whole qualified-input contract**: the verification meaning is set by more than one file. A single external config (for example `toolchain.json`) vanished mid-run and produced environment failures that looked like product failures. Treat every input that defines what a check means as one candidate-lifecycle-immutable contract: dependency/lock/config graph, real tool and runtime identity, target/profile/build defines, OS/device/browser matrix, commands and options, fixtures and certificates, thresholds/timeouts/retries, deploy snapshot, and helpers and external receipts.
 - Ordinary files: copy atomically into a candidate-only durable area at start and record source, mode, and full SHA-256; every lane reads only the copy.
-- Large installs that are impractical to copy: lifecycle protection plus a rehash at every gate. If no automatic reclaimer honors the protection, mark it `manual protection only`.
+- Large installs that are impractical to copy: lifecycle protection plus the identity check below. If no automatic reclaimer honors the protection, mark it `manual protection only`.
 - A partial or focused check is valid only when its scope differs and the contract hash is identical to the full run. A missing, altered, or unverifiable input makes the result `INVALID` or an environment/verifier failure; never use it as a product verdict or toward GO.
 - Retention runs from the first focused check until independent GO, publication, and fresh-download verification end.
 - Secrets stay in the private copy; public evidence carries only safe identifiers and hashes.
+
+**One authority per input**: a recursive folder hash next to these identities is a second authority that reports false drift and forces needless copies. Use exactly one:
+- Tracked source: the Git commit/tree only.
+- Tools, SDKs and browsers: the recorded path, version/build and key, plus the identity of the executable actually selected.
+- Dependencies: a semantic match of the tracked lock, package key and approved package root. Shared dependency caches are not candidate state.
+- Generated or installed trees (symlink farms, generated build settings, vendored package folders, build workspaces): structural validation only, meaning required path and type, containment, exact symlink target, and agreement between lock files.
+- Files outside Git (downloads, models, content, release artifacts, evidence): a full SHA-256 for each.
 
 Attach this to the existing lifecycle table (at most 5 rows): freeze at the first row, verify the contract hash before each gate row, compare the same hash at GO and at publication/re-download, and record a missing or altered input as an environment/verifier failure in the failure row. Do not add a new checker, Stop hook, or repeated review; whether it caught anything, and at what cost, is judged at the next maintenance or retro. Source: a downstream project's release-verification incident.
 
