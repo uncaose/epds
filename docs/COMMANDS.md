@@ -11,6 +11,9 @@ The command must:
 1. Diagnose first in read-only mode.
 2. Preserve existing project-specific rules.
 3. Propose exact file changes.
+   Root instruction files come from `templates/AGENTS.template.md` -> `AGENTS.md` and
+   `templates/CLAUDE.template.md` -> `CLAUDE.md` (the `.template` names keep them from loading as
+   instructions inside the EPDS skill folder).
 4. If the target project has no runnable test command at all, propose the smallest one that fits
    its existing stack as part of the plan (not a prescribed framework — whatever the project's own
    language/tooling already implies) — `/verify` later checks this proposed command still runs

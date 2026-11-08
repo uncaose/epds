@@ -1,3 +1,4 @@
+<!-- Installed as AGENTS.md in the project root. -->
 # AGENTS.md
 
 ## Mission

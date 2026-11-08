@@ -1,10 +1,12 @@
+@AGENTS.md
+
 # CLAUDE.md
+
+<!-- Installed as CLAUDE.md in the project root. The @AGENTS.md import above loads the shared rules: when both files exist, Claude Code reads only CLAUDE.md unless it imports AGENTS.md. -->
 
 ## EPDS entry point
 
-Common product, safety, and quality rules are defined by the repository-root `AGENTS.md`.
-
-Before new work, read `PRODUCT.md`, `PROJECT-STATE.md`, `METRICS.md`, `AGENTS.md`, and relevant specifications/tests.
+Before new work, read `PRODUCT.md`, `PROJECT-STATE.md`, `METRICS.md`, and relevant specifications/tests.
 
 Classify natural-language requests using `epds/WORK-ROUTER.md` when it exists.
 
