@@ -11,6 +11,7 @@ Evidence about declared inputs (lockfiles, manifests, version strings) is not ev
 - Large installs that are impractical to copy: lifecycle protection plus the identity check below. If no automatic reclaimer honors the protection, mark it `manual protection only`.
 - A partial or focused check is valid only when its scope differs and the contract hash is identical to the full run. A missing, altered, or unverifiable input makes the result `INVALID` or an environment/verifier failure; never use it as a product verdict or toward GO.
 - Retention runs from the first focused check until independent GO, publication, and fresh-download verification end.
+- Keep only the final (or in-progress) candidate copy. A failed or superseded attempt removes what it created when it exits, the number of candidate copies kept at once has a cap, each run records free disk at start and end, and a device test shuts down the simulators or emulators it started.
 - Secrets stay in the private copy; public evidence carries only safe identifiers and hashes.
 
 **One authority per input**: a recursive folder hash next to these identities is a second authority that reports false drift and forces needless copies. Use exactly one:
