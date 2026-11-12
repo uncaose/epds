@@ -24,7 +24,7 @@ Status: `draft` | `shown` | `intake approved by <owner> on <date>` | `decomposit
 
 ## 2. Decomposition (proposed after section 1, approved before build)
 
-Chosen kinds: <list> · chosen axes: <list> · output shape: <one file with sections / one file per kind or axis>, because <size>. Layers: `docs/ROLES.md` § Delegation layers. Unit templates: `templates/feature-spec.md`, `templates/LIFECYCLE.md` (link, do not copy). Verify conditions: pick methods by risk and cost and give each a check id; an executable check's id is repeated in its LIFECYCLE row, a manual check's id in the final report's acceptance list with steps and observation (a reviewer check, not a machine check); name each method left out with a one-line reason (`docs/policies/choose-checks-by-risk-and-oracle.md`).
+Chosen kinds: <list> · chosen axes: <list> · output shape: <one file with sections / one file per kind or axis>, because <size>. Layers: `docs/ROLES.md` § Delegation layers. Unit templates: `templates/feature-spec.md`, `templates/LIFECYCLE.md` (link, do not copy). Verify conditions: pick methods by risk and cost and give each a check id and repeat it where the completion path says (`docs/policies/choose-checks-by-risk-and-oracle.md` § Traceability; a reviewer check, not a machine check); name each method left out with a one-line reason (`docs/policies/choose-checks-by-risk-and-oracle.md`).
 
 | unit | kind | axis | layer | owner of the decision | verify condition |
 |---|---|---|---|---|---|

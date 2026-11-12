@@ -6,7 +6,7 @@ Choose which checks a change needs from the methods catalog (`docs/verification-
 
 - **Pick from the catalog by risk and cost.** `docs/verification-methods.md` lists each method with the risk it catches, the oracle it needs, its typical cost, its prerequisites and when it is mandatory. Weigh how bad it is to be wrong (data loss, a broken promise to users, a release) against the method's cost. A one-line copy fix does not need a property-based test; a payment retry path does.
 - **Never drop a mandatory method.** When a method's "mandatory when" applies (a release gate, a promise the code makes, the `high` rigor level, a repeated mistake), it is not left out. Risk and cost choose only among the rest.
-- **The rigor level sets the form.** "Mandatory when" applies within the rigor level the work runs at (SKILL.md § Level). At `low`, `medium` and TRIVIAL, a mandatory method is reported either as done, with its evidence, or as `Unverified` with the reason; it does not raise the level by itself. Only `high` and a release gate demand executed commands with exit codes, and nothing here loosens `high`.
+- **The rigor level sets the form.** "Mandatory when" applies within the rigor level the work runs at (SKILL.md § Level). At `low`, `medium` and TRIVIAL, a mandatory method is reported either as done, with its evidence, or as `Unverified` with the reason; it does not raise the level by itself. This selection rule never removes an execution requirement SKILL.md already sets at any level (for example a command at `medium` or a TRIVIAL acceptance command for an existing criterion), adds none of its own below `high` or a release gate, and never loosens `high`.
 - **Name what is left out.** Each method or policy requirement a change does not get is named in the report with a one-line reason (`not needed: <reason>` or `cannot run here: <reason>`). Skipping silently is not allowed.
 - **Needed means whole.** A check is needed when the risk calls for it or when its "mandatory when" applies. A needed check keeps its own policy's rules in full: seen to fail before it is trusted (`docs/policies/every-check-seen-to-fail.md`), not weakened to pass (`docs/policies/tests-not-weakened.md`), run against the artifact that actually runs (`docs/policies/verify-resolved-artifact.md`).
 - **Manual checks.** For a check done by hand (for example a human GO decision or a hand-run step), record the steps taken and what was observed failing and then passing instead of commands and exit codes. This does not relax `high`: there every LIFECYCLE.md row stays an executed command with its exit code, so a manual check is never a LIFECYCLE row.
@@ -30,8 +30,15 @@ A property or metamorphic check is a check like any other: show it failing on a 
 **Traceability**: give every check an id (for example `C1`). Every done or acceptance criterion maps to at least one check id.
 
 - In the intake decomposition table (`templates/intake.md`), the verify-condition cell starts with the check id and names the catalog method it uses (for example `C1 M1 example test: npm test -> exit 0`).
-- An executable check's id is repeated in the "how executed" cell of the `templates/LIFECYCLE.md` row that runs it.
-- A manual check's id is repeated in the final report's acceptance list, with the steps taken and what was observed.
+- Where the id appears next depends on the completion path (no new table is required for `low` or TRIVIAL):
+
+  | Path | Where the check id appears |
+  |---|---|
+  | `low` | At the start of its item in the check list |
+  | `medium` | At the start of its LIFECYCLE row's "how executed" cell; the execution may stay empty and is then reported `Unverified` |
+  | `high` | At the start of its executed LIFECYCLE row's "how executed" cell, with the command and exit code |
+  | TRIVIAL | In the one-line intake's done check (and in its LIFECYCLE row where the fast path writes one) |
+  | Manual check, any level | In the final report's acceptance list, with the steps taken and what was observed |
 - In the final report, a criterion with no mapped check, or whose check did not run, is listed as `Unverified`, never as passed.
 - Matching ids is a reviewer check, not a machine check: `bin/check.mjs` checks each LIFECYCLE row's exit code but does not read the intake, so it does not confirm that every id appears.
 
