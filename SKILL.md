@@ -30,7 +30,7 @@ Every build request, however short, runs this loop. Do not stop short of its las
 ## Fast path (TRIVIAL)
 
 Classify the request: `TRIVIAL` (one file, one feature, or a one-line request for a single small app) / `FEATURE` / `EXPLORATORY` / `STRATEGIC` / `SENSITIVE` / `RELEASE` / `GROWTH`.
-If it is TRIVIAL, use only this path: a one-line intake (purpose + done check), the LIFECYCLE.md rows (one check per transition), at most 2 fix rounds, and the short report `[Acceptance] N of M checks executed and passed (exit codes; steps and observation for a manual check)` + `[Plain language] one line, no jargon`.
+If it is TRIVIAL and checkable without judging by eye, use only this path (a visual change checkable only by eye takes the normal path: `docs/policies/visual-quality-layers.md`): a one-line intake (purpose + done check), the LIFECYCLE.md rows (one check per transition), at most 2 fix rounds, and the short report `[Acceptance] N of M checks executed and passed (exit codes; steps and observation for a manual check)` + `[Plain language] one line, no jargon`.
 For work that already has acceptance criteria or tests (including delegated subtasks), write LIFECYCLE.md with at most 5 rows, link each row's last cell to that existing check command and its exit code, and do not build a new checker.
 
 ## Details (read only when needed)

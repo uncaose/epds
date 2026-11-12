@@ -38,7 +38,8 @@ const REQUIRED_POLICIES = [
   'every-check-seen-to-fail.md',
   'state-flow-and-visual-baselines.md',
   'make-repeated-mistakes-impossible.md',
-  'honest-evaluation.md'
+  'honest-evaluation.md',
+  'visual-quality-layers.md'  // H778: visual quality checked in layers, rule line indexed verbatim
 ];
 
 // ---- case 1: every docs/policies/<slug>.md link SKILL.md makes actually exists on disk ----
