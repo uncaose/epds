@@ -2,6 +2,8 @@
 
 Before trusting a new or changed test or gate, break the behavior it guards (a negative control, or a mutation where tooling exists), see the check fail, restore the behavior, and report that failing run as evidence.
 
+Apply each requirement below where it fits the check and the project's facilities. For a manual check (for example a human GO decision or a hand-run step), record the steps taken and what was observed failing and then passing instead of commands and exit codes. A requirement that does not apply is named in the report with the reason, never skipped silently.
+
 - **Break the behavior, not the check.** Remove the guard, flip a comparison, revert the fix, or feed the wrong fixture. Editing the check itself to fail proves nothing about what it guards.
 - **Restore, then rerun.** Put the behavior back and confirm the check passes again. Never commit the break.
 - **Record both runs.** The command, the failing exit code and the passing exit code are the evidence; "it would have caught it" is not.

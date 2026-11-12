@@ -2,6 +2,8 @@
 
 For a product with a multi-step flow, model its states and show that every rule-breaking state is unreachable or give the shortest path to it; for a UI change, where the project can capture and compare screens, take baseline screenshots before changing anything and compare by image diff (where it cannot, mark visual parity Unverified rather than claiming it), and never edit the baseline to make a diff pass.
 
+Apply each requirement below where it fits the check and the project's facilities. For a manual check (for example a human GO decision or a hand-run step), record the steps taken and what was observed failing and then passing instead of commands and exit codes. A requirement that does not apply is named in the report with the reason, never skipped silently.
+
 ## Multi-step flows
 
 - Write each rule the owner agrees to (a screen shown, a result, a stored value, a message sent) as a checked invariant. If the model has no variable for a rule, add one. Never weaken a rule to make it hold.

@@ -1,6 +1,8 @@
 # Make repeated mistakes impossible
 
-When the same mistake recurs or the owner corrects one, prevent it at the highest level that works — structure first, then types, then a lint whose message names the fix, then a test, and docs last — and prove the new check fails on the real past mistake.
+When the same mistake recurs or the owner corrects one, prevent it at the highest level that works — structure first, then types, then a lint whose message names the fix, then a test, and docs last — and, where the mistake can be reproduced, prove the new check fails on the real past mistake.
+
+Apply each requirement below where it fits the check and the project's facilities. For a manual check (for example a human GO decision or a hand-run step), record the steps taken and what was observed failing and then passing instead of commands and exit codes. A requirement that does not apply is named in the report with the reason, never skipped silently.
 
 A mistake becomes a class to fix once it has happened twice, or once the owner has corrected it. Find the cause first (`docs/policies/root-cause-not-symptom.md`); if fixes on the same premise keep failing, re-examine the premise (`docs/policies/premise-review-after-repeated-failure.md`). This rule covers what comes after: making the class impossible to repeat.
 
