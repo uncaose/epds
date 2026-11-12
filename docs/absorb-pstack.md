@@ -78,7 +78,7 @@ it would weaken. No row below is `Deferred`.
 | 11 | `make-bot-ui` | 122 | Rejected | — | Product-specific (a bot-webhook + Tailscale UI generator); not a general delivery-loop concern EPDS owns. |
 | 12 | `setup-pstack` | 123 | Built | `bin/models.mjs` | See item table row 3. Effort ladder specifically: see "Effort ladder" note below. |
 | 13 | `reflect` | 124 | Built (partial) (H789 audit) | `templates/retro.md` | `templates/retro.md` asks what learning to encode and tracks it as a follow-up (item table row 7). Missing: a review of the active conversation that sorts findings into accepted, rejected and backlog, then routes the approved edits. |
-| 14 | `teach` | 125 | Built (partial) (P7 re-judgment) | `SKILL.md` §Work router | Composite of `how` (now Built (partial)) + `why` (now Reinforced) — this pass's `SKILL.md` §Work router addition states the composite explicitly: a "teach me this" request's Final report combines the walkthrough with the evidence-sourced rationale in one pass. A genuinely new doc-level line, not just a re-derivation of two already-resolved halves, hence `Built (partial)`. |
+| 14 | `teach` | 125 | Built (partial) (P7 re-judgment) | `SKILL.md` §Work router | Composite of `how` (now Built (partial)) + `why` (now Built (partial) after the H789 audit) — this pass's `SKILL.md` §Work router addition states the composite explicitly: a "teach me this" request's Final report combines the walkthrough with the evidence-sourced rationale in one pass. A genuinely new doc-level line, not just a re-derivation of two already-resolved halves, hence `Built (partial)`. |
 | 15 | `tdd` | 126 | Built (N7) | `docs/policies/test-first.md` | A prior pass called this Reinforced by pointing at `tests-not-weakened.md` (don't loosen an *existing* test) — a genuinely different rule from "write the failing test before the fix." This pass adds the actual missing policy file, indexed in `SKILL.md` §Scope and safety rules. |
 | 16 | `no-comments` | 127 | Rejected | — | Code-comment-hygiene linting is a project's own lint-config concern, not an evidence-and-gates process concern EPDS owns. |
 | 17 | `typescript-best-practices` | 128 | Rejected | — | Language-specific; EPDS is deliberately agent- and stack-neutral (`docs/LAYOUT.md` "The core is agent-neutral"). |
@@ -186,7 +186,9 @@ own rows above; `recall` is now `Built (partial)` after the audit below).
 
 **Audit 2026-11-13 (H789)**: an independent reviewer, not the author of the original verdicts,
 re-checked every `Reinforced` row. Method: each row's cited EPDS file and line was compared with the
-pstack item's own source text, counting only missing substance, not wording. Result: 31 of 33
+pstack item's own source text, counting only missing substance, not wording. The pstack text was read
+at the upstream main branch on the audit date, which may be newer than the revisions some rows cite;
+the audit therefore shows what EPDS lacks against current pstack, not against those older revisions. Result: 31 of 33
 `Reinforced` rows were overclaimed — EPDS covers the topic but omits a required step, applies it in
 fewer cases, or leaves it optional — and are now `Built (partial) (H789 audit)`, each reason naming
 the gap after "Missing:". Two rows hold: Skills row 30 `in-your-own-words` and Playbooks row 11
