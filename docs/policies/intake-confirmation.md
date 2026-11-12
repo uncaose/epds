@@ -6,7 +6,7 @@ Before building, fill the intake (who, what, when, where, why, how, and done cri
 
 1. **Intake approved.** The agent fills the intake and shows it as one block. The owner approves it explicitly.
 2. **Decomposition approved.** The agent proposes the decomposition (below) and the owner approves it explicitly. Steps 1 and 2 may be one message when the owner approves both in one reply.
-3. **Build.** Only approved units are built.
+3. **Build.** Only approved units are built. Child rows split inside an approved unit's scope and done criteria are parts of that unit (`docs/policies/wbs-first-planning.md`).
 
 Silence is not approval. Approval is an explicit reply to what was shown.
 
