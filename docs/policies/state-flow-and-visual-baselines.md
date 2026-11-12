@@ -1,6 +1,6 @@
 # Model multi-step flows; baseline the UI before changing it
 
-For a product with a multi-step flow, model its states and show that every rule-breaking state is unreachable or give the shortest path to it; for a UI change, capture baseline screenshots before changing anything, compare by image diff, and never edit the baseline to make a diff pass.
+For a product with a multi-step flow, model its states and show that every rule-breaking state is unreachable or give the shortest path to it; for a UI change, where the project can capture and compare screens, take baseline screenshots before changing anything and compare by image diff (where it cannot, mark visual parity Unverified rather than claiming it), and never edit the baseline to make a diff pass.
 
 ## Multi-step flows
 
