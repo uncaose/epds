@@ -31,7 +31,8 @@ const REQUIRED_POLICIES = [
   'premise-review-after-repeated-failure.md',
   'test-behavior-not-implementation.md',
   'verify-resolved-artifact.md',
-  'lean-handoff.md'
+  'lean-handoff.md',
+  'intake-confirmation.md' // intake shown/approved/re-confirmed rule: index line must stay verbatim
 ];
 
 // ---- case 1: every docs/policies/<slug>.md link SKILL.md makes actually exists on disk ----
