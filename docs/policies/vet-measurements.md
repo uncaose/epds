@@ -4,7 +4,7 @@ Before reporting or acting on a measured number, check what limited it, that eve
 
 Write down the sentence you expect to claim first ("export is 30% faster at the median on the large dataset"), read the measuring script to see what it times and what it skips, then test that sentence:
 
-- **Limiter.** Name what bounded the number (one core, disk, network, a lock, the load generator itself). Profile in a separate run, because profilers slow the work. If a change did not move the number, the limiter usually explains why.
+- **Limiter.** Name what bounded the number (one core, disk, network, a lock, the load generator itself). Where the project has a profiler, profile in a separate run, because profilers slow the work. If a change did not move the number, the limiter usually explains why.
 - **Settings.** Every side runs the way production runs it: release build, production flags, the same versions and data, caches as warm or cold as real use. A side left on defaults compares configurations, not implementations; tune it before naming a winner.
 - **Limits.** Do the arithmetic against bandwidth, cores and the share of time the changed part took. Removing a part that takes 10% of the run cannot make it much more than 10% faster; a result past a limit measured a cache, a no-op or a bug.
 - **Errors.** Count failures and wrong outputs, not just responses. Fast rejections and slow retries both distort a number.

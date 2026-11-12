@@ -19,9 +19,9 @@ Evaluate candidates without letting them tell they are being evaluated and grade
 ## Flaky-check quarantine
 
 - A check that fails and passes on the same candidate with no change is intermittent. Re-run it enough times to count (for example 10 or more) and record passes, failures and the conditions.
-- Move it to a quarantine list with its counts, date, owner and a reproduction. It keeps running and reporting; it is separated from real breakage, not deleted (`docs/policies/tests-not-weakened.md`).
-- A quarantined check never counts as a pass. A release gate needs it fixed or explicitly waived by the owner.
-- Never add automatic retries that turn a failure into a pass without recording the failed attempts.
+- Record it as quarantined with its counts, date, owner and a reproduction, using whatever the project has for this (a tag, a list, a separate job, or a tracked issue). It keeps running and reporting; it is separated from real breakage, not deleted (`docs/policies/tests-not-weakened.md`).
+- Quarantine only separates the signal; it never waives it. A quarantined check never counts as a pass and never counts toward a release GO: the release rule is unchanged (`docs/PROTOCOL.md` Evidence-first protocol step 3, the final candidate passes the full matrix and an independent GO; `templates/WORK-ROUTER.md` RELEASE).
+- Where the test runner supports retries, never let a retry turn a failure into a pass without recording the failed attempts.
 
 **Why**: Candidates that know they are being tested behave differently, and self-reports grade the report, not the work. Stacked changes and a harness that cannot separate cases make every win unattributable. Silent retries hide real intermittent bugs inside a green run, while leaving them mixed with real failures teaches everyone to ignore red. (docs/absorb-pstack.md — pstack's `eval` and `hillclimb` playbooks, `skills/poteto-mode/playbooks/{eval,hillclimb}.md` at `cursor/plugins` commit `a5539b1`, 2026-11-12, plus general flaky-test practice; restated in EPDS's own words, not copied.)
 
