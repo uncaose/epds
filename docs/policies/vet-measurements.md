@@ -1,8 +1,8 @@
 # Vet a measurement before acting on it
 
-Before reporting or acting on a measured number, check what limited it, that every side ran with production-like settings, that it stays within physical limits, that errors were counted, that it repeats, that it matters to the real workload, and that the work actually ran; under shared-host contention, record the result as inconclusive.
+Before reporting or acting on a measured performance number (speed, throughput, latency or resource use), check what limited it, that every side ran with production-like settings, that it stays within physical limits, that errors were counted, that it repeats, that it matters to the real workload, and that the work actually ran; under shared-host contention, record the result as inconclusive.
 
-Write down the sentence you expect to claim first ("export is 30% faster at the median on the large dataset"), read the measuring script to see what it times and what it skips, then test that sentence:
+Write down the sentence you expect to claim first ("export is 30% faster at the median on the large dataset"), read the measuring script, where there is one, to see what it times and what it skips, then test that sentence:
 
 - **Limiter.** Name what bounded the number (one core, disk, network, a lock, the load generator itself). Where the project has a profiler, profile in a separate run, because profilers slow the work. If a change did not move the number, the limiter usually explains why.
 - **Settings.** Every side runs the way production runs it: release build, production flags, the same versions and data, caches as warm or cold as real use. A side left on defaults compares configurations, not implementations; tune it before naming a winner.

@@ -15,7 +15,7 @@ The trust rules for such a model (maps to real code, seen to fail, stated bounds
 ## UI changes
 
 - Where the project can capture screenshots and diff images, capture the baseline first: screenshots of the current UI across its states (and of the target when matching two implementations). No baseline, no parity claim; the baseline is a prerequisite, not a follow-up.
-- Compare by image diff on the same surface and size. A nonzero diff is a failure to investigate, not a judgment call made by eye.
+- Where it can, compare by image diff on the same surface and size. A nonzero diff is a failure to investigate, not a judgment call made by eye.
 - Do not edit the baseline, the diff harness or the component structure to make a diff pass. If the baseline itself looks wrong, stop and ask the owner.
 - Change one component at a time, shared building blocks first, so each diff points at one change.
 - Where the project has no way to capture and diff screenshots, report visual parity as `Unverified` rather than claiming it by eye.
