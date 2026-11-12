@@ -1,6 +1,6 @@
 # Taste profiles
 
-Owner taste is chosen and changed by **type**, not reviewed from scratch on every screen. Each type is a named, summarised set of visual parameters. The agent builds and measures against the chosen type (`docs/policies/visual-quality-layers.md` layers 1-3). The owner only confirms the type, switches it, or asks for a detailed change.
+Owner taste is chosen and changed by **type**, not reviewed from scratch on every screen. Each type is a named, summarised set of visual parameters. The agent builds and measures against the chosen type (`docs/policies/visual-quality-layers.md` layers 1-3). The owner confirms the type, switches it, or asks for a detailed change, and still confirms the resulting screens as the last layer (`Unverified – awaiting owner` until then).
 
 ## How the owner sees it
 
@@ -31,6 +31,8 @@ The default type is `clean`: use it whenever the owner has not chosen another ty
 A type maps to concrete design tokens, so layer 1 (structure) and layer 2 (measurement) can check against it. Its rubric weights feed layer 3 (independent review).
 
 ## Changing taste
+
+A switch or a detailed request mid-work is a direction change: re-confirm it through the intake (`docs/policies/intake-confirmation.md`, changed items plus purpose and done criteria) before the affected units continue.
 
 - **Switch type:** the owner names another type, and the agent re-derives tokens and thresholds from it and re-runs layers 1-3.
 - **Detailed request:** the owner states a change in plain words (for example "warmer accent, less motion"). The agent records it as a delta on the current type (`type + delta: summary`), shows the resulting parameter change for approval, then re-runs layers 1-3.
