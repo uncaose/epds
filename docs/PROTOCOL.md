@@ -97,7 +97,7 @@ At the end of any EPDS task, report:
 [Work completed] Changed / Not changed
 [Verification] Tests/tools run / Results / Unverified items
   Security: <runtime security hook result | scanner diff command + exit code | none available>
-[Acceptance] N of M acceptance checks executed and passed (list each check with its exit code); Assumptions made in place of unanswered questions, and defaults, thresholds or requirement readings the agent chose without asking
+[Acceptance] N of M acceptance checks executed and passed (list each check with its exit code; for a manual check, the steps taken and what was observed); Assumptions made in place of unanswered questions, and defaults, thresholds or requirement readings the agent chose without asking
 [Risks and next step] Remaining risks / Recommended next action / PROJECT-STATE update needed
 [Plain language] One line, no jargon: what happened and what it means for the reader
 ```
