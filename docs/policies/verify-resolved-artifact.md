@@ -1,8 +1,10 @@
 # Verify the artifact that actually runs
 
-Evidence about declared inputs (lockfiles, manifests, version strings) is not evidence about the artifact that runs; verify and record the resolved path or fingerprint of what was actually built and executed.
+Evidence about declared inputs (lockfiles, manifests, version strings) is not evidence about the artifact that runs; verify and record the resolved path or fingerprint of what was actually built and executed, and treat a verdict as valid only for the exact patch it checked.
 
 **Why**: A lockfile or version string says what was requested, not what the build resolved, linked, and tested — a cache, a path override, or a swapped payload can make two identical declarations produce different executables, so a green check on the declaration proves nothing about the binary. Record the resolved path or a fingerprint of the real output as part of the evidence. (docs/references/native-artifact-integrity-case.md — a reference case, cited here only for the general principle.)
+
+**A verdict covers exactly the code it checked**: a pass, a review verdict or a GO holds only for the change it checked. When that code changes (a rebase, a conflict resolution, a fix on top), re-check before trusting it. Compare the patch (for example `git patch-id`), not the commit id: a rebase gives every commit a new id without changing its patch. When the patches differ only in tests, docs or lint configuration, the earlier result stands only if what it ran builds the same on both. Reuse an earlier pass (from an earlier session, another agent or a handoff) only when what it checked is unchanged; otherwise run it again. A prior trail says where to resume; its claims are re-checked against the goal on the real artifact, not taken from its self-report. (docs/absorb-pstack.md — pstack's `shipping` and `session-pickup` playbooks; restated in EPDS's own words.)
 
 **Applies to tools too**: a test tool that auto-updates (browser, driver, SDK, CLI, packager) can drift away from its paired tool between runs, and a bare "is it installed" check misses that. Pin the matched pair once per version and bind its path, version, and archive SHA-256 to the candidate's evidence; a mismatch is a test-toolchain incident, not a product failure. This is guidance to follow and record; EPDS does not enforce it automatically.
 

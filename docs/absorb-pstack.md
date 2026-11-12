@@ -47,7 +47,7 @@ Gate check (G2, conflicts with approval gates): §"Conflicts checked" below.
 pstack ships 24 skills (`README.md:112-135`, the skills table, including the `poteto-mode` router
 itself) and, separately, 23 one-rule-per-file design principles (`README.md:203-225`) that
 `poteto-mode` applies while executing a playbook. Both lists happen to total near-23/24 each; they
-are not the same list. This table accounts for every row of both — 24 + 23 = 47 — so nothing pstack
+are not the same list. This table accounts for every row of both — 24 + 23 = 47 at the README capture, 81 rows with the later upstream skills and the playbooks — so nothing pstack
 ships is left un-dispositioned. Items already covered above (item table / cross-check) are repeated
 here with a pointer, not re-argued.
 
@@ -61,7 +61,7 @@ reason on their own (that was the old `Deferred` escape hatch) — every reason 
 mechanism that already covers the concern, the actual scope boundary it crosses, or the actual gate
 it would weaken. No row below is `Deferred`.
 
-### Skills (24 in the README capture, `README.md:112-135`; rows 25-26 added upstream later)
+### Skills (24 in the README capture, `README.md:112-135`; rows 25-34 added upstream later)
 
 | # | Skill | README.md line | Verdict | EPDS path | Reason |
 |---|---|---|---|---|---|
@@ -94,6 +94,11 @@ it would weaken. No row below is `Deferred`.
 | 27 | `benchmark-checklist` | — (added upstream after the README capture; `skills/benchmark-checklist/SKILL.md` @ `a5539b1`) | Built (H775) | `docs/policies/vet-measurements.md` | Genuinely absent before: EPDS asked for evidence but had no rule for vetting a measured number. New policy restates the seven questions (limiter, settings, limits, errors, repeatability, relevance, did the work run), the four-way verdict, and adds the shared-host rule that unattributable contention is recorded as inconclusive. The tool-specific commands in the source (profilers, `uptime`) are left to the project. |
 | 28 | `statechart` | — (added upstream after the README capture; `skills/statechart/SKILL.md` @ `a5539b1`) | Built (partial) (H775) | `docs/policies/state-flow-and-visual-baselines.md` § Multi-step flows | EPDS stays tool-neutral, so it does not ship the TLA+/TLC runner or the Mermaid chart generator; it absorbs the rules: owner-agreed rules as invariants never weakened, a stated bound, shortest path to each broken rule in the reader's words, end states marked rather than hiding deadlock, and replaying each path against real code. Trust rules link to the formal-verification policy (rows 25-26) instead of repeating them. |
 | 29 | `correct` | — (added upstream after the README capture; `skills/correct/SKILL.md` @ `a5539b1`) | Built (H775) | `docs/policies/make-repeated-mistakes-impossible.md`, `docs/policies/every-check-seen-to-fail.md` | Genuinely absent before: root-cause and premise-review policies say how to diagnose, not how to stop a recurrence. New policy restates the prevention ladder (structure, types, lint naming the fix, test, docs last), the two-occurrence threshold, line-level exceptions with expiry and approver, and the rule-to-enforcer table. Its "prove each check fails on a real past mistake" line, together with rows 25-26, is generalised into its own policy for every new or changed check. |
+| 30 | `in-your-own-words` | — (added upstream after the README capture; `skills/in-your-own-words/SKILL.md` @ `c742dd6`) | Reinforced (H782) | `docs/policies/intake-confirmation.md` § The shown intake is the restatement | The skill asks the agent to restate the user's goal and problem in its own words. EPDS's intake, filled from evidence and shown for explicit approval before building, already is that restatement; this pass states the equivalence in the policy instead of adding a separate step. |
+| 31 | `ketchup` | — (added upstream after the README capture; `skills/ketchup/SKILL.md` @ `c742dd6`) | Reinforced (H782) | `docs/PROTOCOL.md` § Final report, `docs/COMMANDS.md` `/epds-status` | Catching the owner up in plain words, with each waiting decision and its risk, is the Final report's `[Risks and next step]` and `[Plain language]` blocks plus `/epds-status` for resuming. The skill's picture-first layout and word budgets are presentation choices a runtime makes, not a delivery gate. |
+| 32 | `ketchup-video` | — (added upstream after the README capture; `skills/ketchup-video/SKILL.md` @ `c742dd6`) | Rejected (H782) | — | Rendering a subtitled slide video is a media-production feature that needs rendering tools EPDS does not assume (`docs/LAYOUT.md` "The core is agent-neutral"); the text catch-up it wraps is covered by row 31. |
+| 33 | `poteto-help` | — (added upstream after the README capture; `skills/poteto-help/SKILL.md` @ `c742dd6`) | Reinforced (H782) | `docs/COMMANDS.md`, `docs/INSTALL.md` | A help router for pstack's own install and skills. EPDS's equivalent is its command table (question -> command) and install guide; the editor-specific parts (custom modes, plugin install) do not apply to an agent-neutral process. |
+| 34 | `sharpen` | — (added upstream after the README capture; `skills/sharpen/SKILL.md` @ `c742dd6`) | Reinforced (H782) | `docs/PROTOCOL.md` § Evidence-first protocol, `docs/policies/choose-checks-by-risk-and-oracle.md` | Its four questions map onto existing rules: start from the rawest material (project evidence and trusted sources first), name the methods, and name an outside check that shows the result is right (the oracle a check uses). Rewriting the user's prompt as a separate command is not added, to avoid command growth. |
 
 **Correction (N3) — commit `cc6ce04` message overstated items 11/12/16**: that commit's message says
 `model-the-domain`/`boundary-discipline`/`separate-before-serializing-shared-state` were all
@@ -105,7 +110,7 @@ lumped three rows into one claim; the table itself was already correct. This pas
 gap the row named (see item 16 above), so the distinction is now moot going forward, but the
 message text as written remains a record of that overstatement.
 
-### Principles (23, `README.md:203-225`)
+### Principles (24: 23 in the README capture, `README.md:203-225`; row 24 added upstream later)
 
 | # | Principle | README.md line | Verdict | EPDS path | Reason |
 |---|---|---|---|---|---|
@@ -132,27 +137,49 @@ message text as written remains a record of that overstatement.
 | 21 | `guard-the-context-window` | 223 | Rejected (N7, corrected) | — | EPDS is agent-neutral (`docs/LAYOUT.md`) and does not prescribe any one runtime's subagent/context-management mechanism. A prior pass hedged this with "unless a runtime-specific adapter needs it," which reads as a soft `Deferred` in disguise — removed; the agent-neutral scope boundary is the reason on its own, not a placeholder for a future exception. |
 | 22 | `never-block-on-the-human` | 224 | Rejected | — | Directly conflicts with `WORK-ROUTER.md` STRATEGIC/SENSITIVE approval gates and `RELEASE`'s independent GO/NO-GO. Not imported anywhere — see "Conflicts checked" below. |
 | 23 | `encode-lessons-in-structure` | 225 | Reinforced, extended | `templates/retro.md` "Permanent learning" | See item table row 7. |
+| 24 | `explain-the-number` | — (added upstream after the README capture; `skills/principle-explain-the-number/SKILL.md` @ `c742dd6`) | Reinforced (H782) | `docs/policies/vet-measurements.md`, `docs/policies/honest-evaluation.md` | Write the claim before measuring, name the limiter, rule out what else the number could be measuring (errors, skipped or cached work, an untuned side, noise, a piece too small to matter) and keep run count, spread and limiter with the number: all already in `vet-measurements.md` (row 27 `benchmark-checklist`, which this principle itself defers to); the eval half is `honest-evaluation.md`. |
 
-### Playbooks (3, `skills/poteto-mode/playbooks/*.md` @ `a5539b1`; H775)
+### Playbooks (23, `skills/poteto-mode/playbooks/*.md`; rows 1-3 @ `a5539b1` H775, rows 4-23 @ `c742dd6` H782)
 
-pstack's router also ships playbooks it follows for a classified request. These three were reviewed
-for the verification-hardening pass; the other playbooks are not dispositioned here.
+pstack's router also ships playbooks it follows for a classified request. Rows 1-3 were reviewed for
+the verification-hardening pass (H775); rows 4-23 complete the list (H782), each source read in full
+from the public repository, none marked `Unverified`.
 
 | # | Playbook | Source path | Verdict | EPDS path | Reason |
 |---|---|---|---|---|---|
 | 1 | `eval` | `skills/poteto-mode/playbooks/eval.md` | Built (partial) (H775) | `docs/policies/honest-evaluation.md` § Blind evaluation | Absorbed the blinding rules (no evaluation words a candidate can see, organic prompt, no self-report grading, rubric for the judge only, neutral labels, one judge in one pass, read outputs yourself). Spawning candidates and judges on specific runtimes and reading runtime transcripts stays with the runtime; `templates/arena.md` remains the run-and-judge template. |
 | 2 | `visual-parity` | `skills/poteto-mode/playbooks/visual-parity.md` | Built (partial) (H775) | `docs/policies/state-flow-and-visual-baselines.md` § UI changes | Absorbed baseline-first, image diff with nonzero as failure, no baseline/harness/structure tampering, ask the owner when the baseline looks wrong, one component at a time. No screenshot harness is shipped; the project owns that tool. |
 | 3 | `hillclimb` | `skills/poteto-mode/playbooks/hillclimb.md` | Built (partial) (H775) | `docs/policies/honest-evaluation.md` § One change per measurement | Absorbed one change / one measurement / keep or revert, a stop condition with a minimum attempt count, proving harness sensitivity before freezing it, baseline plus green regression checks first, and logging every attempt. Model choice, worktree fan-out and the decision-log file format stay with the runtime. Flaky-check quarantine was added to the same policy from general practice (no pstack source). |
+| 4 | `authoring-a-skill` | `skills/poteto-mode/playbooks/authoring-a-skill.md` | Reinforced (H782) | `docs/COMMANDS.md` `/epds-upgrade`, `docs/policies/honest-evaluation.md` | Validating a new skill (links resolve, structural test cases, blind eval of the change) is `/epds-upgrade`'s gated proposal step plus blind evaluation; the editor's own skill-authoring built-in is runtime-specific. |
+| 5 | `autonomous-run` | `skills/poteto-mode/playbooks/autonomous-run.md` | Reinforced (H782) | SKILL.md "Done means", `templates/LIFECYCLE.md` gate, `docs/policies/tests-not-weakened.md` | A checkable exit predicate driven to completion is the level's Done means plus the executed LIFECYCLE gate; "never relax the predicate" is `tests-not-weakened.md`. Its "do not park reversible work for the human" line is the `never-block-on-the-human` conflict (Principles row 22) and is not imported. |
+| 6 | `autopilot-full` | `skills/poteto-mode/playbooks/autopilot-full.md` | Rejected (H782) | — | A cloud-agent fleet that builds and merges PRs on a forge is runtime and forge machinery outside EPDS's agent-neutral core. Its verification content duplicates rows already absorbed: verdict per patch (row 21 `shipping`), independent verifier (row 14 `orchestrate`), and the release full matrix with independent GO. |
+| 7 | `autopilot-stack` | `skills/poteto-mode/playbooks/autopilot-stack.md` | Rejected (H782) | — | Same as row 6 without the merge; the stacking rule is forge mechanics, and its "unchanged patch keeps its verdict" line is absorbed through row 21. |
+| 8 | `babysit` | `skills/poteto-mode/playbooks/babysit.md` | Reinforced (H782) | `docs/policies/honest-evaluation.md` § Flaky-check quarantine, `docs/policies/premise-review-after-repeated-failure.md` | Classify a CI failure before retrying, one retry only, an identical second failure is not flake: already the flaky-quarantine and repeated-failure rules. Forge polling and review-bot triage are tool-specific. |
+| 9 | `bug-fix` | `skills/poteto-mode/playbooks/bug-fix.md` | Built (partial) (H782) | `docs/policies/root-cause-not-symptom.md` § Order | Absorbed: reproduce on the real surface first, evidence from the running system, rule out candidate causes, re-run the same repro after the fix, and revert what a refuted hypothesis motivated. Failing repro before the fix was already `test-first.md`. |
+| 10 | `feature` | `skills/poteto-mode/playbooks/feature.md` | Reinforced (H782) | `docs/COMMANDS.md` `/spec`, `/build`, `templates/arena.md`, `templates/pr-landing.md` | Design before code, arena for several valid shapes, small ordered commits and verification on the matching surface are existing steps; its "n/a: <reason>" checkpoint items are the named-left-out rule in `choose-checks-by-risk-and-oracle.md`. |
+| 11 | `investigation` | `skills/poteto-mode/playbooks/investigation.md` | Reinforced (H782) | `docs/PROTOCOL.md` § Work router (EXPLORATORY) | Read-only, cited walkthrough or a recommendation with tradeoffs is the EXPLORATORY route (Skills rows 2-3, 14). |
+| 12 | `multi-phase-plan` | `skills/poteto-mode/playbooks/multi-phase-plan.md` | Built (partial) (H782) | `docs/policies/choose-checks-by-risk-and-oracle.md` § Traceability | A plan where every box names the evidence that checks it now maps to EPDS's traceability rule: every done criterion has a check id carried from the intake verify condition to the LIFECYCLE row, and one without a check is `Unverified`. Plan-file skeletons and its checker script are tool-specific. |
+| 13 | `opening-a-pr` | `skills/poteto-mode/playbooks/opening-a-pr.md` | Reinforced (H782) | `templates/pr-landing.md` | Small ordered commits and a short briefing-style body: item table row 4. |
+| 14 | `orchestrate` | `skills/poteto-mode/playbooks/orchestrate.md` | Reinforced (H782) | `docs/ROLES.md` § Delegation layers, `docs/policies/lean-handoff.md`, `docs/COMMANDS.md` `/verify` panel | One owner per unit, a verifier who is not the author, each kickoff naming the evidence of done, read the artifact not the summary: delegation layers, the verify panel and lean handoff already state these. "A verdict covers one head" is absorbed via row 21. |
+| 15 | `pause-safely` | `skills/poteto-mode/playbooks/pause-safely.md` | Reinforced (H782) | `docs/policies/lean-handoff.md`, `templates/PROJECT-STATE.md` | Stop at a safe boundary, take no irreversible action, leave a resume note: the lean handoff plus project state; irreversible actions stay under `irreversible-actions-confirmation.md`. |
+| 16 | `perf-issue` | `skills/poteto-mode/playbooks/perf-issue.md` | Reinforced (H782) | `docs/policies/vet-measurements.md` | Baseline and post-fix numbers, each vetted, tied to the fix: Skills row 27. The ordered list of performance tactics is engineering advice the project owns. |
+| 17 | `prototype` | `skills/poteto-mode/playbooks/prototype.md` | Reinforced (H782) | `docs/COMMANDS.md` `/experiment`, `templates/arena.md` | A throwaway instrument for one decision, variants side by side, the observation as the test: `/experiment` and arena. |
+| 18 | `refactoring` | `skills/poteto-mode/playbooks/refactoring.md` | Built (partial) (H782) | `docs/policies/test-behavior-not-implementation.md` § Pin before a structural change | Absorbed: pin current behavior with a characterization test, snapshot or equivalence check before structure moves; type check and lint are not a pin; split out found bugs. Caller migration was already Principles row 15. |
+| 19 | `runtime-forensics` | `skills/poteto-mode/playbooks/runtime-forensics.md` | Built (partial) (H782) | `docs/policies/root-cause-not-symptom.md` § Order step 2 | Absorbed: take a profile, trace or heap snapshot from the running system and map the finding to source. Live-injection tooling is runtime-specific. |
+| 20 | `session-pickup` | `skills/poteto-mode/playbooks/session-pickup.md` | Built (partial) (H782) | `docs/policies/verify-resolved-artifact.md` § A verdict covers exactly the code it checked | Absorbed: reuse an earlier pass only when what it checked is unchanged, and re-check inherited claims on the real artifact rather than trusting a prior self-report. Transcript locations are runtime-specific. |
+| 21 | `shipping` | `skills/poteto-mode/playbooks/shipping.md` | Built (partial) (H782) | `docs/policies/verify-resolved-artifact.md` § A verdict covers exactly the code it checked | Absorbed: a verdict holds only for the exact patch it checked; after a rebase compare the patch, not the commit id. Bottom-up landing of a PR stack is forge mechanics. |
+| 22 | `trace-forensics` | `skills/poteto-mode/playbooks/trace-forensics.md` | Built (partial) (H782) | `docs/policies/root-cause-not-symptom.md` § Order step 2 | Absorbed: read an existing capture as a fixed dataset, and without a paired before-and-after capture call the finding the strongest hypothesis, not a confirmed cause. |
+| 23 | `worktree-cleanup` | `skills/poteto-mode/playbooks/worktree-cleanup.md` | Rejected (H782) | — | Reclaiming disk from worktrees, simulators and editor state is machine housekeeping, not delivery-process scope. Deletion stays under `irreversible-actions-confirmation.md`, and candidate-copy retention is already in `verify-resolved-artifact.md`. |
 
-**Row count check**: 29 skills + 23 principles + 3 playbooks = 55 rows above (29 in "Skills", 23 in
-"Principles", 3 in "Playbooks"). `test/layout.selftest.mjs` case 8 counts all three table bodies and
-asserts the total is exactly 55, so this file cannot silently drop a row.
+**Row count check**: 34 skills + 24 principles + 23 playbooks = 81 rows above (34 in "Skills", 24 in
+"Principles", 23 in "Playbooks"). `test/layout.selftest.mjs` case 8 counts all three table bodies and
+asserts the total is exactly 81, so this file cannot silently drop a row.
 
-**Disposition tally (L4 recount)**: Skills — Built 4, Built (partial) 12, Reinforced 8, Rejected 5
-(= 29). Principles — Built 3, Built (partial) 6, Reinforced 10, Rejected 4
-(= 23). Playbooks — Built 0, Built (partial) 3, Reinforced 0, Rejected 0
-(= 3). Combined across
-all 55 rows: **Built 7, Built (partial) 21, Reinforced 18, Rejected 9** — zero rows left `Deferred`
+**Disposition tally (L4 recount)**: Skills — Built 4, Built (partial) 12, Reinforced 12, Rejected 6
+(= 34). Principles — Built 3, Built (partial) 6, Reinforced 11, Rejected 4
+(= 24). Playbooks — Built 0, Built (partial) 10, Reinforced 10, Rejected 3
+(= 23). Combined across
+all 81 rows: **Built 7, Built (partial) 28, Reinforced 33, Rejected 13** — zero rows left `Deferred`
 (`recall` corrected `Rejected`→`Reinforced`, `minimize-reader-load` corrected `Rejected`→`Built
 (partial)`, both for consistency with same-domain rows already resolved the other way — see their
 own rows above).

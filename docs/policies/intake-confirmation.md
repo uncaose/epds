@@ -29,6 +29,8 @@ Silence is not approval. Approval is an explicit reply to what was shown.
 
 **TRIVIAL work** (`templates/WORK-ROUTER.md`) uses a light path, not an exemption: show a one-line intake (purpose + done check) before acting. The owner may pre-approve the TRIVIAL class once; record that approval (who, date, where) in the project. After it, the one-line intake is shown together with the result instead of waiting for a reply. Everything that is not TRIVIAL uses the full block.
 
+**The shown intake is the restatement**: showing the filled intake is how the agent restates, in its own words, the owner's goal and the problem being solved. A wrong reading shows up there, before anything is built. It is not a separate step; the intake block already does it. (docs/absorb-pstack.md — pstack's `in-your-own-words` skill.)
+
 **Why**: Only the owner can say why the work exists and what counts as done; everything else the agent can fill from evidence. Showing the filled result once, explicitly, catches a wrong reading before it is built, and costs the owner one reply instead of many questions. A correction changes the premise of work already split and delegated, so the changed items must be confirmed again, not carried forward silently. A fixed list of documents or layers fits no project well, so the split scales with the project.
 
 Referenced from: `docs/PROTOCOL.md` § Scope and safety rules — see `docs/policies/README.md` for why these are separate files.

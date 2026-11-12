@@ -2,7 +2,7 @@
 
 Before reporting or acting on a measured performance number (speed, throughput, latency or resource use), check what limited it, that every side ran with production-like settings, that it stays within physical limits, that errors were counted, that it repeats, that it matters to the real workload, and that the work actually ran; under shared-host contention, record the result as inconclusive.
 
-Apply each check below that fits the measurement or the project's facilities (a single reading has no comparison side; a hand count has no harness). For any check that does not apply, say so in the report with the reason, instead of skipping it silently.
+Which checks below apply, and how a left-out check is named, follow `docs/policies/choose-checks-by-risk-and-oracle.md` § Proportionate checks (for example, a single reading has no comparison side; a hand count has no harness).
 
 Write down the sentence you expect to claim first ("export is 30% faster at the median on the large dataset"), read the measuring script, where there is one, to see what it times and what it skips, then test that sentence:
 

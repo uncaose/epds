@@ -2,7 +2,7 @@
 
 For a change whose correctness is visual (layout, spacing, color, type, icons, copy placement), verify it in this order: prevent off-system values structurally, measure what can be measured on the rendered screen, have an independent reviewer score the rest blind against a stated rubric, and leave only the remaining matter of taste to the owner, reported as `Unverified – awaiting owner` until the owner confirms it.
 
-Apply each layer where the project's facilities allow it, and name any layer that could not run, with the reason (see `docs/policies/vet-measurements.md` for how to trust a number and `docs/policies/state-flow-and-visual-baselines.md` for baselines).
+Which layers run, and how a layer that could not run is named, follow `docs/policies/choose-checks-by-risk-and-oracle.md` § Proportionate checks (see `docs/policies/vet-measurements.md` for how to trust a number and `docs/policies/state-flow-and-visual-baselines.md` for baselines).
 
 1. **Structure (prevent).** Keep visual values in design tokens: a spacing grid, a type scale with a fixed ratio, a small fixed palette with a dominant/secondary/accent split, and at most two type families. Where the project has a linter or build check, reject values outside the tokens. A value the structure cannot produce cannot ship by accident.
 2. **Measurement (on the rendered screen).** Where screens can be captured, measure each changed screen and compare it with stated thresholds:

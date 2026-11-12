@@ -2,7 +2,7 @@
 
 Evaluate candidates without letting them tell they are being evaluated and grade their output rather than their self-report; improve a metric with one change and one measurement, then keep or revert, after proving, where a measuring harness is used, that it can tell cases apart; quarantine intermittent failures with re-run statistics instead of silently retrying them into a pass.
 
-Apply each check below that fits the measurement or the project's facilities (a single reading has no comparison side; a hand count has no harness). For any check that does not apply, say so in the report with the reason, instead of skipping it silently.
+Which checks below apply, and how a left-out check is named, follow `docs/policies/choose-checks-by-risk-and-oracle.md` § Proportionate checks (for example, a single reading has no comparison side; a hand count has no harness).
 
 ## Blind evaluation
 

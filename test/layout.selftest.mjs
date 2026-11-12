@@ -39,7 +39,8 @@ const REQUIRED_POLICIES = [
   'state-flow-and-visual-baselines.md',
   'make-repeated-mistakes-impossible.md',
   'honest-evaluation.md',
-  'visual-quality-layers.md'  // H778: visual quality checked in layers, rule line indexed verbatim
+  'visual-quality-layers.md',  // H778: visual quality checked in layers, rule line indexed verbatim
+  'choose-checks-by-risk-and-oracle.md'  // proportionate checks + technique by oracle + traceability: rule line indexed verbatim
 ];
 
 // ---- case 1: every docs/policies/<slug>.md link SKILL.md makes actually exists on disk ----
@@ -140,21 +141,21 @@ const REQUIRED_POLICIES = [
   ok('case6 Final report has a [Plain language] line', skillMd.includes('[Plain language]'));
 }
 
-// ---- case 8: docs/absorb-pstack.md's full pstack disposition accounts for all 29 skills (24 in the README capture + 5 added upstream later) + 23
-// principles + 3 poteto-mode playbooks = 55 rows, no omission (K8) — R0310 raw material lives outside this repo, so this is
+// ---- case 8: docs/absorb-pstack.md's full pstack disposition accounts for all 34 skills (24 in the README capture + 10 added upstream later) + 24
+// principles (23 + 1 added upstream later) + 23 poteto-mode playbooks = 81 rows, no omission (K8) — R0310 raw material lives outside this repo, so this is
 // a document-internal row-count assertion rather than a cross-check against the raw source ----
 {
   const absorbMd = fs.readFileSync(path.join(root, 'docs', 'absorb-pstack.md'), 'utf8');
-  const skillsSection = absorbMd.split('### Skills (24')[1]?.split('### Principles (23')[0] ?? '';
-  const principlesSection = absorbMd.split('### Principles (23')[1]?.split('### Playbooks (3')[0] ?? '';
-  const playbooksSection = absorbMd.split('### Playbooks (3')[1]?.split('## Conflicts checked')[0] ?? '';
+  const skillsSection = absorbMd.split('### Skills (24')[1]?.split('### Principles (24')[0] ?? '';
+  const principlesSection = absorbMd.split('### Principles (24')[1]?.split('### Playbooks (23')[0] ?? '';
+  const playbooksSection = absorbMd.split('### Playbooks (23')[1]?.split('## Conflicts checked')[0] ?? '';
   const skillRows = [...skillsSection.matchAll(/^\| \d+ \|/gm)].length;
   const principleRows = [...principlesSection.matchAll(/^\| \d+ \|/gm)].length;
   const playbookRows = [...playbooksSection.matchAll(/^\| \d+ \|/gm)].length;
-  ok('case8 docs/absorb-pstack.md "Skills" table has exactly 29 rows', skillRows === 29);
-  ok('case8 docs/absorb-pstack.md "Principles" table has exactly 23 rows', principleRows === 23);
-  ok('case8 docs/absorb-pstack.md "Playbooks" table has exactly 3 rows', playbookRows === 3);
-  ok('case8 combined pstack disposition totals exactly 55 rows (29 skills + 23 principles + 3 playbooks)', skillRows + principleRows + playbookRows === 55);
+  ok('case8 docs/absorb-pstack.md "Skills" table has exactly 34 rows', skillRows === 34);
+  ok('case8 docs/absorb-pstack.md "Principles" table has exactly 24 rows', principleRows === 24);
+  ok('case8 docs/absorb-pstack.md "Playbooks" table has exactly 23 rows', playbookRows === 23);
+  ok('case8 combined pstack disposition totals exactly 81 rows (34 skills + 24 principles + 23 playbooks)', skillRows + principleRows + playbookRows === 81);
 
   // L6: the Verdict column (5th `|`-delimited cell) of every row, tallied per bucket, must equal
   // the numbers the doc's own "Disposition tally" prose line claims — so a verdict edited in a row
@@ -187,7 +188,7 @@ const REQUIRED_POLICIES = [
   };
 
   const tallyLine = absorbMd.match(
-    /Skills — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 29\)\. Principles — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 23\)\. Playbooks — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 3\)\. Combined across\s*all 55 rows: \*\*Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\*\*/
+    /Skills — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 34\)\. Principles — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 24\)\. Playbooks — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 23\)\. Combined across\s*all 81 rows: \*\*Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\*\*/
   );
   ok('case8 (L6) "Disposition tally" prose line is present and parseable', !!tallyLine);
   if (tallyLine) {
