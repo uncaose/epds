@@ -61,7 +61,7 @@ reason on their own (that was the old `Deferred` escape hatch) — every reason 
 mechanism that already covers the concern, the actual scope boundary it crosses, or the actual gate
 it would weaken. No row below is `Deferred`.
 
-### Skills (24, `README.md:112-135`)
+### Skills (24 in the README capture, `README.md:112-135`; rows 25-26 added upstream later)
 
 | # | Skill | README.md line | Verdict | EPDS path | Reason |
 |---|---|---|---|---|---|
@@ -89,6 +89,8 @@ it would weaken. No row below is `Deferred`.
 | 22 | `unslop` | 133 | Rejected | — | Prose-polish/AI-tell removal is a writing-style concern, out of EPDS's evidence-and-delivery scope. |
 | 23 | `bro` | 134 | Built (partial) | `SKILL.md` §Final report `[Plain language]` | See cross-check table. |
 | 24 | `technical-writing` | 135 | Rejected | — | Diátaxis/Google-developer-style doc-layering standard is a prose-style concern; a target project's own docs/style guide is the right owner, not EPDS core. |
+| 25 | `create-formal-verification-skill` | — (added upstream after the README capture; `skills/create-formal-verification-skill/SKILL.md` @ `34b1b7c`) | Built (partial) (H710) | `docs/policies/formal-verification-for-untestable-promises.md` | EPDS stays agent- and tool-neutral, so it does not generate a project-local verify skill or pick TLA+ by default; it absorbs the rules that make such a check trustworthy (maps to real code, seen to fail, findings stay findings, stated bounds, recorded sync commit) as a policy the `/verify` stage applies when tests cannot reach the promise. |
+| 26 | `maintain-formal-verification-skill` | — (added upstream after the README capture; `skills/maintain-formal-verification-skill/SKILL.md` @ `34b1b7c`) | Built (partial) (H710) | same policy, last bullet | Absorbed the drift rule: a pass on a stale description is the dangerous case; re-confirm against the recorded commit, classify each recheck as in sync / updated / bug / blocked, and keep verification updates separate from product fixes. The step-by-step upkeep procedure stays with the runtime that owns the verify skill. |
 
 **Correction (N3) — commit `cc6ce04` message overstated items 11/12/16**: that commit's message says
 `model-the-domain`/`boundary-discipline`/`separate-before-serializing-shared-state` were all
@@ -132,9 +134,9 @@ message text as written remains a record of that overstatement.
 `test/layout.selftest.mjs` case 8 counts both table bodies and asserts the total is exactly 47, so
 this file cannot silently drop a row.
 
-**Disposition tally (L4 recount)**: Skills — Built 2, Built (partial) 9, Reinforced 8, Rejected 5
-(= 24). Principles — Built 3, Built (partial) 6, Reinforced 10, Rejected 4 (= 23). Combined across
-all 47 rows: **Built 5, Built (partial) 15, Reinforced 18, Rejected 9** — zero rows left `Deferred`
+**Disposition tally (L4 recount)**: Skills — Built 2, Built (partial) 11, Reinforced 8, Rejected 5
+(= 26). Principles — Built 3, Built (partial) 6, Reinforced 10, Rejected 4 (= 23). Combined across
+all 49 rows: **Built 5, Built (partial) 17, Reinforced 18, Rejected 9** — zero rows left `Deferred`
 (`recall` corrected `Rejected`→`Reinforced`, `minimize-reader-load` corrected `Rejected`→`Built
 (partial)`, both for consistency with same-domain rows already resolved the other way — see their
 own rows above).

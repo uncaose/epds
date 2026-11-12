@@ -132,8 +132,8 @@ const REQUIRED_POLICIES = [
   ok('case6 Final report has a [Plain language] line', skillMd.includes('[Plain language]'));
 }
 
-// ---- case 8: docs/absorb-pstack.md's full pstack disposition accounts for all 24 skills + 23
-// principles = 47 rows, no omission (K8) — R0310 raw material lives outside this repo, so this is
+// ---- case 8: docs/absorb-pstack.md's full pstack disposition accounts for all 26 skills (24 in the README capture + 2 added upstream later) + 23
+// principles = 49 rows, no omission (K8) — R0310 raw material lives outside this repo, so this is
 // a document-internal row-count assertion rather than a cross-check against the raw source ----
 {
   const absorbMd = fs.readFileSync(path.join(root, 'docs', 'absorb-pstack.md'), 'utf8');
@@ -141,9 +141,9 @@ const REQUIRED_POLICIES = [
   const principlesSection = absorbMd.split('### Principles (23')[1]?.split('## Conflicts checked')[0] ?? '';
   const skillRows = [...skillsSection.matchAll(/^\| \d+ \|/gm)].length;
   const principleRows = [...principlesSection.matchAll(/^\| \d+ \|/gm)].length;
-  ok('case8 docs/absorb-pstack.md "Skills" table has exactly 24 rows', skillRows === 24);
+  ok('case8 docs/absorb-pstack.md "Skills" table has exactly 26 rows', skillRows === 26);
   ok('case8 docs/absorb-pstack.md "Principles" table has exactly 23 rows', principleRows === 23);
-  ok('case8 combined pstack disposition totals exactly 47 rows (24 skills + 23 principles)', skillRows + principleRows === 47);
+  ok('case8 combined pstack disposition totals exactly 49 rows (26 skills + 23 principles)', skillRows + principleRows === 49);
 
   // L6: the Verdict column (5th `|`-delimited cell) of every row, tallied per bucket, must equal
   // the numbers the doc's own "Disposition tally" prose line claims — so a verdict edited in a row
@@ -175,7 +175,7 @@ const REQUIRED_POLICIES = [
   };
 
   const tallyLine = absorbMd.match(
-    /Skills — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 24\)\. Principles — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 23\)\. Combined across\s*all 47 rows: \*\*Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\*\*/
+    /Skills — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 26\)\. Principles — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 23\)\. Combined across\s*all 49 rows: \*\*Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\*\*/
   );
   ok('case8 (L6) "Disposition tally" prose line is present and parseable', !!tallyLine);
   if (tallyLine) {
