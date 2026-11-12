@@ -1,6 +1,6 @@
 # Evaluate blind, change one thing at a time, quarantine flaky checks
 
-Evaluate candidates without letting them tell they are being evaluated and grade their output rather than their self-report; improve a metric with one change and one measurement, then keep or revert, after proving the harness can tell cases apart; quarantine intermittent failures with re-run statistics instead of silently retrying them into a pass.
+Evaluate candidates without letting them tell they are being evaluated and grade their output rather than their self-report; improve a metric with one change and one measurement, then keep or revert, after proving, where a measuring harness is used, that it can tell cases apart; quarantine intermittent failures with re-run statistics instead of silently retrying them into a pass.
 
 Apply each check below that fits the measurement or the project's facilities (a single reading has no comparison side; a hand count has no harness). For any check that does not apply, say so in the report with the reason, instead of skipping it silently.
 
@@ -14,7 +14,7 @@ Apply each check below that fits the measurement or the project's facilities (a 
 ## One change per measurement
 
 - Fix one metric, its better direction, and a stop condition that pairs a target with a minimum number of attempts, so one lucky result cannot end the run. Never relax the condition to meet it.
-- Before freezing the measuring harness, prove it can tell cases apart: the case that shows the problem must separate from easier cases. Vet it (`docs/policies/vet-measurements.md`) and make it print its error count and the amount of work done.
+- Where a measuring harness is used, prove before freezing it that it can tell cases apart: the case that shows the problem must separate from easier cases. Vet it (`docs/policies/vet-measurements.md`) and make it print its error count and the amount of work done.
 - Record the baseline and a green run of the regression checks before any change.
 - Each attempt is one hypothesis naming a mechanism, one change, one measurement. Keep it only if the metric moves past noise and the regression checks stay green; otherwise revert it in full. Log every attempt, kept or reverted.
 

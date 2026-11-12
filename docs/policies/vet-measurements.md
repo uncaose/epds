@@ -14,7 +14,7 @@ Write down the sentence you expect to claim first ("export is 30% faster at the 
 - **Relevance.** Next to any micro result, measure the end-to-end path a user waits on and give the micro result as a share of it.
 - **It ran.** Confirm the work happened inside the timed region (rows written, request reached the server, result used) rather than a cached, skipped, lazy or timed-out result.
 
-Lead the report with the verdict: faster, slower, no measurable difference, or inconclusive; then the number with unit, run count, range and limiter. Call it inconclusive when the limiter is unknown, a side ran untuned, or errors and "it ran" were not checked. A one-run ballpark is acceptable only when asked for, labelled as one run, and still checked for errors and that the work ran; a choice between options is never a ballpark.
+Lead the report with the verdict: for a comparison, faster, slower, no measurable difference, or inconclusive; for a single reading, the number itself (or inconclusive); then the number with unit, run count, range and limiter. Call it inconclusive when the limiter is unknown, a side ran untuned, or errors and "it ran" were not checked. A one-run ballpark is acceptable only when asked for, labelled as one run, and still checked for errors and that the work ran; a choice between options is never a ballpark.
 
 On a shared machine, attribute CPU and memory only to the process tree the measurement itself started; other load on the host is context, not a cause. When outside contention makes the number impossible to attribute, keep the result as inconclusive rather than calling it a regression or a failure of the work under test.
 
