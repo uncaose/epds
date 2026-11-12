@@ -32,6 +32,7 @@ For work too large for one pass, split responsibility into three layers. This is
 
 Domains: 1 Planning, 2 Product definition (requirements and decisions), 3 Infrastructure and release (build, CI, deployment, install guides, devices), 4 Design, 5 Engineering design, 6 Security, 7 Implementation, 8 Documentation and manuals.
 
+- Each layer plans with its WBS before working: the lead writes the top WBS from the approved intake, each coordinator expands its branch before dispatching, and each worker confirms or splits its leaf before changing anything (`docs/policies/wbs-first-planning.md`).
 - Small, already-specified work goes from the lead straight to a worker; do not add a coordinator for it.
 - Review stays independent: the reviewer of any layer's output is not its author (see `/verify` panel).
 - Concurrency is set by the budget you actually have (usage limits, device and disk limits), not by the number of domains.
