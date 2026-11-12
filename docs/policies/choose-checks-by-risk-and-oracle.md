@@ -9,7 +9,7 @@ Choose which checks a change needs from the methods catalog (`docs/verification-
 - **The rigor level sets the form.** "Mandatory when" applies within the rigor level the work runs at (SKILL.md § Level). At `low`, `medium` and TRIVIAL, a mandatory method is reported either as done, with its evidence, or as `Unverified` with the reason; it does not raise the level by itself. This selection rule never removes an execution requirement SKILL.md already sets at any level (for example a command at `medium` or a TRIVIAL acceptance command for an existing criterion), adds none of its own below `high` or a release gate, and never loosens `high`.
 - **Name what is left out.** Each method or policy requirement a change does not get is named in the report with a one-line reason (`not needed: <reason>` or `cannot run here: <reason>`). Skipping silently is not allowed.
 - **Needed means whole.** A check is needed when the risk calls for it or when its "mandatory when" applies. A needed check keeps its own policy's rules in full: seen to fail before it is trusted (`docs/policies/every-check-seen-to-fail.md`), not weakened to pass (`docs/policies/tests-not-weakened.md`), run against the artifact that actually runs (`docs/policies/verify-resolved-artifact.md`).
-- **Manual checks.** For a check done by hand (for example a human GO decision or a hand-run step), record the steps taken and what was observed failing and then passing instead of commands and exit codes. This does not relax `high`: there every LIFECYCLE.md row stays an executed command with its exit code, so a manual check is never a LIFECYCLE row.
+- **Manual checks.** For a check done by hand (for example a human GO decision or a hand-run step), record the steps taken and what was observed failing and then passing instead of commands and exit codes. By default a manual check is reported in the final report's acceptance list. This does not relax `high`: there every LIFECYCLE.md row stays an executed command with its exit code, so at `high` a manual check is never a LIFECYCLE row.
 - **Levels still decide done.** "Done means" in SKILL.md decides completion at each rigor level; this rule decides which checks fill that level, never whether the level's own checks run.
 
 Other policies that say "apply each requirement where it fits" defer to this section.
@@ -35,12 +35,12 @@ A property or metamorphic check is a check like any other: show it failing on a 
   | Path | Where the check id appears |
   |---|---|
   | `low` | At the start of its item in the check list |
-  | `medium` | At the start of its LIFECYCLE row's "how executed" cell; the execution may stay empty and is then reported `Unverified` |
-  | `high` | At the start of its executed LIFECYCLE row's "how executed" cell, with the command and exit code |
+  | `medium` | At the start of its LIFECYCLE row's "works check" cell; the "how executed" cell follows SKILL.md and may stay empty, and the check is then reported `Unverified` |
+  | `high` | At the start of its LIFECYCLE row's "works check" cell; the "how executed" cell holds the executed command and its exit code |
   | TRIVIAL | In the one-line intake's done check (and in its LIFECYCLE row where the fast path writes one) |
-  | Manual check, any level | In the final report's acceptance list, with the steps taken and what was observed |
+  | Manual check | By default in the final report's acceptance list, with the steps taken and what was observed; below `high` it may also sit in a check-list item or LIFECYCLE row where SKILL.md allows one |
 - In the final report, a criterion with no mapped check, or whose check did not run, is listed as `Unverified`, never as passed.
-- Matching ids is a reviewer check, not a machine check: `bin/check.mjs` checks each LIFECYCLE row's exit code but does not read the intake, so it does not confirm that every id appears.
+- Matching ids is a reviewer check, not a machine check: `bin/check.mjs` checks each LIFECYCLE row (at `high`) but does not read the intake, so it does not confirm that every id appears.
 
 **Why**: Running every known technique on every change wastes effort and buries the checks that matter; running too few lets the risky change through. Choosing by risk and cost, and saying what was left out, keeps the cost proportionate and the gap visible. The technique has to fit the oracle: an example test cannot check an output nobody can predict, and a property test is wasted where one exact value says it all. A criterion that maps to no check is a claim, not a result. (Sources: the project owner's rule that not every check is needed but a needed check keeps its principles; property-based and metamorphic testing as general testing practice; restated in EPDS's own words.)
 

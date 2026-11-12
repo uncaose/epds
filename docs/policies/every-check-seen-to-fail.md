@@ -2,7 +2,7 @@
 
 Before trusting a new or changed test or gate, break the behavior it guards (a negative control, or a mutation where tooling exists), see the check fail, restore the behavior, and report that failing run as evidence.
 
-Which requirements below apply, how a manual check is recorded, and how a left-out requirement is named all follow `docs/policies/choose-checks-by-risk-and-oracle.md` § Proportionate checks. A check that can only be done by hand is never written as a LIFECYCLE row (`templates/LIFECYCLE.md`); it is reported in the final report's acceptance list as a manual check, or as Unverified.
+Which requirements below apply, how a manual check is recorded, and how a left-out requirement is named all follow `docs/policies/choose-checks-by-risk-and-oracle.md` § Proportionate checks. At `high`, a check that can only be done by hand is never written as a LIFECYCLE row (`templates/LIFECYCLE.md`); by default, at any level, it is reported in the final report's acceptance list as a manual check, or as Unverified.
 
 - **Break the behavior, not the check.** Remove the guard, flip a comparison, revert the fix, or feed the wrong fixture. Editing the check itself to fail proves nothing about what it guards.
 - **Restore, then rerun.** Put the behavior back and confirm the check passes again. Never commit the break.
