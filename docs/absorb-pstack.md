@@ -91,6 +91,9 @@ it would weaken. No row below is `Deferred`.
 | 24 | `technical-writing` | 135 | Rejected | — | Diátaxis/Google-developer-style doc-layering standard is a prose-style concern; a target project's own docs/style guide is the right owner, not EPDS core. |
 | 25 | `create-formal-verification-skill` | — (added upstream after the README capture; `skills/create-formal-verification-skill/SKILL.md` @ `34b1b7c`) | Built (partial) (H710) | `docs/policies/formal-verification-for-untestable-promises.md` | EPDS stays agent- and tool-neutral, so it does not generate a project-local verify skill or pick TLA+ by default; it absorbs the rules that make such a check trustworthy (maps to real code, seen to fail, findings stay findings, stated bounds, recorded sync commit) as a policy the `/verify` stage applies when tests cannot reach the promise. |
 | 26 | `maintain-formal-verification-skill` | — (added upstream after the README capture; `skills/maintain-formal-verification-skill/SKILL.md` @ `34b1b7c`) | Built (partial) (H710) | same policy, last bullet | Absorbed the drift rule: a pass on a stale description is the dangerous case; re-confirm against the recorded commit, classify each recheck as in sync / updated / bug / blocked, and keep verification updates separate from product fixes. The step-by-step upkeep procedure stays with the runtime that owns the verify skill. |
+| 27 | `benchmark-checklist` | — (added upstream after the README capture; `skills/benchmark-checklist/SKILL.md` @ `a5539b1`) | Built (H775) | `docs/policies/vet-measurements.md` | Genuinely absent before: EPDS asked for evidence but had no rule for vetting a measured number. New policy restates the seven questions (limiter, settings, limits, errors, repeatability, relevance, did the work run), the four-way verdict, and adds the shared-host rule that unattributable contention is recorded as inconclusive. The tool-specific commands in the source (profilers, `uptime`) are left to the project. |
+| 28 | `statechart` | — (added upstream after the README capture; `skills/statechart/SKILL.md` @ `a5539b1`) | Built (partial) (H775) | `docs/policies/state-flow-and-visual-baselines.md` § Multi-step flows | EPDS stays tool-neutral, so it does not ship the TLA+/TLC runner or the Mermaid chart generator; it absorbs the rules: owner-agreed rules as invariants never weakened, a stated bound, shortest path to each broken rule in the reader's words, end states marked rather than hiding deadlock, and replaying each path against real code. Trust rules link to the formal-verification policy (rows 25-26) instead of repeating them. |
+| 29 | `correct` | — (added upstream after the README capture; `skills/correct/SKILL.md` @ `a5539b1`) | Built (H775) | `docs/policies/make-repeated-mistakes-impossible.md`, `docs/policies/every-check-seen-to-fail.md` | Genuinely absent before: root-cause and premise-review policies say how to diagnose, not how to stop a recurrence. New policy restates the prevention ladder (structure, types, lint naming the fix, test, docs last), the two-occurrence threshold, line-level exceptions with expiry and approver, and the rule-to-enforcer table. Its "prove each check fails on a real past mistake" line, together with rows 25-26, is generalised into its own policy for every new or changed check. |
 
 **Correction (N3) — commit `cc6ce04` message overstated items 11/12/16**: that commit's message says
 `model-the-domain`/`boundary-discipline`/`separate-before-serializing-shared-state` were all
@@ -130,13 +133,26 @@ message text as written remains a record of that overstatement.
 | 22 | `never-block-on-the-human` | 224 | Rejected | — | Directly conflicts with `WORK-ROUTER.md` STRATEGIC/SENSITIVE approval gates and `RELEASE`'s independent GO/NO-GO. Not imported anywhere — see "Conflicts checked" below. |
 | 23 | `encode-lessons-in-structure` | 225 | Reinforced, extended | `templates/retro.md` "Permanent learning" | See item table row 7. |
 
-**Row count check**: 24 skills + 23 principles = 47 rows above (24 in "Skills", 23 in "Principles").
-`test/layout.selftest.mjs` case 8 counts both table bodies and asserts the total is exactly 47, so
-this file cannot silently drop a row.
+### Playbooks (3, `skills/poteto-mode/playbooks/*.md` @ `a5539b1`; H775)
 
-**Disposition tally (L4 recount)**: Skills — Built 2, Built (partial) 11, Reinforced 8, Rejected 5
-(= 26). Principles — Built 3, Built (partial) 6, Reinforced 10, Rejected 4 (= 23). Combined across
-all 49 rows: **Built 5, Built (partial) 17, Reinforced 18, Rejected 9** — zero rows left `Deferred`
+pstack's router also ships playbooks it follows for a classified request. These three were reviewed
+for the verification-hardening pass; the other playbooks are not dispositioned here.
+
+| # | Playbook | Source path | Verdict | EPDS path | Reason |
+|---|---|---|---|---|---|
+| 1 | `eval` | `skills/poteto-mode/playbooks/eval.md` | Built (partial) (H775) | `docs/policies/honest-evaluation.md` § Blind evaluation | Absorbed the blinding rules (no evaluation words a candidate can see, organic prompt, no self-report grading, rubric for the judge only, neutral labels, one judge in one pass, read outputs yourself). Spawning candidates and judges on specific runtimes and reading runtime transcripts stays with the runtime; `templates/arena.md` remains the run-and-judge template. |
+| 2 | `visual-parity` | `skills/poteto-mode/playbooks/visual-parity.md` | Built (partial) (H775) | `docs/policies/state-flow-and-visual-baselines.md` § UI changes | Absorbed baseline-first, image diff with nonzero as failure, no baseline/harness/structure tampering, ask the owner when the baseline looks wrong, one component at a time. No screenshot harness is shipped; the project owns that tool. |
+| 3 | `hillclimb` | `skills/poteto-mode/playbooks/hillclimb.md` | Built (partial) (H775) | `docs/policies/honest-evaluation.md` § One change per measurement | Absorbed one change / one measurement / keep or revert, a stop condition with a minimum attempt count, proving harness sensitivity before freezing it, baseline plus green regression checks first, and logging every attempt. Model choice, worktree fan-out and the decision-log file format stay with the runtime. Flaky-check quarantine was added to the same policy from general practice (no pstack source). |
+
+**Row count check**: 29 skills + 23 principles + 3 playbooks = 55 rows above (29 in "Skills", 23 in
+"Principles", 3 in "Playbooks"). `test/layout.selftest.mjs` case 8 counts all three table bodies and
+asserts the total is exactly 55, so this file cannot silently drop a row.
+
+**Disposition tally (L4 recount)**: Skills — Built 4, Built (partial) 12, Reinforced 8, Rejected 5
+(= 29). Principles — Built 3, Built (partial) 6, Reinforced 10, Rejected 4
+(= 23). Playbooks — Built 0, Built (partial) 3, Reinforced 0, Rejected 0
+(= 3). Combined across
+all 55 rows: **Built 7, Built (partial) 21, Reinforced 18, Rejected 9** — zero rows left `Deferred`
 (`recall` corrected `Rejected`→`Reinforced`, `minimize-reader-load` corrected `Rejected`→`Built
 (partial)`, both for consistency with same-domain rows already resolved the other way — see their
 own rows above).

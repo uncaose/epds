@@ -1,0 +1,24 @@
+# Model multi-step flows; baseline the UI before changing it
+
+For a product with a multi-step flow, model its states and show that every rule-breaking state is unreachable or give the shortest path to it; for a UI change, capture baseline screenshots before changing anything, compare by image diff, and never edit the baseline to make a diff pass.
+
+## Multi-step flows
+
+- Write each rule the owner agrees to (a screen shown, a result, a stored value, a message sent) as a checked invariant. If the model has no variable for a rule, add one. Never weaken a rule to make it hold.
+- Explore the states with any tool that covers every reachable state within a stated bound (a model checker, or an exhaustive enumeration of a small model). Keep the bound small and say what it is.
+- For every broken rule, report the shortest path to it as steps the user would recognise ("you press pay", "the network drops"), not as code or action names. Label states with what the reader sees or cares about.
+- A correct end state with no step out is not a deadlock; mark it as an end state in the model instead of hiding the deadlock check.
+- When the model describes real code, replay each reported path against that code as a test or live reproduction. If the bug does not occur, suspect the model until you show otherwise.
+
+The trust rules for such a model (maps to real code, seen to fail, stated bounds, recorded commit) are in `docs/policies/formal-verification-for-untestable-promises.md`; they are not repeated here.
+
+## UI changes
+
+- Capture the baseline first: screenshots of the current UI across its states (and of the target when matching two implementations). No baseline, no parity claim; the baseline is a prerequisite, not a follow-up.
+- Compare by image diff on the same surface and size. A nonzero diff is a failure to investigate, not a judgment call made by eye.
+- Do not edit the baseline, the diff harness or the component structure to make a diff pass. If the baseline itself looks wrong, stop and ask the owner.
+- Change one component at a time, shared building blocks first, so each diff points at one change.
+
+**Why**: Multi-step flows break in orders nobody wrote a test for, and the shortest path to a broken state is the clearest bug report a non-engineer can judge. UI regressions are invisible to a reviewer comparing by eye, and a baseline taken after the change, or edited to match, silently turns the spec into whatever the code now does. (docs/absorb-pstack.md — pstack's `statechart` skill and `visual-parity` playbook, `skills/statechart/SKILL.md` and `skills/poteto-mode/playbooks/visual-parity.md` at `cursor/plugins` commit `a5539b1`, 2026-11-12; restated in EPDS's own words, not copied.)
+
+Referenced from: `docs/PROTOCOL.md` — see `docs/policies/README.md` for why these are separate files.

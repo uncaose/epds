@@ -32,7 +32,13 @@ const REQUIRED_POLICIES = [
   'test-behavior-not-implementation.md',
   'verify-resolved-artifact.md',
   'lean-handoff.md',
-  'intake-confirmation.md' // intake shown/approved/re-confirmed rule: index line must stay verbatim
+  'intake-confirmation.md', // intake shown/approved/re-confirmed rule: index line must stay verbatim
+  // verification hardening (absorb-pstack skills 27-29, playbooks 1-3): index lines must stay verbatim
+  'vet-measurements.md',
+  'every-check-seen-to-fail.md',
+  'state-flow-and-visual-baselines.md',
+  'make-repeated-mistakes-impossible.md',
+  'honest-evaluation.md'
 ];
 
 // ---- case 1: every docs/policies/<slug>.md link SKILL.md makes actually exists on disk ----
@@ -133,18 +139,21 @@ const REQUIRED_POLICIES = [
   ok('case6 Final report has a [Plain language] line', skillMd.includes('[Plain language]'));
 }
 
-// ---- case 8: docs/absorb-pstack.md's full pstack disposition accounts for all 26 skills (24 in the README capture + 2 added upstream later) + 23
-// principles = 49 rows, no omission (K8) — R0310 raw material lives outside this repo, so this is
+// ---- case 8: docs/absorb-pstack.md's full pstack disposition accounts for all 29 skills (24 in the README capture + 5 added upstream later) + 23
+// principles + 3 poteto-mode playbooks = 55 rows, no omission (K8) — R0310 raw material lives outside this repo, so this is
 // a document-internal row-count assertion rather than a cross-check against the raw source ----
 {
   const absorbMd = fs.readFileSync(path.join(root, 'docs', 'absorb-pstack.md'), 'utf8');
   const skillsSection = absorbMd.split('### Skills (24')[1]?.split('### Principles (23')[0] ?? '';
-  const principlesSection = absorbMd.split('### Principles (23')[1]?.split('## Conflicts checked')[0] ?? '';
+  const principlesSection = absorbMd.split('### Principles (23')[1]?.split('### Playbooks (3')[0] ?? '';
+  const playbooksSection = absorbMd.split('### Playbooks (3')[1]?.split('## Conflicts checked')[0] ?? '';
   const skillRows = [...skillsSection.matchAll(/^\| \d+ \|/gm)].length;
   const principleRows = [...principlesSection.matchAll(/^\| \d+ \|/gm)].length;
-  ok('case8 docs/absorb-pstack.md "Skills" table has exactly 26 rows', skillRows === 26);
+  const playbookRows = [...playbooksSection.matchAll(/^\| \d+ \|/gm)].length;
+  ok('case8 docs/absorb-pstack.md "Skills" table has exactly 29 rows', skillRows === 29);
   ok('case8 docs/absorb-pstack.md "Principles" table has exactly 23 rows', principleRows === 23);
-  ok('case8 combined pstack disposition totals exactly 49 rows (26 skills + 23 principles)', skillRows + principleRows === 49);
+  ok('case8 docs/absorb-pstack.md "Playbooks" table has exactly 3 rows', playbookRows === 3);
+  ok('case8 combined pstack disposition totals exactly 55 rows (29 skills + 23 principles + 3 playbooks)', skillRows + principleRows + playbookRows === 55);
 
   // L6: the Verdict column (5th `|`-delimited cell) of every row, tallied per bucket, must equal
   // the numbers the doc's own "Disposition tally" prose line claims — so a verdict edited in a row
@@ -164,26 +173,28 @@ const REQUIRED_POLICIES = [
   }
   const skillsTally = tallyVerdicts(skillsSection);
   const principlesTally = tallyVerdicts(principlesSection);
-  for (const [label, t] of [['Skills', skillsTally], ['Principles', principlesTally]]) {
+  const playbooksTally = tallyVerdicts(playbooksSection);
+  for (const [label, t] of [['Skills', skillsTally], ['Principles', principlesTally], ['Playbooks', playbooksTally]]) {
     ok(`case8 (L-b) ${label} table verdict tally sums to its row count`, t.built + t.builtPartial + t.reinforced + t.rejected + t.unclassified === t.rowCount);
     ok(`case8 (L-b) ${label} table has 0 unclassified-verdict rows`, t.unclassified === 0);
   }
   const combinedTally = {
-    built: skillsTally.built + principlesTally.built,
-    builtPartial: skillsTally.builtPartial + principlesTally.builtPartial,
-    reinforced: skillsTally.reinforced + principlesTally.reinforced,
-    rejected: skillsTally.rejected + principlesTally.rejected
+    built: skillsTally.built + principlesTally.built + playbooksTally.built,
+    builtPartial: skillsTally.builtPartial + principlesTally.builtPartial + playbooksTally.builtPartial,
+    reinforced: skillsTally.reinforced + principlesTally.reinforced + playbooksTally.reinforced,
+    rejected: skillsTally.rejected + principlesTally.rejected + playbooksTally.rejected
   };
 
   const tallyLine = absorbMd.match(
-    /Skills — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 26\)\. Principles — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 23\)\. Combined across\s*all 49 rows: \*\*Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\*\*/
+    /Skills — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 29\)\. Principles — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 23\)\. Playbooks — Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\s*\(= 3\)\. Combined across\s*all 55 rows: \*\*Built (\d+), Built \(partial\) (\d+), Reinforced (\d+), Rejected (\d+)\*\*/
   );
   ok('case8 (L6) "Disposition tally" prose line is present and parseable', !!tallyLine);
   if (tallyLine) {
     const nums = tallyLine.slice(1).map((n) => Number(n));
-    const [skB, skBP, skR, skJ, prB, prBP, prR, prJ, coB, coBP, coR, coJ] = nums;
+    const [skB, skBP, skR, skJ, prB, prBP, prR, prJ, pbB, pbBP, pbR, pbJ, coB, coBP, coR, coJ] = nums;
     ok('case8 (L6) Skills table verdict counts match the tally sentence', skillsTally.built === skB && skillsTally.builtPartial === skBP && skillsTally.reinforced === skR && skillsTally.rejected === skJ);
     ok('case8 (L6) Principles table verdict counts match the tally sentence', principlesTally.built === prB && principlesTally.builtPartial === prBP && principlesTally.reinforced === prR && principlesTally.rejected === prJ);
+    ok('case8 (L6) Playbooks table verdict counts match the tally sentence', playbooksTally.built === pbB && playbooksTally.builtPartial === pbBP && playbooksTally.reinforced === pbR && playbooksTally.rejected === pbJ);
     ok('case8 (L6) Combined verdict counts match the tally sentence', combinedTally.built === coB && combinedTally.builtPartial === coBP && combinedTally.reinforced === coR && combinedTally.rejected === coJ);
   }
 }
