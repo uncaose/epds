@@ -199,6 +199,12 @@ const REQUIRED_POLICIES = [
     ok('case8 (L6) Playbooks table verdict counts match the tally sentence', playbooksTally.built === pbB && playbooksTally.builtPartial === pbBP && playbooksTally.reinforced === pbR && playbooksTally.rejected === pbJ);
     ok('case8 (L6) Combined verdict counts match the tally sentence', combinedTally.built === coB && combinedTally.builtPartial === coBP && combinedTally.reinforced === coR && combinedTally.rejected === coJ);
   }
+  // H789: the independent audit downgraded 31 of 33 Reinforced rows; only the 2 rows it upheld may stay Reinforced.
+  const auditRows = [skillsSection, principlesSection, playbooksSection].join('\n').split('\n')
+    .filter((l) => /^\| \d+ \|/.test(l) && (l.split('|').map((c) => c.trim())[4] ?? '') === 'Built (partial) (H789 audit)');
+  ok('case8 (H789) exactly 31 disposition rows carry the audit verdict "Built (partial) (H789 audit)"', auditRows.length === 31);
+  ok('case8 (H789) combined Reinforced count is 2 (in-your-own-words, investigation)', combinedTally.reinforced === 2);
+  ok('case8 (H789) audit gaps proposal exists', fs.existsSync(path.join(root, 'docs', 'absorb-gaps-2026-11.md')));
 }
 
 console.log(fail === 0 ? `\nPASS (0 failures)` : `\nFAIL (${fail} failures)`);
