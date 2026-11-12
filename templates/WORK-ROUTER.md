@@ -16,6 +16,7 @@ Examples: a user-flow change with a known problem and success criteria.
 
 - Perspectives: Product Owner + Builder + Test Engineer
 - Implementation: after acceptance criteria and non-goals are confirmed
+- Large features: use the delegation layers in `docs/ROLES.md` (lead → domain coordinator → worker); small specified changes go straight to a worker
 - Required: affected user scenario and tests
 
 ## EXPLORATORY
