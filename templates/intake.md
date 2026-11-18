@@ -28,9 +28,9 @@ Chosen kinds: <list> · chosen axes: <list> · output shape: <one file with sect
 
 This table is the WBS: split every row down to the smallest unit, plan, schedule and report from it (`docs/policies/wbs-first-planning.md`; it lives here, not in a separate template, so one table is approved, delegated and reported). The lead writes the top rows; each coordinator adds its branch's child rows before dispatching; each worker confirms or splits its leaf before changing anything. Start a unit only when every id in `depends on` is `done`. TRIVIAL: one row (`1 | <unit> | <check id> | <status>`).
 
-| id | parent | unit | kind | axis | layer | owner of the decision | depends on | size | verify condition | status |
-|---|---|---|---|---|---|---|---|---|---|---|
-| <1.2.3> | <1.2> | <one verifiable change or deliverable> | <kind> | <axis> | <lead / domain coordinator / worker> | <owner / lead / coordinator> | <ids or -> | <S / M / L or estimate> | <check id> <method from `docs/verification-methods.md`>: <command + expected exit code, or observable check> | <todo / doing / blocked / done / unverified> |
+| id | parent | unit | kind | axis | layer | owner of the decision | depends on | size | tier | verify condition | status |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| <1.2.3> | <1.2> | <one verifiable change or deliverable> | <kind> | <axis> | <lead / domain coordinator / worker> | <owner / lead / coordinator> | <ids or -> | <S / M / L or estimate> | <cheap / mid / top; cheapest that passes the check> | <check id> <method from `docs/verification-methods.md`>: <command + expected exit code, or observable check> | <todo / doing / blocked / done / unverified> |
 
 ## 3. Corrections and direction changes
 

@@ -41,6 +41,7 @@ const REQUIRED_POLICIES = [
   'honest-evaluation.md',
   'visual-quality-layers.md',  // H778: visual quality checked in layers, rule line indexed verbatim
   'wbs-first-planning.md',  // WBS first at every delegation layer + scheduling: rule line indexed verbatim
+  'usage-economy.md',  // tier by default, fresh context per unit, idle/long-session limits: rule line indexed verbatim
   'choose-checks-by-risk-and-oracle.md'  // proportionate checks + technique by oracle + traceability: rule line indexed verbatim
 ];
 
