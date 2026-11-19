@@ -103,7 +103,7 @@ export function buildDoc(kind, name, opts = {}) {
   const vars = { version, kind, id, updated: opts.date || localDate(),
     owner: opts.owner || 'unknown', source: opts.source || 'none (fill in)' };
   // Free-text values go into YAML front matter: quote them when plain scalars would break (": ", " #", leading quote/bracket).
-  const yq = (v) => (/:\s|\s#|^[\s"'{[&*!|>%@`-]|\s$/.test(String(v)) ? JSON.stringify(String(v)) : String(v));
+  const yq = (v) => (/:\s|\s#|^[\s"'{[&*!|>%@`#?,\]}-]|\s$/.test(String(v)) ? JSON.stringify(String(v)) : String(v));
   core = core.replace(/\{\{(version|kind|id|updated|owner|source)\}\}/g, (_, k) => (k === 'owner' || k === 'source' ? yq(vars[k]) : vars[k]));
   if (SLIM_KINDS.includes(kind)) {
     const fmLines = [`template: unified@${vars.version}`, `kind: ${kind}`, `id: ${id}`, `updated: ${vars.updated}`];  // per-kind profile front matter (<kind>.frontmatter.txt) goes after extraFm
