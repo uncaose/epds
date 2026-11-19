@@ -28,6 +28,7 @@ external store (e.g. `~/Projects/research/_archive/sources/R0123-slug.md`), not 
 | permissive-oss-license | apache-license-2-0.md |
 | adr-record | nygard-adr.md |
 | skill-installer-cli | skills-vercel-labs.md |
+| instrumentation-event-spec, skill-trigger-fixtures, when-not-to-use-routing | pm-skills.md |
 | engine-version-floor | node-js-releases.md |
 | curated-list, api-directory | public-apis.md |
 | stealth-fetcher, markdown-extraction | scrapling.md |
@@ -39,9 +40,9 @@ external store (e.g. `~/Projects/research/_archive/sources/R0123-slug.md`), not 
 | Perspective | Files |
 |---|---|
 | self (worked example) | example-evidence-first-delivery.md, argo-internal.md, native-artifact-integrity-case.md |
-| evidence | tech-bridge-ai-code-quality.md |
-| product | tech-bridge-ai-code-quality.md, gstack.md, agency-agents.md, public-apis.md |
+| evidence | pm-skills.md, tech-bridge-ai-code-quality.md |
+| product | pm-skills.md, tech-bridge-ai-code-quality.md, gstack.md, agency-agents.md, public-apis.md |
 | delivery | gstack.md, superpowers.md, ouroboros.md, agency-agents-app-v0-3-0.md, ai-job-search.md, open-code-review.md, awesome-harness-engineering.md, mattpocock-skills-grilling.md, node-js-releases.md, public-apis.md, scrapling.md, free-for-dev.md, cursor-pstack.md |
-| agent-ops | gstack.md, superpowers.md, ouroboros.md, agency-agents.md, agency-agents-app-v0-3-0.md, ai-job-search.md, argo-internal.md, open-code-review.md, awesome-harness-engineering.md, claude-code-skills.md, skills-vercel-labs.md, mattpocock-skills-grilling.md, scrapling.md, cursor-pstack.md |
+| agent-ops | pm-skills.md, gstack.md, superpowers.md, ouroboros.md, agency-agents.md, agency-agents-app-v0-3-0.md, ai-job-search.md, argo-internal.md, open-code-review.md, awesome-harness-engineering.md, claude-code-skills.md, skills-vercel-labs.md, mattpocock-skills-grilling.md, scrapling.md, cursor-pstack.md |
 | safety | apache-license-2-0.md |
 | cost | skills-vercel-labs.md, free-for-dev.md |

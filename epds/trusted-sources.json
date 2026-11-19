@@ -609,6 +609,41 @@
       },
       "added": "2026-09-28",
       "note": "H154 re-review (multiple times, latest 4th) — the item-by-item disposition of all 47 items is in docs/absorb-pstack.md, the summary in docs/references/cursor-pstack.md. Router (poteto-mode) auto-classification not adopted since it duplicates WORK-ROUTER; code-style/language-only items (no-comments, typescript-best-practices, etc.) not adopted as outside EPDS scope."
+    },
+    {
+      "id": "pm-skills",
+      "url": "https://github.com/product-on-purpose/pm-skills",
+      "kind": "tool",
+      "name": "pm-skills",
+      "purpose": "68 phase-based PM skills (Apache-2.0) with per-skill trigger fixtures and sibling-routing; concrete gaps vs EPDS: analytics event/instrumentation spec, per-skill description trigger evals, When-NOT-to-use disambiguation",
+      "perspectives": [
+        "product",
+        "agent-ops",
+        "evidence"
+      ],
+      "patterns": [
+        "instrumentation-event-spec",
+        "skill-trigger-fixtures",
+        "when-not-to-use-routing"
+      ],
+      "applies_to": [
+        "experiment",
+        "spec",
+        "verify",
+        "observe"
+      ],
+      "evidence_grade": "community",
+      "meta": {
+        "install": "npx skills add product-on-purpose/pm-skills, or Claude Code plugin",
+        "invoke": "/skill-name per SKILL.md plus /workflow-* commands",
+        "license": "Apache-2.0",
+        "last_release": "v2.35.1, pushed 2026-11-17",
+        "activity": "gh api measured 2026-11-19: stars 822",
+        "verified": "2026-11-19: git clone --depth 1 exit 0, LICENSE=Apache-2.0, 68 skills listed in skill-manifest.json"
+      },
+      "added": "2026-11-19",
+      "note": "68 PM skills (Apache-2.0); gap: analytics event spec, per-skill trigger fixtures, When-NOT-to-use sibling routing",
+      "origin": "human-chat"
     }
   ]
 }
