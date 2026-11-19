@@ -644,6 +644,39 @@
       "added": "2026-11-19",
       "note": "68 PM skills (Apache-2.0); gap: analytics event spec, per-skill trigger fixtures, When-NOT-to-use sibling routing",
       "origin": "human-chat"
+    },
+    {
+      "id": "floorplan",
+      "url": "https://github.com/haydenschmitty/floorplan",
+      "kind": "tool",
+      "name": "Floorplan",
+      "purpose": "MIT local code-structure map (single HTML file) for developer, operations and recovery docs; offline scan, no model call; separate code layer, not for public docs",
+      "perspectives": [
+        "agent-ops",
+        "delivery"
+      ],
+      "patterns": [
+        "code-structure-map",
+        "local-offline-map"
+      ],
+      "applies_to": [
+        "build",
+        "verify",
+        "release",
+        "observe"
+      ],
+      "evidence_grade": "community",
+      "meta": {
+        "install": "git clone, node >=18, zero dependencies",
+        "invoke": "node scan.mjs then node build.mjs, output one HTML file",
+        "license": "MIT",
+        "last_release": "v0.11.0",
+        "activity": "measured 2026-11-19 on a 414-file repository",
+        "verified": "2026-11-19: scan+build under 1 second, no key, no outbound call from scan/build; waitlist URL only on user email; Dart not in supported list"
+      },
+      "added": "2026-11-19",
+      "note": "code-structure map layer for dev/ops/recovery docs; no you-are-here marker; not for public docs",
+      "origin": "human-chat"
     }
   ]
 }
