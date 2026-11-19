@@ -44,6 +44,8 @@ const REQUIRED_POLICIES = [
   'usage-economy.md',  // tier by default, fresh context per unit, idle/long-session limits: rule line indexed verbatim
   'instruction-file-hygiene.md',  // plain wording, short files, hooks for hard rules, periodic audit: rule line indexed verbatim
   'contain-execution.md',  // secret deny rules, scoped sandbox, isolated unattended runs, blocking exit codes: rule line indexed verbatim
+  'code-references-spec.md',  // code comments point to the implemented spec: rule line indexed verbatim
+  'security-review-before-release.md',  // security review before release: rule line indexed verbatim
   'choose-checks-by-risk-and-oracle.md'  // proportionate checks + technique by oracle + traceability: rule line indexed verbatim
 ];
 
