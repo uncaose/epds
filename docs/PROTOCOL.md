@@ -62,7 +62,7 @@ An `EXPLORATORY` "how does X work" request's discovery step is a file/call-path 
 Each rule below is one sentence — the rule itself, not a summary — followed by a link to its own
 file under `docs/policies/` (docs/absorb-pstack.md item 2, docs/LAYOUT.md). Read `docs/policies/`
 for the full rule text, its rationale, and cross-references; this index exists so the rule can be
-scanned without opening fourteen files, not to replace them.
+scanned without opening every policy file, not to replace them.
 
 - Do not implement strategic, exploratory, or sensitive work before the user approves the decision and scope. [Approval before implementation](docs/policies/approval-before-implementation.md)
 - Before building, fill the intake (who, what, when, where, why, how, and done criteria) from evidence, show it to the owner and get explicit approval, then get the proposed decomposition approved before building; re-show and re-confirm the changed items plus purpose and done criteria on every mid-course correction or direction change, and show TRIVIAL work as a one-line intake. [Intake shown and approved before building](docs/policies/intake-confirmation.md)
