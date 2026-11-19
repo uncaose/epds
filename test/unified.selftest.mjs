@@ -38,6 +38,13 @@ bad('template mark removed', good.replace(/^template:.*\n/m, ''), 'template');
 bad('bad template mark', good.replace('unified@1', 'unified@x'), 'template mark invalid');
 bad('bad kind', good.replace('kind: report', 'kind: memo'), 'kind invalid');
 bad('bad status', good.replace('status: draft', 'status: wip'), 'status invalid');
+// optional line rule: grandfathered by `updated`, required on/after `since`
+const pl = { requireLine: 'Position:', since: '2026-11-20' };
+const withPos = (d, date) => d.replace(/^updated:.*$/m, `updated: ${date}`).replace(/^---\n([\s\S]*?)\n---\n/, (m, fm) => `---\n${fm}\nPosition: spec (Now)\n---\n`);
+ok('line rule: old doc without line is grandfathered', checkDoc(good, pl).length === 0);
+ok('line rule: new doc without line FAILs (negative control)', checkDoc(good.replace(/^updated:.*$/m, 'updated: 2026-11-20'), pl).some((x) => x.includes('Position:')));
+ok('line rule: new doc with line passes', checkDoc(withPos(good, '2026-11-20'), pl).length === 0);
+ok('line rule: empty line value FAILs', checkDoc(good.replace(/^updated:.*$/m, 'updated: 2026-11-20').replace(/^---\n([\s\S]*?)\n---\n/, (m, fm) => `---\n${fm}\nPosition:\n---\n`), pl).length > 0);
 bad('missing section 3', good.replace(/## 3\.[\s\S]*?(?=## 4\.)/, ''), 'section "## 3." missing');
 bad('empty section 4', good.replace(/## 4\.[\s\S]*?(?=## 5\.)/, '## 4. Risks and rollback\n\n'), 'empty');
 bad('acceptance without arrow', good.replace(/\[Acceptance\].*\n/, '[Acceptance] A1: something\n'), 'Acceptance');

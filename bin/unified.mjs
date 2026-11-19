@@ -45,6 +45,9 @@ export function checkDoc(text, opts = {}) {
   if (fm.kind && !KINDS.includes(fm.kind)) errs.push(`kind invalid: "${fm.kind}" (one of ${KINDS.join('|')})`);
   if (fm.status && !STATUSES.includes(fm.status)) errs.push(`status invalid: "${fm.status}" (one of ${STATUSES.join('|')})`);
   if (fm.updated && !/^\d{4}-\d{2}-\d{2}$/.test(fm.updated)) errs.push(`updated must be YYYY-MM-DD: "${fm.updated}"`);
+  // Optional line rule (e.g. a position line): `requireLine` = line prefix; `since` = docs updated before it are grandfathered.
+  if (opts.requireLine && !(opts.since && fm.updated && fm.updated < opts.since)
+      && !text.split(/\r?\n/).some((l) => l.startsWith(opts.requireLine) && l.slice(opts.requireLine.length).trim())) errs.push(`line "${opts.requireLine}" missing or empty (required for docs updated on/after ${opts.since || 'any date'})`);
   if (slim) {
     if (opts.strict && /\{\{fill\}\}/.test(text)) errs.push('unfilled {{fill}} markers remain (strict)');
     return errs;
@@ -124,14 +127,14 @@ export function runNew(argv) {
 }
 
 export function runCheckDoc(argv) {
-  const files = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && argv[i - 1] === '--require'));
-  if (!files.length) return { code: 2, out: 'usage: epds template-check <file>... [--strict] [--require key,key]' };
+  const files = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--require', '--require-line', '--since'].includes(argv[i - 1])));
+  if (!files.length) return { code: 2, out: 'usage: epds template-check <file>... [--strict] [--require key,key] [--require-line <prefix> [--since YYYY-MM-DD]]' };
   const req = (opt(argv, '--require') || '').split(',').filter(Boolean);
   const lines = []; let bad = 0;
   for (const f of files) {
     let text;
     try { text = fs.readFileSync(f, 'utf8'); } catch { lines.push(`FAIL ${f}: unreadable`); bad++; continue; }
-    const errs = checkDoc(text, { strict: argv.includes('--strict'), require: req });
+    const errs = checkDoc(text, { strict: argv.includes('--strict'), require: req, requireLine: opt(argv, '--require-line'), since: opt(argv, '--since') });
     if (errs.length) { bad++; lines.push(`FAIL ${f}`); errs.forEach((e) => lines.push(`  - ${e}`)); } else lines.push(`PASS ${f}`);
   }
   return { code: bad ? 1 : 0, out: lines.join('\n') };
