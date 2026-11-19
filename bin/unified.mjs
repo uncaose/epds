@@ -45,9 +45,9 @@ export function checkDoc(text, opts = {}) {
   if (fm.kind && !KINDS.includes(fm.kind)) errs.push(`kind invalid: "${fm.kind}" (one of ${KINDS.join('|')})`);
   if (fm.status && !STATUSES.includes(fm.status)) errs.push(`status invalid: "${fm.status}" (one of ${STATUSES.join('|')})`);
   if (fm.updated && !/^\d{4}-\d{2}-\d{2}$/.test(fm.updated)) errs.push(`updated must be YYYY-MM-DD: "${fm.updated}"`);
-  // Optional line rule (e.g. a position line): `requireLine` = line prefix; `since` = docs updated before it are grandfathered.
+  // Optional line rule (e.g. a position line): `requireLine` = line prefix, matched inside the front matter only; `since` = docs updated before it are grandfathered.
   if (opts.requireLine && !(opts.since && fm.updated && fm.updated < opts.since)
-      && !text.split(/\r?\n/).some((l) => l.startsWith(opts.requireLine) && l.slice(opts.requireLine.length).trim())) errs.push(`line "${opts.requireLine}" missing or empty (required for docs updated on/after ${opts.since || 'any date'})`);
+      && !text.match(/^---\r?\n([\s\S]*?)\r?\n---/)[1].split(/\r?\n/).some((l) => l.startsWith(opts.requireLine) && l.slice(opts.requireLine.length).trim())) errs.push(`line "${opts.requireLine}" missing or empty (required for docs updated on/after ${opts.since || 'any date'})`);
   if (slim) {
     if (opts.strict && /\{\{fill\}\}/.test(text)) errs.push('unfilled {{fill}} markers remain (strict)');
     return errs;
@@ -101,7 +101,7 @@ export function buildDoc(kind, name, opts = {}) {
     if (fs.existsSync(kf)) extraBlock = '\n' + read(kf).replace(/^\n+/, '');
   }
   const vars = { version, kind, id, updated: opts.date || localDate(),
-    owner: opts.owner || 'unknown', source: opts.source || 'none: fill in' };
+    owner: opts.owner || 'unknown', source: opts.source || 'none (fill in)' };
   core = core.replace(/\{\{(version|kind|id|updated|owner|source)\}\}/g, (_, k) => vars[k]);
   if (SLIM_KINDS.includes(kind)) {
     const fmLines = [`template: unified@${vars.version}`, `kind: ${kind}`, `id: ${id}`, `updated: ${vars.updated}`];  // per-kind profile front matter (<kind>.frontmatter.txt) goes after extraFm

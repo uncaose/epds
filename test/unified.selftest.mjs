@@ -45,6 +45,7 @@ ok('line rule: old doc without line is grandfathered', checkDoc(good, pl).length
 ok('line rule: new doc without line FAILs (negative control)', checkDoc(good.replace(/^updated:.*$/m, 'updated: 2026-11-20'), pl).some((x) => x.includes('Position:')));
 ok('line rule: new doc with line passes', checkDoc(withPos(good, '2026-11-20'), pl).length === 0);
 ok('line rule: empty line value FAILs', checkDoc(good.replace(/^updated:.*$/m, 'updated: 2026-11-20').replace(/^---\n([\s\S]*?)\n---\n/, (m, fm) => `---\n${fm}\nPosition:\n---\n`), pl).length > 0);
+ok('line rule: line only in a body code block FAILs', checkDoc(good.replace(/^updated:.*$/m, 'updated: 2026-11-20') + '\n```\nPosition: x\n```\n', pl).some((x) => x.includes('Position:')));
 bad('missing section 3', good.replace(/## 3\.[\s\S]*?(?=## 4\.)/, ''), 'section "## 3." missing');
 bad('empty section 4', good.replace(/## 4\.[\s\S]*?(?=## 5\.)/, '## 4. Risks and rollback\n\n'), 'empty');
 bad('acceptance without arrow', good.replace(/\[Acceptance\].*\n/, '[Acceptance] A1: something\n'), 'Acceptance');
