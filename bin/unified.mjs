@@ -89,11 +89,14 @@ export function buildDoc(kind, name, opts = {}) {
   let version = CORE_VERSION;
   let extraFm = '';
   let extraBlock = '';
+  let kindFm = '';
   if (prof) {
     const pv = fs.existsSync(path.join(prof, 'VERSION')) ? read(path.join(prof, 'VERSION')).trim() : '';
     if (pv) version = `${CORE_VERSION}+${pv}`;
     const fmf = path.join(prof, 'frontmatter.txt');
     if (fs.existsSync(fmf)) extraFm = read(fmf).replace(/\s+$/, '') + '\n';
+    const kfm = path.join(prof, `${kind}.frontmatter.txt`);
+    if (fs.existsSync(kfm)) kindFm = read(kfm).replace(/\s+$/, '') + '\n';
     const kf = path.join(prof, `${kind}.md`);
     if (fs.existsSync(kf)) extraBlock = '\n' + read(kf).replace(/^\n+/, '');
   }
@@ -101,11 +104,11 @@ export function buildDoc(kind, name, opts = {}) {
     owner: opts.owner || 'unknown', source: opts.source || 'none: fill in' };
   core = core.replace(/\{\{(version|kind|id|updated|owner|source)\}\}/g, (_, k) => vars[k]);
   if (SLIM_KINDS.includes(kind)) {
-    const fmLines = [`template: unified@${vars.version}`, `kind: ${kind}`, `id: ${id}`, `updated: ${vars.updated}`];
+    const fmLines = [`template: unified@${vars.version}`, `kind: ${kind}`, `id: ${id}`, `updated: ${vars.updated}`];  // per-kind profile front matter (<kind>.frontmatter.txt) goes after extraFm
     const body = read(path.join(tplDir, 'kinds', `${kind}.md`)).replace(/\s+$/, '\n') + (extraBlock ? extraBlock.replace(/^\n+/, '').replace(/\s+$/, '\n') : '');
-    return `---\n${fmLines.join('\n')}\n${extraFm}---\n${body}`;
+    return `---\n${fmLines.join('\n')}\n${extraFm}${kindFm}---\n${body}`;
   }
-  core = core.replace(/\n---\n\n# /, `\n${extraFm}---\n\n# `);
+  core = core.replace(/\n---\n\n# /, `\n${extraFm}${kindFm}---\n\n# `);
   return core.replace(/\s+$/, '\n') + read(path.join(tplDir, 'kinds', `${kind}.md`)).replace(/\s+$/, '\n') + (extraBlock ? extraBlock.replace(/\s+$/, '\n') : '');
 }
 

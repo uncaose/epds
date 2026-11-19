@@ -68,6 +68,11 @@ fs.writeFileSync(path.join(prof, 'brief.md'), '\n- ACME-PROFILE-LINE\n');
 const pd = buildDoc('brief', 'p', { profileDir: prof });
 ok('profile doc carries unified@1+acme@2 mark', /^template: unified@1\+acme@2$/m.test(pd) && /^data_tier: B$/m.test(pd) && pd.includes('ACME-PROFILE-LINE'));
 ok('profile doc passes with --require data_tier', checkDoc(pd, { require: ['data_tier'] }).length === 0);
+// per-kind profile front matter (<kind>.frontmatter.txt) lands inside the YAML block, only for that kind
+fs.writeFileSync(path.join(prof, 'brief.frontmatter.txt'), 'route: fast\n');
+const bk = buildDoc('brief', 'p', { profileDir: prof });
+ok('kind front matter is inside the YAML block', /^---\n[\s\S]*^route: fast$[\s\S]*?^---$/m.test(bk) && bk.indexOf('route: fast') < bk.indexOf('\n---\n', 4));
+ok('kind front matter does not leak to other kinds', !buildDoc('spec', 'p', { profileDir: prof }).includes('route: fast'));
 
 // status: bypass gap counted, never changes verdict track
 const tgt = path.join(tmp, 'proj'); fs.mkdirSync(path.join(tgt, 'docs', 'specs'), { recursive: true });
