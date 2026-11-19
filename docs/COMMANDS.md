@@ -37,6 +37,8 @@ If a gate returns UNMEASURED, report it as `environment` (dependency missing —
 
 Use when the project has too many instructions, duplicated guidance, stale commands, missing tests, or unclear ownership between `AGENTS.md` and `CLAUDE.md`.
 
+Check against `docs/policies/instruction-file-hygiene.md` and `docs/policies/contain-execution.md`: emphasis stacking, files over about 200 lines, task-specific text that belongs in a skill, hard rules written only as prose, references to files or commands that do not exist, files that contradict each other, secret-file deny rules missing, no sandbox scoped to the work (or an incompatibility left unrecorded), long unattended work outside an isolated environment, and gate hooks using a non-blocking exit code.
+
 Default mode is report-only. Use patch mode only after reviewing the proposed change plan.
 
 ### `/epds-upgrade`
