@@ -31,6 +31,7 @@ example-app/
 | `templates/` | `templates/*.md`, `*.json` | Stable output skeletons that the AI fills in |
 | `evals/` | None (upgrade target, `EPDS.md` §5) | Prevent regressions in AI judgment quality |
 | `tests/` | None (EPDS itself has none; the install-target project owns them — `docs/TESTS.md`) | Continuous verification |
+| `bin/intake-check.mjs`, `test/intake-check.selftest.mjs`, `test/fixtures/intake-ok.md` | Intake gate: blocks building on an unfilled, unapproved or blocked `templates/intake.md`, with a selftest of negative controls | Rule enforced by code, not prose |
 | `tools/` | `bin/epds.mjs check` (verifies setup artifacts exist and JSON parses) | Judges "usable", not just "generated" |
 | `docs/` | `docs/*.md` (including this file) | Evidence flow, references |
 | `design_handoff_*` | None (domain-specific, outside the core) | — |
