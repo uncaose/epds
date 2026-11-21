@@ -4,23 +4,64 @@ Rules, sequence, the no-human case and the open lists of kinds and axes: `docs/p
 
 Sequence: (a) section 1 approved -> (b) section 2 approved (may be the same reply) -> (c) build. Silence is not approval.
 
-Status: `draft` | `shown` | `intake approved by <owner> on <date>` | `decomposition approved by <owner> on <date>` | `UNCONFIRMED (no human)` | `re-opened by correction on <date>`
+Status: draft
+Allowed: `draft` | `shown` | `intake approved by <owner> on <YYYY-MM-DD>` | `decomposition approved by <owner> on <YYYY-MM-DD>` | `UNCONFIRMED (no human)` | `re-opened by correction on <date>`. Check before build: `node <skill dir>/bin/intake-check.mjs intake.md` exits 0.
 
 ## 0. TRIVIAL one-line intake
 
 `Purpose: <one line> | Done check: <command or observable result>`. Shown before acting; if the TRIVIAL class is pre-approved (record: `<owner>, <date>, <where>`), shown with the result instead.
 
-## 1. Intake block (shown to the owner as one block)
+## 1. Intake block (shown to the owner as one block; the agent drafts every cell from evidence)
 
-| 5W1H | item | value | source | marked |
-|---|---|---|---|---|
-| why | purpose | <one sentence> | <owner turn or file> | owner |
-| why | done criteria | <observable checks> | <owner turn or file> | owner |
-| who | users and their situation | <...> | <file:line, log, turn> | assumption |
-| what | scope and non-goals | <in / out> | <file:line, log, turn> | assumption |
-| when | deadline or timing | <date, window, trigger> | <file:line, log, turn> | assumption |
-| where | platform, environment, location of the change | <...> | <file:line, log, turn> | assumption |
-| how | approach and constraints | <one or two lines> | <file:line, log, turn> | assumption |
+Cells left as `<...>` or empty fail the check. `N/A: <reason>` is a valid cell; N/A without a reason is not.
+
+### A. Why chain
+
+| field | value |
+|---|---|
+| need | <why now; what happens if not done> |
+| start | <current state as a number or an artifact> |
+| purpose | <final purpose; no higher "why" above it> |
+| goal | <what is true at the end; outcome, not method> |
+| success/kill | <SUCCESS: date, result / KILL: condition> |
+| preserve | <behavior or assets that must not change, or N/A: reason> |
+
+| metric | current | target | deadline | how measured | done check (oracle outside the author) |
+|---|---|---|---|---|---|
+| <one row per metric> | <value> | <value> | <date> | <method> | <command, or two people judge the same> |
+
+### B. Decision axes (class: required | optional | N/A; source: owner | assumption: <evidence>; state: decided | open | blocked)
+
+| group | axis | value | class | source | state |
+|---|---|---|---|---|---|
+| target | target | <who, where, how many> | required | <source> | <state> |
+| organization | organization | <company share, or N/A: reason> | <class> | <source> | <state> |
+| end state | end-state | <service / release / open source / GitHub only / one-off concept> | required | <source> | <state> |
+| form | form | <web server / desktop / game / standalone binary / other> | required | <source> | <state> |
+| infra | infrastructure | <cloud choice, cost cap, or N/A: reason> | <required if end-state is service> | <source> | <state> |
+| AI | ai-model | <none / cloud API / local model, or N/A: reason> | <class> | <source> | <state> |
+| promotion | promotion | <channels, or N/A: reason> | <class> | <source> | <state> |
+| feedback | feedback | <issues / form / metrics, or N/A: reason> | <required if end-state is public> | <source> | <state> |
+| operation | operation | <agent keeps managing / periodic: interval / none> | required | <source> | <state> |
+| resources | resources | <time limit, money cap, devices, people, assets> | required | <source> | <state> |
+| start | start | <size of stage 1 and how it is built> | required | <source> | <state> |
+
+Fold rule: when a parent axis makes several rows N/A, one row may name them (`infrastructure+ai-model+promotion+feedback`) with `N/A: reason`. Ask only about `open` and `blocked` rows, with 2 to 4 concrete options each.
+
+### C. Stages (always staged; one stage finishes in one pass)
+
+| stage | goal (part of the final goal) | done check | resources (time, money) | end state | condition to go on |
+|---|---|---|---|---|---|
+| 1 | <usable alone> | <check> | <time, money> | <end state> | <condition> |
+
+If the estimate for the whole goal exceeds the resources axis, propose the split here.
+
+### D. Blocking (any hit marks that row `blocked`; blocked rows are not defaulted and their units are not built)
+
+- Vague: reads two ways; adjective without a number; undefined term; who, where or when missing.
+- Abstract: metric, current, target or deadline missing; no way to check; method instead of outcome; two judges disagree; two features in one sentence.
+- Infeasible: no end owner (person, tool, system); not estimable (offer a time-boxed spike, not "infeasible"); goal exceeds resources; hidden assumption. Kinds: undecidable, over resources, conflicting conditions, no access (account, key, device, permission), rules or terms. Offer 4 options: lower the goal, add resources, short spike first, drop it. The human picks before that unit is built.
+- Found during build: never substitute (no hard-coded stand-in reported as done). Re-open this intake and hand it to the human.
 
 ## 2. Decomposition = WBS (proposed after section 1, approved before build)
 
