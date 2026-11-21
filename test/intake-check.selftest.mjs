@@ -33,8 +33,8 @@ const negatives = [
   ['blocked row under approved status', mut('| required | owner | decided |\n| form', '| required | owner | blocked |\n| form'), 'blocked rows remain'],
   ['approved without approver and date', mut('intake approved by owner on 2026-01-02', 'approved'), 'approved without approver'],
   ['empty Status line', sample.replace(/^Status:.*$/m, 'Status:'), 'status missing'],
-  ['service end state with infrastructure folded as N/A', sample.replace(/GitHub only/g, 'service'), 'infrastructure: required for end-state'],
-  ['public release with feedback folded as N/A', sample.replace(/GitHub only/g, 'open source release'), 'feedback: required for end-state'],
+  ['service end state with infrastructure folded as N/A', sample.replace(/GitHub only/g, 'service'), 'infrastructure'],
+  ['public release with feedback folded as N/A', sample.replace(/GitHub only/g, 'open source release'), 'feedback'],
   ['TRIVIAL one-line with empty done check', 'Purpose: Keep notes | Done check: ', 'trivial: done check is empty'],
   ['TRIVIAL one-line with empty purpose', 'Purpose:  | Done check: reload shows the note', 'trivial: purpose is empty'],
   ['escaped pipe keeps the cell; empty done check still caught', mut('reload and count | `node check.mjs index.html checks.json` exits 0 |', 'reload \\| count |  |'), 'no done check'],
@@ -42,6 +42,11 @@ const negatives = [
   ['blocked written in a C cell', mut('| 1 day, 0 |', '| blocked |'), 'blocked rows remain'],
   ['required axis open under approved status', mut('| one person, desktop browser, under 100 notes | required | owner | decided |', '| one person, desktop browser, under 100 notes | required | owner | open |'), 'required axis is open'],
   ['optional axis with bare N/A', mut('N/A: personal project | N/A |', 'N/A | optional |'), 'N/A without a reason'],
+  ['full template with A heading replaced by a TRIVIAL line', fs.readFileSync(path.join(root, 'templates', 'intake.md'), 'utf8').replace(/^### A\..*/m, 'Purpose: Keep notes | Done check: Reload shows the saved note'), 'section A missing'],
+  ['resources optional and open', sample.replace('one day, no money | required | owner | decided', ' | optional | owner | open'), 'resources'],
+  ['folded N/A row with service end state and class required', sample.replace(/GitHub only/g, 'service').replace('| N/A | assumption: end-state |', '| required | assumption: end-state |'), 'infrastructure'],
+  ['approver placeholder <owner>', mut('by owner on', 'by <owner> on'), 'approver'],
+  ['feedback folded N/A with public open source end state', sample.replace(/GitHub only/g, 'open source'), 'feedback'],
   ['empty template', fs.readFileSync(path.join(root, 'templates', 'intake.md'), 'utf8'), 'failure(s)']
 ];
 for (const [label, txt, needle] of negatives) {
@@ -50,6 +55,8 @@ for (const [label, txt, needle] of negatives) {
 }
 ok('TRIVIAL one-line intake exits 0', (() => { const r = run('Purpose: Keep notes | Done check: Reload shows the saved note\n'); return r.status === 0; })());
 ok('escaped pipe inside a cell exits 0', run(mut('reload and count', 'reload \\| count')).status === 0);
+ok('real name with spaces approves', run(mut('by owner on', 'by Alex Kim on')).status === 0);
+ok('private service needs infrastructure but not feedback', (() => { const r = run(sample.replace(/GitHub only/g, 'private service').replace(/^\| infra \|[^\n]*\n/m, '| infra | infrastructure | cloud X, 10 USD cap | required | owner | decided |\n| AI | ai-model+promotion+feedback | N/A: private, no AI | N/A | assumption: private | decided |\n')); return r.status === 0; })());
 ok('unreadable file exits 2', spawnSync('node', [bin, path.join(tmp, 'none.md')]).status === 2);
 fs.rmSync(tmp, { recursive: true, force: true });
 if (fail) { console.error(`FAIL: ${fail} case(s)`); process.exit(1); }

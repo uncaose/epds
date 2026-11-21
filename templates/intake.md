@@ -41,7 +41,7 @@ Cells left as `<...>` or empty fail the check. `N/A: <reason>` is a valid cell; 
 | infra | infrastructure | <cloud choice, cost cap, or N/A: reason> | <required if end-state is service> | <source> | <state> |
 | AI | ai-model | <none / cloud API / local model, or N/A: reason> | <class> | <source> | <state> |
 | promotion | promotion | <channels, or N/A: reason> | <class> | <source> | <state> |
-| feedback | feedback | <issues / form / metrics, or N/A: reason> | <required if end-state is public> | <source> | <state> |
+| feedback | feedback | <issues / form / metrics, or N/A: reason> | <required if end-state is open source, public release or public service> | <source> | <state> |
 | operation | operation | <agent keeps managing / periodic: interval / none> | required | <source> | <state> |
 | resources | resources | <time limit, money cap, devices, people, assets> | required | <source> | <state> |
 | start | start | <size of stage 1 and how it is built> | required | <source> | <state> |
