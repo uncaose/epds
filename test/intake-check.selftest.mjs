@@ -32,12 +32,24 @@ const negatives = [
   ['stage: no done check', mut('| notes persist | `node check.mjs index.html checks.json` exits 0 |', '| notes persist |  |'), 'stage 1: no done check'],
   ['blocked row under approved status', mut('| required | owner | decided |\n| form', '| required | owner | blocked |\n| form'), 'blocked rows remain'],
   ['approved without approver and date', mut('intake approved by owner on 2026-01-02', 'approved'), 'approved without approver'],
+  ['empty Status line', sample.replace(/^Status:.*$/m, 'Status:'), 'status missing'],
+  ['service end state with infrastructure folded as N/A', sample.replace(/GitHub only/g, 'service'), 'infrastructure: required for end-state'],
+  ['public release with feedback folded as N/A', sample.replace(/GitHub only/g, 'open source release'), 'feedback: required for end-state'],
+  ['TRIVIAL one-line with empty done check', 'Purpose: Keep notes | Done check: ', 'trivial: done check is empty'],
+  ['TRIVIAL one-line with empty purpose', 'Purpose:  | Done check: reload shows the note', 'trivial: purpose is empty'],
+  ['escaped pipe keeps the cell; empty done check still caught', mut('reload and count | `node check.mjs index.html checks.json` exits 0 |', 'reload \\| count |  |'), 'no done check'],
+  ['blocked written in an A cell', mut('| reload and count |', '| blocked |'), 'blocked rows remain'],
+  ['blocked written in a C cell', mut('| 1 day, 0 |', '| blocked |'), 'blocked rows remain'],
+  ['required axis open under approved status', mut('| one person, desktop browser, under 100 notes | required | owner | decided |', '| one person, desktop browser, under 100 notes | required | owner | open |'), 'required axis is open'],
+  ['optional axis with bare N/A', mut('N/A: personal project | N/A |', 'N/A | optional |'), 'N/A without a reason'],
   ['empty template', fs.readFileSync(path.join(root, 'templates', 'intake.md'), 'utf8'), 'failure(s)']
 ];
 for (const [label, txt, needle] of negatives) {
   const r = run(txt);
   ok(`negative: ${label} -> non-zero and names it`, r.status === 1 && r.stderr.includes(needle));
 }
+ok('TRIVIAL one-line intake exits 0', (() => { const r = run('Purpose: Keep notes | Done check: Reload shows the saved note\n'); return r.status === 0; })());
+ok('escaped pipe inside a cell exits 0', run(mut('reload and count', 'reload \\| count')).status === 0);
 ok('unreadable file exits 2', spawnSync('node', [bin, path.join(tmp, 'none.md')]).status === 2);
 fs.rmSync(tmp, { recursive: true, force: true });
 if (fail) { console.error(`FAIL: ${fail} case(s)`); process.exit(1); }

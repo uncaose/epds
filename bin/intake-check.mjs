@@ -21,15 +21,25 @@ function tables(letter) {
   for (const line of m[1].split('\n')) {
     if (!line.trim().startsWith('|')) { cur = null; continue; }
     if (!cur) { cur = []; out.push(cur); }
-    const cells = line.trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim());
+    const cells = line.trim().replace(/^\||\|$/g, '').split(/(?<!\\)\|/).map((c) => c.trim().replace(/\\\|/g, '|')); // `\|` stays inside a cell
     if (cells.every((c) => /^:?-{3,}:?$/.test(c))) continue;
     cur.push(cells);
   }
   return out.map((t) => t.slice(1)); // drop header
 }
 
+// TRIVIAL one-line intake (templates/intake.md section 0): no section A, so only purpose and done check are checked.
+const triv = text.match(/^Purpose:[ \t]*(.*?)[ \t]*\|[ \t]*Done check:[ \t]*(.*)$/m);
+if (triv && !/^###\s+A\./m.test(text)) {
+  if (empty(triv[1])) bad.push('trivial: purpose is empty');
+  if (empty(triv[2])) bad.push('trivial: done check is empty');
+  if (bad.length) { console.error(`intake-check: ${bad.length} failure(s)\n- ${bad.join('\n- ')}`); process.exit(1); }
+  console.log('intake-check: ok (TRIVIAL one-line intake)'); process.exit(0);
+}
+
 // A: chain
 const [chain = [], measures = []] = tables('A');
+const blockedCells = []; // `blocked` written in an A or C cell counts as a blocked row
 const FIELDS = ['need', 'start', 'purpose', 'goal', 'success/kill', 'preserve'];
 for (const f of FIELDS) {
   const r = chain.find((c) => c[0].toLowerCase() === f);
@@ -37,6 +47,8 @@ for (const f of FIELDS) {
   else if (empty(r[1])) bad.push(`chain: "${f}" is empty`);
   else if (naNoReason(r[1])) bad.push(`chain: "${f}" is N/A without a reason`);
 }
+chain.forEach((r) => { if (/^blocked$/i.test(r[1])) blockedCells.push(r[0]); });
+measures.forEach((r, i) => { if (r.some((c) => /^blocked$/i.test(c))) blockedCells.push(`measure ${i + 1}`); });
 if (!measures.length) bad.push('chain: no measure rows');
 measures.forEach((r, i) => {
   ['metric', 'current', 'target', 'deadline', 'how measured'].forEach((n, k) => { if (empty(r[k])) bad.push(`measure ${i + 1}: "${n}" is empty`); });
@@ -48,30 +60,35 @@ const [axes = []] = tables('B');
 const AXES = ['target', 'organization', 'end-state', 'form', 'infrastructure', 'ai-model', 'promotion', 'feedback', 'operation', 'resources', 'start'];
 const seen = new Set();
 const states = [];
+const endState = ((axes.find((r) => r[1].toLowerCase() === 'end-state') || [])[2] || '').toLowerCase();
+const needs = { infrastructure: /\bservice\b/.test(endState), feedback: /\bservice\b|open source|release/.test(endState) }; // conditional-required axes, also inside folded rows
 for (const r of axes) {
   const [, axis, value, cls, source, state] = r;
   axis.toLowerCase().split('+').forEach((a) => seen.add(a.trim()));
   const c = (cls || '').toLowerCase();
+  axis.toLowerCase().split('+').forEach((a) => { if (needs[a.trim()] && c !== 'required') bad.push(`axis ${a.trim()}: required for end-state "${endState}"`); });
+  if (c !== 'n/a' && naNoReason(value || '')) bad.push(`axis ${axis}: N/A without a reason`);
   if (!['required', 'optional', 'n/a'].includes(c)) bad.push(`axis ${axis}: class must be required | optional | N/A`);
   if (c === 'n/a' ? !/^n\/a:\s*\S/i.test(value || '') : (c === 'required' && empty(value))) bad.push(`axis ${axis}: ${c === 'n/a' ? 'N/A without a reason' : 'required value is empty'}`);
   if (empty(source)) bad.push(`axis ${axis}: source is empty`);
   const s = (state || '').toLowerCase();
   if (!['decided', 'open', 'blocked'].includes(s)) bad.push(`axis ${axis}: state must be decided | open | blocked`);
-  else states.push([axis, s]);
+  else states.push([axis, s, c]);
 }
 for (const a of AXES) if (!seen.has(a)) bad.push(`axis ${a} missing`);
 
 // C: stages
 const [stages = []] = tables('C');
 if (!stages.length) bad.push('stages: no rows');
-stages.forEach((r, i) => { if (empty(r[2])) bad.push(`stage ${i + 1}: no done check`); });
+stages.forEach((r, i) => { if (empty(r[2])) bad.push(`stage ${i + 1}: no done check`); if (r.some((c) => /^blocked$/i.test(c))) blockedCells.push(`stage ${i + 1}`); });
 
 // Status: approval needs approver and date; approved + a blocked row is refused.
-const st = (text.match(/^Status:\s*(.+)$/m) || [])[1] || '';
+const st = (text.match(/^Status:[ \t]*(.*)$/m) || [])[1] || '';
 const approved = /approved/i.test(st);
 if (!st.trim() || /^<.*>$/.test(st.trim())) bad.push('status missing');
 if (approved && !/\bby\s+\S+\s+on\s+\d{4}-\d{2}-\d{2}\b/i.test(st)) bad.push('status: approved without approver and date (by <owner> on <YYYY-MM-DD>)');
-const blocked = states.filter(([, s]) => s === 'blocked');
+const blocked = [...states.filter(([, s]) => s === 'blocked'), ...blockedCells.map((a) => [a])];
+if (approved) for (const [a, s, c] of states) if (c === 'required' && s !== 'decided') bad.push(`axis ${a}: required axis is ${s} under an approved status`);
 if (approved && blocked.length) bad.push(`blocked rows remain under an approved status: ${blocked.map(([a]) => a).join(', ')}`);
 
 if (bad.length) { console.error(`intake-check: ${bad.length} failure(s)\n- ${bad.join('\n- ')}`); process.exit(1); }
