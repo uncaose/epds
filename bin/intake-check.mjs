@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 // bin/intake-check.mjs <intake.md> — blocks building on an unfilled or blocked intake (templates/intake.md sections A-C, Status).
+// Scope: catches honest mistakes and omissions, not deliberate forgery.
 // Exit 0 = every check passes; exit 1 = failures listed one per line; exit 2 = usage/read error. Node stdlib only.
 import fs from 'node:fs';
 
@@ -11,7 +12,7 @@ try { text = fs.readFileSync(file, 'utf8'); } catch (e) { console.error(`cannot 
 const bad = [];
 const empty = (v) => !v || /^<.*>$/.test(v.trim()) || /^(-|tbd|todo)$/i.test(v.trim()) || /^n\/a:?$/i.test(v.trim());
 // A cell may be N/A only with a reason after the colon (`N/A: reason`); empty() already rejects a bare N/A.
-const naNoReason = (v) => /^n\/a\b/i.test(v.trim()) && !/^n\/a:\s*\S/i.test(v.trim());
+const naNoReason = (v) => { const t = v.trim(); if (!/^n\/a\b/i.test(t)) return false; const m = /^n\/a:\s*(\S.*)$/i.exec(t); return !m || empty(m[1]); };
 
 // Tables under a "### <letter>." heading: array of tables, each = array of rows (cells[]), header and separator rows dropped.
 function tables(letter) {
@@ -30,11 +31,15 @@ function tables(letter) {
 
 // TRIVIAL one-line intake (templates/intake.md section 0): no section A, so only purpose and done check are checked.
 // TRIVIAL only when the whole input, minus blank, title and Status lines, is that one line.
+const st = (text.match(/^Status:[ \t]*(.*)$/m) || [])[1] || '';
+const approved = /approved/i.test(st);
+const noApprover = approved && !/\bby\s+[^<>]*\S[^<>]*\s+on\s+\d{4}-\d{2}-\d{2}\b/i.test(st);
 const rest = text.split('\n').filter((l) => l.trim() && !/^#\s/.test(l) && !/^Status:/.test(l));
 const triv = rest.length === 1 && rest[0].match(/^Purpose:[ \t]*(.*?)[ \t]*\|[ \t]*Done check:[ \t]*(.*)$/);
 if (triv) {
   if (empty(triv[1])) bad.push('trivial: purpose is empty');
   if (empty(triv[2])) bad.push('trivial: done check is empty');
+  if (noApprover) bad.push('status: approved without approver and date (by <owner> on <YYYY-MM-DD>)');
   if (bad.length) { console.error(`intake-check: ${bad.length} failure(s)\n- ${bad.join('\n- ')}`); process.exit(1); }
   console.log('intake-check: ok (TRIVIAL one-line intake)'); process.exit(0);
 }
@@ -75,24 +80,27 @@ for (const r of axes) {
   if (req && (c === 'n/a' || empty(value) || /^n\/a\b/i.test(value))) bad.push(`axis ${axis}: required axis needs a real value, not N/A or empty`);
   if (c !== 'n/a' && naNoReason(value || '')) bad.push(`axis ${axis}: N/A without a reason`);
   if (!['required', 'optional', 'n/a'].includes(c)) bad.push(`axis ${axis}: class must be required | optional | N/A`);
-  if (c === 'n/a' ? !/^n\/a:\s*\S/i.test(value || '') : (c === 'required' && empty(value))) bad.push(`axis ${axis}: ${c === 'n/a' ? 'N/A without a reason' : 'required value is empty'}`);
+  if (c === 'n/a' ? !/^n\/a/i.test(value || '') || naNoReason(value || '') : (c === 'required' && empty(value))) bad.push(`axis ${axis}: ${c === 'n/a' ? 'N/A without a reason' : 'required value is empty'}`);
   if (empty(source)) bad.push(`axis ${axis}: source is empty`);
   const s = (state || '').toLowerCase();
   if (!['decided', 'open', 'blocked'].includes(s)) bad.push(`axis ${axis}: state must be decided | open | blocked`);
   else states.push([axis, s, req ? 'required' : c]);
 }
-for (const a of AXES) if (!seen.has(a)) bad.push(`axis ${a} missing`);
+const own = new Set(axes.map((r) => r[1].toLowerCase()).filter((a) => !a.includes('+')));
+for (const a of AXES) {
+  if (!seen.has(a)) bad.push(`axis ${a} missing`);
+  else if (needs[a] && !own.has(a)) bad.push(`axis ${a}: required axis needs its own row, not folded (a+b)`);
+}
 
 // C: stages
 const [stages = []] = tables('C');
 if (!stages.length) bad.push('stages: no rows');
-stages.forEach((r, i) => { if (empty(r[2])) bad.push(`stage ${i + 1}: no done check`); if (r.some((c) => /^blocked$/i.test(c))) blockedCells.push(`stage ${i + 1}`); });
+const STAGE = ['stage', 'goal', 'done check', 'resources', 'end state', 'condition to go on'];
+stages.forEach((r, i) => { STAGE.forEach((n, k) => { if (k !== 2 && empty(r[k])) bad.push(`stage ${i + 1}: "${n}" is empty`); }); if (empty(r[2])) bad.push(`stage ${i + 1}: no done check`); if (r.some((c) => /^blocked$/i.test(c))) blockedCells.push(`stage ${i + 1}`); });
 
 // Status: approval needs approver and date; approved + a blocked row is refused.
-const st = (text.match(/^Status:[ \t]*(.*)$/m) || [])[1] || '';
-const approved = /approved/i.test(st);
 if (!st.trim() || /^<.*>$/.test(st.trim())) bad.push('status missing');
-if (approved && !/\bby\s+[^<>]*\S[^<>]*\s+on\s+\d{4}-\d{2}-\d{2}\b/i.test(st)) bad.push('status: approved without approver and date (by <owner> on <YYYY-MM-DD>)');
+if (noApprover) bad.push('status: approved without approver and date (by <owner> on <YYYY-MM-DD>)');
 const blocked = [...states.filter(([, s]) => s === 'blocked'), ...blockedCells.map((a) => [a])];
 if (approved) for (const [a, s, c] of states) if (c === 'required' && s !== 'decided') bad.push(`axis ${a}: required axis is ${s} under an approved status`);
 if (approved && blocked.length) bad.push(`blocked rows remain under an approved status: ${blocked.map(([a]) => a).join(', ')}`);

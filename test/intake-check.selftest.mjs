@@ -47,6 +47,10 @@ const negatives = [
   ['folded N/A row with service end state and class required', sample.replace(/GitHub only/g, 'service').replace('| N/A | assumption: end-state |', '| required | assumption: end-state |'), 'infrastructure'],
   ['approver placeholder <owner>', mut('by owner on', 'by <owner> on'), 'approver'],
   ['feedback folded N/A with public open source end state', sample.replace(/GitHub only/g, 'open source'), 'feedback'],
+  ['required resources folded into another row', sample.replace(/\| resources \| resources[^\n]*\n/, '').replace('| target | target |', '| target | target+resources |'), 'resources'],
+  ['TRIVIAL one-line claiming approval without approver and date', 'Status: intake approved\nPurpose: Keep notes | Done check: Reload shows the saved note', 'approved without approver'],
+  ['N/A with placeholder reason', mut('N/A: personal project', 'N/A: <reason>'), 'N/A without a reason'],
+  ['stage with blank goal', mut('| 1 | notes persist |', '| 1 |  |'), 'stage 1: "goal" is empty'],
   ['empty template', fs.readFileSync(path.join(root, 'templates', 'intake.md'), 'utf8'), 'failure(s)']
 ];
 for (const [label, txt, needle] of negatives) {

@@ -5,7 +5,7 @@ Rules, sequence, the no-human case and the open lists of kinds and axes: `docs/p
 Sequence: (a) section 1 approved -> (b) section 2 approved (may be the same reply) -> (c) build. Silence is not approval.
 
 Status: draft
-Allowed: `draft` | `shown` | `intake approved by <owner> on <YYYY-MM-DD>` | `decomposition approved by <owner> on <YYYY-MM-DD>` | `UNCONFIRMED (no human)` | `re-opened by correction on <date>`. Check before build: `node <skill dir>/bin/intake-check.mjs intake.md` exits 0.
+Allowed: `draft` | `shown` | `intake approved by <owner> on <YYYY-MM-DD>` | `decomposition approved by <owner> on <YYYY-MM-DD>` | `UNCONFIRMED (no human)` | `re-opened by correction on <date>`. Check before build: `node <skill dir>/bin/intake-check.mjs intake.md` exits 0. Scope: the check catches honest mistakes and omissions, not deliberate forgery.
 
 ## 0. TRIVIAL one-line intake
 
