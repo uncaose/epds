@@ -4,7 +4,7 @@ Before building, fill the intake (who, what, when, where, why, how, and done cri
 
 **Sequence** (same order in `templates/intake.md`): (1) the agent fills the intake from evidence and shows it as one block; the owner approves it explicitly. (2) The agent proposes the decomposition; the owner approves it (steps 1 and 2 may share one reply). (3) Build only approved units; child rows inside an approved unit's scope and done criteria belong to it (`docs/policies/wbs-first-planning.md`). Silence is not approval.
 
-**Defaults.** Rows classed `required` and rows `blocked` are never defaulted: the owner decides them. `optional` rows and rows marked `assumption` keep a stated default with its evidence. The checker enforces fill, class, N/A reasons, stages and approval: `node <skill dir>/bin/intake-check.mjs intake.md` must exit 0 before building.
+**Defaults.** Rows classed `required` and rows `blocked` are never defaulted: the owner decides them. `optional` rows and rows marked `assumption` keep a stated default with its evidence. The checker enforces fill, class, N/A reasons, stages and approval: `node <skill dir>/bin/intake-check.mjs intake.md` must exit 0 before building. The checker catches honest omissions, not forgery. Known gaps (review by eye): `N/A` in a stage or TRIVIAL done check, and an unfilled `<...>` value on a decided optional axis still pass.
 
 **No human available.** Record the intake as `UNCONFIRMED`, never approved. Units behind a required or blocked row are not built; other units continue only where the work router allows without owner approval. Show the unconfirmed intake first when a human returns.
 
