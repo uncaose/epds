@@ -30,10 +30,11 @@ ok('R2 loop has bounded retry (5 rounds)', /up to 5 rounds/.test(loop));
 ok('R2 Done requires every check executed and passed', /Done means[\s\S]*every (?:acceptance check|lifecycle row) was executed and passed/.test(loop));
 
 // R3 no-human path: questions never block
-ok('R3 questions never block when no human can answer', /Questions never block/.test(loop) && /Assumptions/.test(loop) && /do not end the turn on a question/.test(loop));
+ok('R3 questions never block when no human can answer', /Questions never block/.test(loop) && /Assumptions/.test(loop) && /never end the turn on a question/.test(loop));
+ok('R3b mid-project adoption starts with the intake', /Mid-project start: fill the intake/.test(loop));
 
 // R4 verification must execute the artifact
-ok('R4 grep/unviewed screenshot are not checks', /grepping the source/.test(loop) && /screenshot you never looked at/.test(loop));
+ok('R4 grep/unviewed screenshot are not checks', /grepping/.test(loop) && /unviewed screenshot/.test(loop));
 ok('R4 Final report carries an [Acceptance] line with exit codes', /\[Acceptance\] N of M acceptance checks executed and passed/.test(protocol));
 
 // v3 (H361): SKILL.md short; TRIVIAL fast path; web check script wired into step 5
