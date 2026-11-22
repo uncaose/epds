@@ -51,6 +51,8 @@ const negatives = [
   ['TRIVIAL one-line claiming approval without approver and date', 'Status: intake approved\nPurpose: Keep notes | Done check: Reload shows the saved note', 'approved without approver'],
   ['N/A with placeholder reason', mut('N/A: personal project', 'N/A: <reason>'), 'N/A without a reason'],
   ['stage with blank goal', mut('| 1 | notes persist |', '| 1 |  |'), 'stage 1: "goal" is empty'],
+  ['measure done check N/A with reason', sample.replace(/(\| notes kept after reload[^\n]*reload and count \| ).*/, '$1N/A: no check available |'), 'no done check'],
+  ['end state open-source (hyphen) still needs feedback', sample.replace(/GitHub only/g, 'open-source'), 'feedback'],
   ['empty template', fs.readFileSync(path.join(root, 'templates', 'intake.md'), 'utf8'), 'failure(s)']
 ];
 for (const [label, txt, needle] of negatives) {
@@ -61,6 +63,8 @@ ok('TRIVIAL one-line intake exits 0', (() => { const r = run('Purpose: Keep note
 ok('escaped pipe inside a cell exits 0', run(mut('reload and count', 'reload \\| count')).status === 0);
 ok('real name with spaces approves', run(mut('by owner on', 'by Alex Kim on')).status === 0);
 ok('private service needs infrastructure but not feedback', (() => { const r = run(sample.replace(/GitHub only/g, 'private service').replace(/^\| infra \|[^\n]*\n/m, '| infra | infrastructure | cloud X, 10 USD cap | required | owner | decided |\n| AI | ai-model+promotion+feedback | N/A: private, no AI | N/A | assumption: private | decided |\n')); return r.status === 0; })());
+ok('CRLF copy of full sample exits 0', run(sample.replace(/\n/g, '\r\n')).status === 0);
+ok('CRLF TRIVIAL one-line exits 0', run('Purpose: Keep notes | Done check: Reload shows the saved note\r\n').status === 0);
 ok('unreadable file exits 2', spawnSync('node', [bin, path.join(tmp, 'none.md')]).status === 2);
 fs.rmSync(tmp, { recursive: true, force: true });
 if (fail) { console.error(`FAIL: ${fail} case(s)`); process.exit(1); }

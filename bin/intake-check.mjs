@@ -7,7 +7,7 @@ import fs from 'node:fs';
 const file = process.argv[2];
 if (!file) { console.error('usage: intake-check.mjs <intake.md>'); process.exit(2); }
 let text;
-try { text = fs.readFileSync(file, 'utf8'); } catch (e) { console.error(`cannot read ${file}: ${e.message}`); process.exit(2); }
+try { text = fs.readFileSync(file, 'utf8').replace(/\r\n?/g, '\n'); } catch (e) { console.error(`cannot read ${file}: ${e.message}`); process.exit(2); }
 
 const bad = [];
 const empty = (v) => !v || /^<.*>$/.test(v.trim()) || /^(-|tbd|todo)$/i.test(v.trim()) || /^n\/a:?$/i.test(v.trim());
@@ -59,7 +59,7 @@ measures.forEach((r, i) => { if (r.some((c) => /^blocked$/i.test(c))) blockedCel
 if (!measures.length) bad.push('chain: no measure rows');
 measures.forEach((r, i) => {
   ['metric', 'current', 'target', 'deadline', 'how measured'].forEach((n, k) => { if (empty(r[k])) bad.push(`measure ${i + 1}: "${n}" is empty`); });
-  if (empty(r[5])) bad.push(`measure ${i + 1}: no done check`);
+  if (empty(r[5]) || /^n\/a\b/i.test(r[5].trim())) bad.push(`measure ${i + 1}: no done check`); // N/A is not a check
 });
 
 // B: axes
@@ -67,7 +67,7 @@ const [axes = []] = tables('B');
 const AXES = ['target', 'organization', 'end-state', 'form', 'infrastructure', 'ai-model', 'promotion', 'feedback', 'operation', 'resources', 'start'];
 const seen = new Set();
 const states = [];
-const endState = ((axes.find((r) => r[1].toLowerCase() === 'end-state') || [])[2] || '').toLowerCase();
+const endState = ((axes.find((r) => r[1].toLowerCase() === 'end-state') || [])[2] || '').toLowerCase().replace(/[-_\s]+/g, ' ');
 // Spec-required axes ignore the typed class column; conditional ones follow the end state (also inside folded rows).
 const ALWAYS = ['target', 'end-state', 'form', 'operation', 'resources', 'start'];
 const needs = { infrastructure: /\bservice\b/.test(endState), feedback: !/\bprivate\b/.test(endState) && /\bservice\b|open source|release|public/.test(endState) };
