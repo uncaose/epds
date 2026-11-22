@@ -16,6 +16,9 @@ const ok = (label, cond) => { console.log(`  ${cond ? 'ok  ' : 'FAIL'} ${label}`
 const mut = (from, to) => { if (!sample.includes(from)) throw new Error(`sample lacks: ${from}`); return sample.replace(from, to); };
 
 ok('full sample exits 0', run(sample).status === 0);
+const ac = fs.readFileSync(path.join(root, 'test', 'fixtures', 'intake-ac.md'), 'utf8');
+ok('A + C only (no section B), approved, exits 0', !/### B/.test(ac) && run(ac).status === 0);
+ok('A + C with B heading and no rows exits 0', run(ac.replace('### C.', '### B. Decision axes\n\n### C.')).status === 0);
 ok('blocked row with non-approved status exits 0 and is reported', (() => { const r = run(mut('intake approved by owner on 2026-01-02', 'draft').replace('| required | owner | decided |\n| form', '| required | owner | blocked |\n| form')); return r.status === 0 && /blocked/.test(r.stdout); })());
 
 const negatives = [
@@ -27,7 +30,6 @@ const negatives = [
   ['axis: class missing', mut('| required | owner | decided |\n| organization', '|  | owner | decided |\n| organization'), 'class must be'],
   ['axis: N/A without reason', mut('N/A: personal project', 'N/A'), 'N/A without a reason'],
   ['axis: required value empty', mut('| one day, no money |', '|  |'), 'required value is empty'],
-  ['axis: row missing', sample.replace(/\| start \| start[^\n]*\n/, ''), 'axis start missing'],
   ['stages: no rows', sample.replace(/\| 1 \| notes persist[^\n]*\n/, ''), 'stages: no rows'],
   ['stage: no done check', mut('| notes persist | `node check.mjs index.html checks.json` exits 0 |', '| notes persist |  |'), 'stage 1: no done check'],
   ['blocked row under approved status', mut('| required | owner | decided |\n| form', '| required | owner | blocked |\n| form'), 'blocked rows remain'],
@@ -53,6 +55,8 @@ const negatives = [
   ['stage with blank goal', mut('| 1 | notes persist |', '| 1 |  |'), 'stage 1: "goal" is empty'],
   ['measure done check N/A with reason', sample.replace(/(\| notes kept after reload[^\n]*reload and count \| ).*/, '$1N/A: no check available |'), 'no done check'],
   ['end state open-source (hyphen) still needs feedback', sample.replace(/GitHub only/g, 'open-source'), 'feedback'],
+  ['A + C only with a missing stage row', ac.replace(/\| 1 \| notes persist[^\n]*\n/, ''), 'stages: no rows'],
+  ['A + C only, present B row with bare N/A', ac.replace('### C.', '### B. Decision axes\n\n| group | axis | value | class | source | state |\n|---|---|---|---|---|---|\n| x | organization | N/A | N/A | assumption: none | decided |\n\n### C.'), 'N/A without a reason'],
   ['empty template', fs.readFileSync(path.join(root, 'templates', 'intake.md'), 'utf8'), 'failure(s)']
 ];
 for (const [label, txt, needle] of negatives) {

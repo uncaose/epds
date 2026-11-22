@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// bin/intake-check.mjs <intake.md> — blocks building on an unfilled or blocked intake (templates/intake.md sections A-C, Status).
+// bin/intake-check.mjs <intake.md> — blocks building on an unfilled or blocked intake (templates/intake.md sections A, C (B optional), Status).
 // Scope: catches honest mistakes and omissions, not deliberate forgery.
 // Exit 0 = every check passes; exit 1 = failures listed one per line; exit 2 = usage/read error. Node stdlib only.
 import fs from 'node:fs';
@@ -15,9 +15,9 @@ const empty = (v) => !v || /^<.*>$/.test(v.trim()) || /^(-|tbd|todo)$/i.test(v.t
 const naNoReason = (v) => { const t = v.trim(); if (!/^n\/a\b/i.test(t)) return false; const m = /^n\/a:\s*(\S.*)$/i.exec(t); return !m || empty(m[1]); };
 
 // Tables under a "### <letter>." heading: array of tables, each = array of rows (cells[]), header and separator rows dropped.
-function tables(letter) {
+function tables(letter, optional = false) {
   const m = text.match(new RegExp(`^###\\s+${letter}\\.[^\\n]*\\n([\\s\\S]*?)(?=^#{1,3}\\s|(?![\\s\\S]))`, 'm'));
-  if (!m) { bad.push(`section ${letter} missing`); return []; }
+  if (!m) { if (!optional) bad.push(`section ${letter} missing`); return []; }
   const out = []; let cur = null;
   for (const line of m[1].split('\n')) {
     if (!line.trim().startsWith('|')) { cur = null; continue; }
@@ -62,8 +62,8 @@ measures.forEach((r, i) => {
   if (empty(r[5]) || /^n\/a\b/i.test(r[5].trim())) bad.push(`measure ${i + 1}: no done check`); // N/A is not a check
 });
 
-// B: axes
-const [axes = []] = tables('B');
+// B: axes are optional; a missing section or missing rows pass, rows that are present keep every check below.
+const [axes = []] = tables('B', true);
 const AXES = ['target', 'organization', 'end-state', 'form', 'infrastructure', 'ai-model', 'promotion', 'feedback', 'operation', 'resources', 'start'];
 const seen = new Set();
 const states = [];
@@ -87,10 +87,7 @@ for (const r of axes) {
   else states.push([axis, s, req ? 'required' : c]);
 }
 const own = new Set(axes.map((r) => r[1].toLowerCase()).filter((a) => !a.includes('+')));
-for (const a of AXES) {
-  if (!seen.has(a)) bad.push(`axis ${a} missing`);
-  else if (needs[a] && !own.has(a)) bad.push(`axis ${a}: required axis needs its own row, not folded (a+b)`);
-}
+for (const a of AXES) if (seen.has(a) && needs[a] && !own.has(a)) bad.push(`axis ${a}: required axis needs its own row, not folded (a+b)`);
 
 // C: stages
 const [stages = []] = tables('C');
