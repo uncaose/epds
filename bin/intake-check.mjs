@@ -1,13 +1,25 @@
 #!/usr/bin/env node
-// bin/intake-check.mjs <intake.md> — blocks building on an unfilled or blocked intake (templates/intake.md sections A, C (B optional), Status).
+// bin/intake-check.mjs [intake.md] — blocks building on an unfilled or blocked intake (templates/intake.md sections A, C (B optional), Status).
 // Scope: catches honest mistakes and omissions, not deliberate forgery.
 // Exit 0 = every check passes; exit 1 = failures listed one per line; exit 2 = usage/read error. Node stdlib only.
 import fs from 'node:fs';
 
-const file = process.argv[2];
-if (!file) { console.error('usage: intake-check.mjs <intake.md>'); process.exit(2); }
+// No path argument: intake.md, else the intake block (or TRIVIAL line) inside QUESTIONS.md.
+const read = (f) => fs.readFileSync(f, 'utf8').replace(/\r\n?/g, '\n');
+let file = process.argv[2];
 let text;
-try { text = fs.readFileSync(file, 'utf8').replace(/\r\n?/g, '\n'); } catch (e) { console.error(`cannot read ${file}: ${e.message}`); process.exit(2); }
+try {
+  if (file) text = read(file);
+  else if (fs.existsSync('intake.md')) text = read(file = 'intake.md');
+  else if (fs.existsSync('QUESTIONS.md')) {
+    const q = read(file = 'QUESTIONS.md');
+    const blk = q.match(/^##\s+1\.\s*Intake block[^\n]*\n([\s\S]*?)(?=^##\s|(?![\s\S]))/m);
+    const one = q.match(/^Purpose:[ \t]*.*\|[ \t]*Done check:.*$/m);
+    const stLine = (q.match(/^Status:.*$/m) || [''])[0];
+    if (blk) text = `${stLine}\n${blk[1]}`; else if (one) text = `${stLine}\n${one[0]}`;
+  }
+} catch (e) { console.error(`cannot read ${file}: ${e.message}`); process.exit(2); }
+if (text === undefined) { console.error('intake-check: no intake found (write intake.md)'); process.exit(1); }
 
 const bad = [];
 const empty = (v) => !v || /^<.*>$/.test(v.trim()) || /^(-|tbd|todo)$/i.test(v.trim()) || /^n\/a:?$/i.test(v.trim());

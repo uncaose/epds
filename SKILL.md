@@ -4,20 +4,19 @@ description: Evidence-First Product Delivery System. Use when the user asks to s
 argument-hint: "[setup|status|audit|upgrade|reference <URL>|discover|decide|experiment|spec|build|verify|release|observe|retro]"
 ---
 
-
 # EPDS
 
 Evidence-First Product Delivery System: finish the product yourself, with evidence (`docs/EPDS.md` §0-§3).
 
 ## Level
-Pick `low`, `medium` (default) or `high` from the request wording or one line in `epds/level` (env `EPDS_LEVEL` wins); never from the model's size. Evidence records (executed table, `checks.json`, Stop gate) exist only at `high`.
+Pick `low`, `medium` (default) or `high` from the request wording or one line in `epds/level` (env `EPDS_LEVEL` wins); never from the model's size. Evidence records (executed table, `checks.json`, Stop gate): `high` only.
 
 ## Run to completion (the loop)
-Every build request, however short, runs this loop. Do not stop before its last step for your level.
+Every build request runs this loop; do not stop before its last step for your level.
 
-1. **Take stock.** Read what exists; note state and next direction, one line each. Mid-project start: fill the intake for the current goal first.
-2. **Questions never block.** Ask only what a reachable human can answer. If no human can answer (non-interactive run, "no human available", or no reply), never end the turn on a question: write each open question with your chosen default under `Assumptions` in the Final report and continue. The intake is then recorded as `UNCONFIRMED`: continue only work the router allows without owner approval, and show that intake first when a human returns.
-3. **Sharpen before building.** Pick the one thing the request is about; fill gaps with the most common reading, recorded as an assumption. Each item asks two things: does it work, and would an ordinary person using that state find it obvious, see the result of every action, and find every value and message right and tidy? When a person gives the app a value they already know, show them the value they will want to read when they come back. First fill [templates/intake.md](templates/intake.md) (TRIVIAL: one line), get explicit approval of the intake, then of the decomposition; before build `node <this skill dir>/bin/intake-check.mjs intake.md` exit 0; then build; re-confirm on every correction or direction change ([policy](docs/policies/intake-confirmation.md)).
+1. **Take stock.** Read what exists; note state and next direction, one line each. Mid-project start: fill the intake first.
+2. **Questions never block.** Ask only what a reachable human can answer. If none can (non-interactive, "no human available", or no reply), never end the turn on a question: list each open question with your chosen default under `Assumptions` in the Final report and continue. The intake is then recorded as `UNCONFIRMED`: continue only work the router allows without owner approval, and show that intake first on a human's return.
+3. **Sharpen before building.** Pick the one thing the request is about; fill gaps with the commonest reading, noted as assumption. Each item asks: does it work, and would an ordinary person find it obvious, see each action's result, and find every value and message right? When a person gives the app a value they know, show the value they will want to read on return. First write the intake to the file `intake.md` from [templates/intake.md](templates/intake.md) (TRIVIAL: one line; asking a human: block in the question file), get explicit approval of intake, then decomposition; before build run `node <this skill dir>/bin/intake-check.mjs` with no argument (finds `intake.md` or the question-file block): exit 0; then build; re-confirm on every correction or direction change ([policy](docs/policies/intake-confirmation.md)).
    - `low`: write its whole life (first visit and empty state -> each event -> end -> what happens after the end -> a mistake and the way back) as 3 to 7 observable checks, one line each.
    - `medium`: write it as a table instead: `cp <this skill dir>/templates/LIFECYCLE.md LIFECYCLE.md`, fill every row; the last column may stay empty.
      If the request is vague (one or two sentences) or carries domain rules (money, dates or times, bookings, health, law, units): before building, write BRIEF.md with `<this skill dir>/templates/plan-audit.md`, get one audit from a different session or model (subagent, `codex exec`, or any second model; never the author session), handle findings per `epds/audit-mode` (`auto` default; `interview`; `off` skips this step; env `EPDS_AUDIT` wins; see plan-audit.md), then build from BRIEF.md. Before writing, check: every button, link and input is at least 44 px high and wide; body text contrast is at least 4.5:1; before finishing run `node <this skill dir>/bin/a11y-check.mjs index.html` and fix until it reports no serious or critical findings.

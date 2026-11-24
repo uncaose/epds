@@ -70,6 +70,16 @@ ok('private service needs infrastructure but not feedback', (() => { const r = r
 ok('CRLF copy of full sample exits 0', run(sample.replace(/\n/g, '\r\n')).status === 0);
 ok('CRLF TRIVIAL one-line exits 0', run('Purpose: Keep notes | Done check: Reload shows the saved note\r\n').status === 0);
 ok('unreadable file exits 2', spawnSync('node', [bin, path.join(tmp, 'none.md')]).status === 2);
+
+// No-argument mode: intake.md, else a block in QUESTIONS.md, else non-zero.
+const runIn = (files) => { const d = fs.mkdtempSync(path.join(tmp, 'cwd-')); for (const [n, t] of Object.entries(files)) fs.writeFileSync(path.join(d, n), t); return spawnSync('node', [bin], { cwd: d, encoding: 'utf8' }); };
+const qBlock = (t) => `# Questions\n\nWhat color?\n\n${t.replace(/^# .*\n/, '')}\n## 2. Other\n\nnotes\n`;
+ok('no-arg: intake.md exits 0', runIn({ 'intake.md': sample }).status === 0);
+ok('no-arg: block in QUESTIONS.md exits 0', runIn({ 'QUESTIONS.md': qBlock(sample) }).status === 0);
+ok('no-arg: broken block in QUESTIONS.md exits 1', (() => { const r = runIn({ 'QUESTIONS.md': qBlock(mut('| need | Users lose notes today; without this they keep losing them |', '| need | <why> |')) }); return r.status === 1 && r.stderr.includes('"need" is empty'); })());
+ok('no-arg: TRIVIAL line in QUESTIONS.md exits 0', runIn({ 'QUESTIONS.md': '# Questions\n\nPurpose: Keep notes | Done check: Reload shows the saved note\n' }).status === 0);
+ok('no-arg: neither file exits 1 with message', (() => { const r = runIn({}); return r.status === 1 && r.stderr.includes('no intake found'); })());
+ok('no-arg: QUESTIONS.md without an intake block exits 1', runIn({ 'QUESTIONS.md': '# Questions\n\nWhat color?\n' }).status === 1);
 fs.rmSync(tmp, { recursive: true, force: true });
 if (fail) { console.error(`FAIL: ${fail} case(s)`); process.exit(1); }
 console.log('PASS intake-check.selftest');
