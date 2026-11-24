@@ -39,6 +39,8 @@ Use when the project has too many instructions, duplicated guidance, stale comma
 
 Check against `docs/policies/instruction-file-hygiene.md` and `docs/policies/contain-execution.md`: emphasis stacking, files over about 200 lines, task-specific text that belongs in a skill, hard rules written only as prose, references to files or commands that do not exist, files that contradict each other, secret-file deny rules missing, no sandbox scoped to the work (or an incompatibility left unrecorded), long unattended work outside an isolated environment, and gate hooks using a non-blocking exit code.
 
+Also check whether WBS boundaries or role names are being treated as mandatory agent or context boundaries. For each proposed separation, identify the independent work, independent review, or observed context problem it addresses; for tightly coupled work, check whether handoffs lose decisions or intermediate findings. Report findings and proposed changes without changing execution topology automatically.
+
 Default mode is report-only. Use patch mode only after reviewing the proposed change plan.
 
 ### `/epds-upgrade`

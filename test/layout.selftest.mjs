@@ -41,7 +41,7 @@ const REQUIRED_POLICIES = [
   'honest-evaluation.md',
   'visual-quality-layers.md',  // H778: visual quality checked in layers, rule line indexed verbatim
   'wbs-first-planning.md',  // WBS first at every delegation layer + scheduling: rule line indexed verbatim
-  'usage-economy.md',  // tier by default, fresh context per unit, idle/long-session limits: rule line indexed verbatim
+  'usage-economy.md',  // tier by default, context boundary separate from WBS, idle/long-session limits: rule line indexed verbatim
   'instruction-file-hygiene.md',  // plain wording, short files, hooks for hard rules, periodic audit: rule line indexed verbatim
   'contain-execution.md',  // secret deny rules, scoped sandbox, isolated unattended runs, blocking exit codes: rule line indexed verbatim
   'code-references-spec.md',  // code comments point to the implemented spec: rule line indexed verbatim

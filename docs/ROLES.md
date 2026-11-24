@@ -24,11 +24,13 @@ directly.
 
 For work too large for one pass, split responsibility into three layers. This is a delegation pattern, not a fixed staffing model; a solo owner can play every layer.
 
+These are responsibility boundaries, not mandatory agent or context boundaries. One execution loop may perform more than one role when preserving shared decisions and intermediate findings is useful; a plan audit or check that must come from a different session (`SKILL.md` step 3, `docs/policies/honest-evaluation.md`) and every owner approval stay separate even then. The restrictions below apply when responsibilities are delegated to separate executors.
+
 | Layer | Does | Does not |
 |---|---|---|
 | Lead | Checks the plan against the request, writes briefs for coordinators, runs gates, merges results, reports to the owner | Implement or write the deliverables directly |
 | Domain coordinator | Breaks one domain's work into confirmed tasks, writes the domain spec, integrates and checks worker results | Do bulk implementation |
-| Worker | Executes one small, fully specified task and returns evidence | Make design decisions |
+| Worker | Executes one small, fully specified task and returns evidence | Make design decisions, or change approved design or owner decisions without re-confirmation |
 
 Domains: 1 Planning, 2 Product definition (requirements and decisions), 3 Infrastructure and release (build, CI, deployment, install guides, devices), 4 Design, 5 Engineering design, 6 Security, 7 Implementation, 8 Documentation and manuals.
 
