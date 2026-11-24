@@ -114,3 +114,7 @@ rework). A CLI with no documented non-interactive invocation is not eligible for
 - `epds from-template <kind> <name> [--out F] [--profile DIR]` creates a document from `templates/unified/` (core sections 0-6 + one kind block; kinds: brief, report, spec, critic, decision, research). A profile directory (`frontmatter.txt`, `<kind>.md`, `VERSION`) adds project-private fields without changing the public core.
 - `epds template-check <file>... [--strict] [--require key,key]` verifies the `template: unified@N` mark, required frontmatter, sections 0-6 and the `[Acceptance] ... -> ...` line; exit 1 on violation. `--strict` also fails on unfilled `{{fill}}` markers.
 - `epds status` reports `doc.template.bypass` (informational): how many docs in `docs/specs`, `docs/reports`, `journal/reports`, `docs/decisions` lack the mark.
+
+## check.mjs input (`high`)
+
+`checks.json` = `{"checks":[{"name":"add a note","steps":[{"type":"#in","text":"milk"},{"press":"Enter"},{"reload":true}],"expect":[{"text":"milk"},{"count":"li","eq":1},{"consoleErrors":0}]}]}`. Steps: `click` `dblclick` `type` (+`text`) `press` `reload` `wait` (ms) `advance` (simulated ms) `viewport` ([390,844]). Expects: `text` `count` (+`eq`) `consoleErrors` `noOverflow` (true).

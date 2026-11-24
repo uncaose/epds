@@ -29,4 +29,10 @@ try {
   console.log(bad ? `FAIL: ${bad} serious/critical issue(s)` : 'PASS: no serious/critical issues');
   await b.close();
   process.exit(bad ? 1 : 0);
-} catch (e) { console.error(`a11y-check: ${String(e).slice(0, 200)}`); await b?.close(); process.exit(2); }
+} catch (e) {
+  const m = String(e);
+  // Missing playwright-core/axe-core/Chrome: one line, exit 2; the caller must not hunt for modules.
+  if (e?.code === 'MODULE_NOT_FOUND' || /Executable doesn't exist|browserType\.launch/.test(m)) console.error('a11y-check: missing playwright-core, axe-core or Chrome (set EPDS_A11Y_MODULES / CHROME); skipped, do not search for modules');
+  else console.error(`a11y-check: ${m.split('\n')[0].slice(0, 200)}`);
+  await b?.close(); process.exit(2);
+}

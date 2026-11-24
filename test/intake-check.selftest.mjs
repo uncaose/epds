@@ -80,6 +80,16 @@ ok('no-arg: broken block in QUESTIONS.md exits 1', (() => { const r = runIn({ 'Q
 ok('no-arg: TRIVIAL line in QUESTIONS.md exits 0', runIn({ 'QUESTIONS.md': '# Questions\n\nPurpose: Keep notes | Done check: Reload shows the saved note\n' }).status === 0);
 ok('no-arg: neither file exits 1 with message', (() => { const r = runIn({}); return r.status === 1 && r.stderr.includes('no intake found'); })());
 ok('no-arg: QUESTIONS.md without an intake block exits 1', runIn({ 'QUESTIONS.md': '# Questions\n\nWhat color?\n' }).status === 1);
+
+// --template prints a skeleton that fails while unfilled and passes once every <...> cell is filled (in QUESTIONS.md form, no-arg).
+const tpl = spawnSync('node', [bin, '--template'], { encoding: 'utf8' });
+ok('--template exits 0 and prints sections A and C', tpl.status === 0 && /### A\./.test(tpl.stdout) && /### C\./.test(tpl.stdout) && /## 1\. Intake block/.test(tpl.stdout));
+ok('--template unfilled exits 1', runIn({ 'QUESTIONS.md': tpl.stdout }).status === 1);
+ok('--template filled exits 0', runIn({ 'QUESTIONS.md': tpl.stdout.replace(/<[^<>\n]*>/g, (m) => (/^<(title|why now)>$/.test(m) ? m : 'x')).replace('<title>', 'T').replace('<why now>', 'x').replace(/^\(TRIVIAL[^\n]*\n/m, '') }).status === 0);
+
+// a11y-check with no resolvable playwright-core: exit 2 and exactly one stderr line.
+const a11y = spawnSync('node', [path.join(root, 'bin', 'a11y-check.mjs'), path.join(root, 'test', 'fixtures', 'intake-ok.md')], { cwd: tmp, encoding: 'utf8', env: { ...process.env, EPDS_A11Y_MODULES: tmp } });
+ok('a11y-check missing dependency: exit 2, one-line message', a11y.status === 2 && a11y.stderr.trim().split('\n').length === 1 && /missing playwright-core/.test(a11y.stderr));
 fs.rmSync(tmp, { recursive: true, force: true });
 if (fail) { console.error(`FAIL: ${fail} case(s)`); process.exit(1); }
 console.log('PASS intake-check.selftest');

@@ -25,7 +25,7 @@ ok('R1 description covers vague one-liners and no-human runs', /vague one-liner/
 // R2 completion loop exists with 7 numbered steps, before the routing table
 ok('R2 "Run to completion" section exists before "Fast path"', loop.length > 0 && skill.indexOf('## Run to completion') < skill.indexOf('## Fast path'));
 ok('R2 loop has 7 numbered steps', (loop.match(/^\d\. \*\*/gm) || []).length === 7);
-ok('R2 lifecycle table is written before building', /Sharpen before building[\s\S]*templates\/LIFECYCLE\.md[\s\S]*One transition = one executable check/.test(loop) && loop.indexOf('Sharpen') < loop.indexOf('**Build**'));
+ok('R2 lifecycle table is written before building', /Sharpen before building[\s\S]*how executed \(command \+ exit code\)[\s\S]*One transition = one executable check/.test(loop) && loop.indexOf('Sharpen') < loop.indexOf('**Build**'));
 ok('R2 loop has bounded retry (5 rounds)', /up to 5 rounds/.test(loop));
 ok('R2 Done requires every check executed and passed', /Done means[\s\S]*every (?:acceptance check|lifecycle row) was executed and passed/.test(loop));
 

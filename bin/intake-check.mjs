@@ -4,6 +4,34 @@
 // Exit 0 = every check passes; exit 1 = failures listed one per line; exit 2 = usage/read error. Node stdlib only.
 import fs from 'node:fs';
 
+// --template: print the minimal intake skeleton (A why rows + metric row + C stage row, TRIVIAL line); no template file read needed.
+if (process.argv[2] === '--template') {
+  console.log(`# Intake: <title>
+Status: draft
+(TRIVIAL: replace everything below the Status line with one line: Purpose: <one line> | Done check: <command or observable result>)
+
+## 1. Intake block
+### A. Why chain
+| field | value |
+|---|---|
+| need | <why now> |
+| start | <current state> |
+| purpose | <final purpose> |
+| goal | <what is true at the end> |
+| success/kill | <SUCCESS: date, result / KILL: condition> |
+| preserve | <what must not change, or N/A: reason> |
+
+| metric | current | target | deadline | how measured | done check |
+|---|---|---|---|---|---|
+| <metric> | <value> | <value> | <date> | <method> | <command> |
+
+### C. Stages
+| stage | goal | done check | resources | end state | condition to go on |
+|---|---|---|---|---|---|
+| 1 | <usable alone> | <check> | <time, money> | <end state> | <condition> |`);
+  process.exit(0);
+}
+
 // No path argument: intake.md, else the intake block (or TRIVIAL line) inside QUESTIONS.md.
 const read = (f) => fs.readFileSync(f, 'utf8').replace(/\r\n?/g, '\n');
 let file = process.argv[2];
