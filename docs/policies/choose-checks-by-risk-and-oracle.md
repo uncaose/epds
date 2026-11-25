@@ -14,6 +14,16 @@ Choose which checks a change needs from the methods catalog (`docs/verification-
 
 Other policies that say "apply each requirement where it fits" defer to this section.
 
+**Review-round caps (independent reviewer or critic passes, per item)**: these are upper bounds, not quotas; a review still runs only where a check needs one.
+
+| Level | Plan, spec, design | Everything else |
+|---|---|---|
+| `low` (and any lighter use of EPDS) | at most 3 | at most 1 |
+| `medium` | at most 5 | at most 2 |
+| `high` | no cap | no cap |
+
+Past the cap, stop and report the open findings to the owner instead of another round.
+
 **Technique by oracle**: an oracle is what tells a check the right answer. Pick the technique from the oracle you have, one per need, not all at once:
 
 | What you know about the right answer | Technique | Where the rules live |

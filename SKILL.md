@@ -1,6 +1,6 @@
 ---
 name: epds
-description: Evidence-First Product Delivery System. Use when the user asks to set up EPDS, assess a project’s current state, decide what to do next, evaluate an idea before implementation, design a minimum experiment, audit agent instructions, improve AGENTS.md or CLAUDE.md, prepare a release decision, or analyze an external repository/tool for reusable patterns. EPDS first inspects project evidence and trusted public sources, asks only owner-only decisions, then routes work through direction, problem, hypothesis, experiment, spec, build, verify, release, observe, and retro. Also use when asked to build, make or create an app, game, tool or feature from a request, even a short or vague one-liner or with no human available to answer, to carry it through to a finished product that was run and checked.
+description: Evidence-First Product Delivery System. Use when the user asks to set up EPDS, assess a project’s current state, decide what to do next, evaluate an idea before implementation, design a minimum experiment, audit agent instructions, improve AGENTS.md or CLAUDE.md, prepare a release decision, or analyze an external repository/tool for reusable patterns. EPDS inspects evidence and trusted public sources, asks only owner decisions, then routes work through direction, problem, hypothesis, experiment, spec, build, verify, release, observe, and retro. Also use when asked to build, make or create an app, game, tool or feature from a request, even a vague one-liner or with no human available, to carry it to a finished product that was run and checked.
 argument-hint: "[setup|status|audit|upgrade|reference <URL>|discover|decide|experiment|spec|build|verify|release|observe|retro]"
 ---
 
@@ -9,7 +9,7 @@ argument-hint: "[setup|status|audit|upgrade|reference <URL>|discover|decide|expe
 Evidence-First Product Delivery System: finish the product yourself, with evidence (`docs/EPDS.md` §0-§3).
 
 ## Level
-Pick `low`, `medium` (default) or `high` from the request wording or one line in `epds/level` (env `EPDS_LEVEL` wins); never from the model's size. Evidence records (executed table, `checks.json`, Stop gate): `high`.
+Pick `low`, `medium` (default) or `high` from the request wording or one line in `epds/level` (env `EPDS_LEVEL` wins); not from model size. Evidence records (run table, `checks.json`, Stop gate): `high`. Review caps: `docs/policies/choose-checks-by-risk-and-oracle.md`.
 
 ## Run to completion (the loop)
 Every build request runs this loop; do not stop before its last step for your level.
